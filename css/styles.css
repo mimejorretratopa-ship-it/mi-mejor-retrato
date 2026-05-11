@@ -1,0 +1,858 @@
+/* ═══════════════════════════════════════════════════════════════
+   styles.css — Mi Mejor Retrato
+   ═══════════════════════════════════════════════════════════════
+   ARQUITECTURA CSS:
+   1. Tokens (variables)
+   2. Reset
+   3. Componentes globales (nav, botones, secciones)
+   4. Secciones específicas (hero, proceso, galería…)
+   5. Formulario
+   6. Footer
+   7. Utilitarios (reveal, divider)
+   8. Animaciones
+   9. Media queries
+
+   CONVENCIÓN DE NOMBRES: BEM suave.
+   Clase base: .section / .hero / .form
+   Modificador: .hero-h1 / .btn-primary / .campo-nota
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── 1. TOKENS ──────────────────────────────────────────────── */
+:root {
+  /* Paleta de color — dark mode navy */
+  --cream:  #0D1B2A;
+  --warm:   #0F2236;
+  --sand:   #1E3A52;
+  --bark:   #7BAEC8;
+  --ink:    #E8F1F8;
+  --gold:   #F07030;
+  --terra:  #F07030;
+  --sky:    #7B6FB5;
+  --white:  #132237;
+
+  /* Tipografía */
+  --ff-display: 'Fraunces', Georgia, serif;
+  --ff-body:    'DM Sans', system-ui, sans-serif;
+
+  /* Layout */
+  --radius: 4px;
+  --max:    680px;
+
+  /* Espaciado base */
+  --space-xs:  8px;
+  --space-sm:  16px;
+  --space-md:  24px;
+  --space-lg:  48px;
+  --space-xl:  72px;
+}
+
+/* ─── 2. RESET ───────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 56px; /* altura del nav sticky */
+}
+
+body {
+  background:           var(--cream);
+  color:                var(--ink);
+  font-family:          var(--ff-body);
+  font-size:            16px;
+  line-height:          1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display:   block;
+  max-width: 100%;
+}
+
+a { color: inherit; }
+
+details summary {
+  list-style: none;
+  cursor:     pointer;
+}
+details summary::-webkit-details-marker { display: none; }
+
+/* ─── 3. COMPONENTES GLOBALES ────────────────────────────────── */
+
+/* — Nav — */
+.nav {
+  position:         sticky;
+  top:              0;
+  z-index:          100;
+  background:       rgba(13, 27, 42, 0.92);
+  backdrop-filter:  blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom:    1px solid var(--sand);
+  display:          flex;
+  align-items:      center;
+  justify-content:  space-between;
+  padding:          0 20px;
+  height:           56px;
+}
+
+.nav-logo {
+  font-family:     var(--ff-display);
+  font-weight:     700;
+  font-size:       1rem;
+  letter-spacing:  -.01em;
+  text-decoration: none;
+  color:           var(--ink);
+}
+.nav-logo span { color: var(--terra); }
+
+.nav-cta {
+  background:      var(--terra);
+  color:           #fff;
+  text-decoration: none;
+  font-size:       .8rem;
+  font-weight:     500;
+  letter-spacing:  .04em;
+  text-transform:  uppercase;
+  padding:         8px 18px;
+  border-radius:   100px;
+  transition:      background .2s, transform .15s;
+}
+.nav-cta:hover {
+  background:  #D95E22;
+  transform:   scale(1.03);
+}
+
+/* — Botones — */
+.btn-primary {
+  background:      var(--terra);
+  color:           #fff;
+  text-decoration: none;
+  font-size:       .85rem;
+  font-weight:     500;
+  padding:         14px 28px;
+  border-radius:   100px;
+  letter-spacing:  .02em;
+  transition:      background .2s, transform .15s;
+  display:         inline-block;
+}
+.btn-primary:hover {
+  background: #D95E22;
+  transform:  translateY(-2px);
+}
+
+.btn-ghost {
+  background:      transparent;
+  color:           var(--bark);
+  text-decoration: none;
+  font-size:       .85rem;
+  font-weight:     400;
+  padding:         14px 0;
+  letter-spacing:  .01em;
+  border-bottom:   1px solid var(--sand);
+  transition:      border-color .2s, color .2s;
+  display:         inline-block;
+}
+.btn-ghost:hover {
+  color:         var(--terra);
+  border-color:  var(--terra);
+}
+
+/* — Sección base — */
+.section {
+  max-width: var(--max);
+  margin:    0 auto;
+  padding:   var(--space-xl) 20px;
+}
+
+.section-label {
+  font-size:      .7rem;
+  font-weight:    500;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color:          var(--terra);
+  margin-bottom:  14px;
+}
+
+.section-h2 {
+  font-family:    var(--ff-display);
+  font-weight:    700;
+  font-size:      clamp(1.8rem, 5vw, 2.5rem);
+  line-height:    1.15;
+  letter-spacing: -.025em;
+  color:          var(--ink);
+  margin-bottom:  20px;
+}
+.section-h2 em {
+  font-style:  italic;
+  font-weight: 300;
+  color:       var(--terra);
+}
+
+.section-body {
+  font-size:   .97rem;
+  color:       var(--bark);
+  line-height: 1.75;
+}
+.section-body p + p { margin-top: 14px; }
+
+/* ─── 4. HERO ────────────────────────────────────────────────── */
+.hero {
+  min-height:      92svh;
+  display:         grid;
+  grid-template-rows: 1fr auto;
+  padding:         0 20px 48px;
+  overflow:        hidden;
+  position:        relative;
+}
+
+/* Fondo decorativo con gradientes */
+.hero-texture {
+  position:        absolute;
+  inset:           0;
+  pointer-events:  none;
+  z-index:         0;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 80% 20%, rgba(123,111,181,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 10% 80%, rgba(240,112,48,.10) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(30,58,82,.6) 0%, transparent 70%);
+}
+
+.hero-content {
+  position:        relative;
+  z-index:         1;
+  display:         flex;
+  flex-direction:  column;
+  justify-content: center;
+  padding-top:     60px;
+  max-width:       var(--max);
+  margin:          0 auto;
+  width:           100%;
+}
+
+.hero-label {
+  display:         inline-block;
+  font-size:       .72rem;
+  font-weight:     500;
+  letter-spacing:  .12em;
+  text-transform:  uppercase;
+  color:           var(--terra);
+  margin-bottom:   20px;
+  opacity:         0;
+  animation:       fadeUp .6s .1s forwards;
+}
+
+.hero-h1 {
+  font-family:    var(--ff-display);
+  font-weight:    700;
+  font-size:      clamp(2.4rem, 8vw, 4rem);
+  line-height:    1.1;
+  letter-spacing: -.03em;
+  color:          var(--ink);
+  margin-bottom:  22px;
+  opacity:        0;
+  animation:      fadeUp .7s .2s forwards;
+}
+.hero-h1 em {
+  font-style:  italic;
+  font-weight: 300;
+  color:       var(--terra);
+}
+
+.hero-sub {
+  font-size:     1rem;
+  color:         var(--bark);
+  max-width:     420px;
+  line-height:   1.7;
+  margin-bottom: 36px;
+  opacity:       0;
+  animation:     fadeUp .7s .35s forwards;
+}
+
+.hero-ctas {
+  display:   flex;
+  gap:       12px;
+  flex-wrap: wrap;
+  opacity:   0;
+  animation: fadeUp .7s .5s forwards;
+}
+
+/* Pill de quote en el hero */
+.hero-quote-pill {
+  position:  relative;
+  z-index:   1;
+  max-width: var(--max);
+  margin:    0 auto;
+  width:     100%;
+  opacity:   0;
+  animation: fadeUp .7s .65s forwards;
+}
+
+.hero-quote-pill blockquote {
+  display:     inline-flex;
+  align-items: flex-start;
+  gap:         10px;
+  background:  var(--white);
+  border:      1px solid var(--sand);
+  border-radius: 12px;
+  padding:     14px 18px;
+  font-family: var(--ff-display);
+  font-style:  italic;
+  font-size:   .92rem;
+  color:       var(--bark);
+  line-height: 1.5;
+}
+.hero-quote-pill blockquote::before {
+  content:    '"';
+  font-size:  2rem;
+  line-height: 1;
+  color:      var(--sky);
+  opacity:    .7;
+  flex-shrink: 0;
+  margin-top: -4px;
+}
+
+/* ─── 5. UVP / DIFERENCIA ────────────────────────────────────── */
+.uvp-callout {
+  background:    linear-gradient(135deg, #1A2E45 0%, #1C2A42 100%);
+  border:        1px solid rgba(123,111,181,.3);
+  border-radius: 16px;
+  padding:       32px 28px;
+  margin-top:    32px;
+}
+.uvp-callout p {
+  font-family: var(--ff-display);
+  font-style:  italic;
+  font-size:   1.2rem;
+  color:       var(--ink);
+  line-height: 1.5;
+}
+.uvp-callout p strong {
+  font-style:  normal;
+  font-weight: 700;
+  color:       var(--terra);
+}
+
+.ejemplos-grid {
+  display:    grid;
+  gap:        12px;
+  margin-top: 28px;
+}
+.ejemplo-card {
+  background:    var(--white);
+  border:        1px solid var(--sand);
+  border-radius: 10px;
+  padding:       18px 20px;
+  display:       flex;
+  gap:           14px;
+  align-items:   flex-start;
+}
+.ejemplo-icon {
+  font-size:  1.5rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.ejemplo-text {
+  font-size:   .92rem;
+  color:       var(--bark);
+  line-height: 1.6;
+}
+.ejemplo-text strong {
+  color:       var(--ink);
+  font-weight: 500;
+}
+
+/* ─── 6. PROCESO ─────────────────────────────────────────────── */
+.proceso-bg {
+  background:    var(--warm);
+  border-top:    1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+}
+
+.proceso-steps {
+  display:    grid;
+  gap:        0;
+  margin-top: 36px;
+  position:   relative;
+}
+
+/* Línea conectora vertical */
+.proceso-steps::before {
+  content:       '';
+  position:      absolute;
+  left:          19px;
+  top:           28px;
+  bottom:        28px;
+  width:         2px;
+  background:    linear-gradient(to bottom, var(--terra), var(--sky));
+  border-radius: 2px;
+}
+
+.paso {
+  display:               grid;
+  grid-template-columns: 40px 1fr;
+  gap:                   16px;
+  padding-bottom:        36px;
+  position:              relative;
+}
+.paso:last-child { padding-bottom: 0; }
+
+.paso-num {
+  width:           40px;
+  height:          40px;
+  border-radius:   50%;
+  background:      var(--terra);
+  color:           #fff;
+  font-size:       .78rem;
+  font-weight:     500;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  position:        relative;
+  z-index:         1;
+  letter-spacing:  .04em;
+}
+
+.paso-label {
+  font-size:      .68rem;
+  font-weight:    500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color:          var(--sky);
+  margin-bottom:  4px;
+}
+
+.paso-titulo {
+  font-family:    var(--ff-display);
+  font-weight:    700;
+  font-size:      1.1rem;
+  color:          var(--ink);
+  margin-bottom:  8px;
+  letter-spacing: -.01em;
+}
+
+.paso-desc {
+  font-size:   .92rem;
+  color:       var(--bark);
+  line-height: 1.7;
+}
+
+/* ─── 7. GALERÍA ─────────────────────────────────────────────── */
+.galeria-strip {
+  display:               grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:                   3px;
+  margin-top:            32px;
+  border-radius:         12px;
+  overflow:              hidden;
+}
+
+.galeria-item {
+  position:      relative;
+  aspect-ratio:  4/5;
+  background:    var(--warm);
+  overflow:      hidden;
+}
+.galeria-item.wide {
+  grid-column:  span 2;
+  aspect-ratio: 16/9;
+}
+
+.galeria-item img {
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+.galeria-item:hover img { transform: scale(1.04); }
+
+.galeria-item figcaption {
+  position:   absolute;
+  bottom:     0;
+  left:       0;
+  right:      0;
+  padding:    28px 16px 14px;
+  background: linear-gradient(transparent, rgba(8,18,32,.85));
+  color:      rgba(232,241,248,.9);
+  font-size:  .78rem;
+  line-height: 1.4;
+  font-family: var(--ff-display);
+  font-style: italic;
+  transform:  translateY(4px);
+  transition: transform .3s;
+}
+.galeria-item:hover figcaption { transform: translateY(0); }
+
+/* Placeholder de galería cuando no hay imágenes reales */
+.galeria-placeholder {
+  width:           100%;
+  height:          100%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       2rem;
+  background:      var(--white);
+  opacity:         .6;
+}
+
+/* ─── 8. TESTIMONIOS ─────────────────────────────────────────── */
+.testimonios {
+  display:    grid;
+  gap:        16px;
+  margin-top: 36px;
+}
+
+.testimonio {
+  background:    var(--white);
+  border-left:   3px solid var(--sky);
+  border-radius: 0 10px 10px 0;
+  padding:       18px 20px;
+}
+.testimonio q {
+  display:     block;
+  font-family: var(--ff-display);
+  font-style:  italic;
+  font-size:   1rem;
+  color:       var(--ink);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.testimonio q::before,
+.testimonio q::after { content: ''; }
+.testimonio cite {
+  font-size:      .78rem;
+  color:          var(--bark);
+  font-style:     normal;
+  letter-spacing: .02em;
+}
+
+/* ─── 9. SOBRE MIKE ──────────────────────────────────────────── */
+.sobre-bg {
+  background: #081220;
+  border-top: 1px solid var(--sand);
+}
+.sobre-bg .section-label { color: var(--terra); }
+.sobre-bg .section-h2    { color: var(--ink); }
+.sobre-bg .section-h2 em { color: var(--terra); }
+.sobre-bg .section-body  { color: rgba(123,174,200,.8); }
+.sobre-bg .section-body strong { color: var(--ink); }
+
+.sobre-quote {
+  margin-top:    28px;
+  padding:       20px 24px;
+  border:        1px solid rgba(123,111,181,.35);
+  border-radius: 10px;
+  background:    rgba(123,111,181,.06);
+}
+.sobre-quote p {
+  font-family: var(--ff-display);
+  font-style:  italic;
+  font-size:   1rem;
+  color:       var(--sky);
+  line-height: 1.6;
+}
+
+/* ─── 10. FAQ ────────────────────────────────────────────────── */
+.faq-list {
+  display:    grid;
+  gap:        2px;
+  margin-top: 32px;
+}
+.faq-item {
+  border-bottom: 1px solid var(--sand);
+}
+.faq-item summary {
+  display:         flex;
+  justify-content: space-between;
+  align-items:     center;
+  padding:         18px 0;
+  font-weight:     500;
+  font-size:       .97rem;
+  color:           var(--ink);
+  gap:             16px;
+  transition:      color .2s;
+}
+.faq-item summary:hover { color: var(--terra); }
+
+.faq-item summary .faq-icon {
+  width:           22px;
+  height:          22px;
+  flex-shrink:     0;
+  border-radius:   50%;
+  border:          1.5px solid var(--sand);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       .8rem;
+  color:           var(--bark);
+  transition:      background .2s, border-color .2s, transform .25s;
+}
+details[open] .faq-icon {
+  background:   var(--terra);
+  border-color: var(--terra);
+  color:        white;
+  transform:    rotate(45deg);
+}
+.faq-answer {
+  padding:     0 0 18px;
+  font-size:   .92rem;
+  color:       var(--bark);
+  line-height: 1.75;
+}
+.faq-answer p + p { margin-top: 10px; }
+
+/* ─── 11. FORMULARIO ─────────────────────────────────────────── */
+.form-bg {
+  background: var(--warm);
+  border-top: 1px solid var(--sand);
+}
+
+.form-intro {
+  font-size:     .95rem;
+  color:         var(--bark);
+  line-height:   1.7;
+  margin-bottom: 32px;
+}
+
+.form-grid { display: grid; gap: 16px; }
+
+.campo label {
+  display:        block;
+  font-size:      .8rem;
+  font-weight:    500;
+  letter-spacing: .04em;
+  color:          var(--ink);
+  margin-bottom:  6px;
+}
+.campo input,
+.campo select,
+.campo textarea {
+  width:       100%;
+  background:  var(--cream);
+  border:      1.5px solid var(--sand);
+  border-radius: 8px;
+  padding:     12px 14px;
+  font-family: var(--ff-body);
+  font-size:   .95rem;
+  color:       var(--ink);
+  outline:     none;
+  transition:  border-color .2s;
+  appearance:  none;
+}
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: rgba(123,174,200,.35);
+}
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  border-color: var(--sky);
+}
+.campo textarea {
+  resize:     vertical;
+  min-height: 88px;
+}
+.campo-nota {
+  font-size:   .78rem;
+  color:       var(--bark);
+  margin-top:  4px;
+  opacity:     .8;
+}
+
+.btn-enviar {
+  width:         100%;
+  background:    var(--terra);
+  color:         #fff;
+  border:        none;
+  cursor:        pointer;
+  font-family:   var(--ff-body);
+  font-size:     .92rem;
+  font-weight:   500;
+  letter-spacing: .03em;
+  padding:       16px 24px;
+  border-radius: 100px;
+  margin-top:    8px;
+  transition:    background .2s, transform .15s;
+}
+.btn-enviar:hover   { background: #D95E22; transform: translateY(-2px); }
+.btn-enviar:active  { transform: translateY(0); }
+.btn-enviar:disabled {
+  opacity: .6;
+  cursor:  not-allowed;
+  transform: none;
+}
+
+.form-note {
+  font-size:  .8rem;
+  color:      var(--bark);
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+/* Estados del formulario */
+.msg-exito,
+.msg-error { display: none; }
+
+.msg-exito {
+  background:    var(--white);
+  border:        1.5px solid var(--sand);
+  border-radius: 12px;
+  padding:       28px 24px;
+  text-align:    center;
+}
+.msg-exito p:first-child {
+  font-family:   var(--ff-display);
+  font-size:     1.3rem;
+  color:         var(--ink);
+  margin-bottom: 10px;
+}
+.msg-exito p:last-child {
+  font-size: .9rem;
+  color:     var(--bark);
+}
+
+.msg-error {
+  background:    rgba(240,112,48,.08);
+  border:        1.5px solid rgba(240,112,48,.3);
+  border-radius: 8px;
+  padding:       14px 18px;
+  font-size:     .9rem;
+  color:         var(--terra);
+}
+
+/* ─── 12. FOOTER ─────────────────────────────────────────────── */
+.footer {
+  background: #060F1A;
+  padding:    48px 20px 32px;
+  text-align: center;
+}
+.footer-inner {
+  max-width: var(--max);
+  margin:    0 auto;
+}
+.footer-logo {
+  font-family:   var(--ff-display);
+  font-weight:   700;
+  font-size:     1.2rem;
+  color:         var(--ink);
+  margin-bottom: 6px;
+}
+.footer-logo span { color: var(--terra); }
+
+.footer-sub {
+  font-size:     .8rem;
+  color:         rgba(123,174,200,.4);
+  margin-bottom: 24px;
+}
+.footer-links {
+  display:         flex;
+  gap:             20px;
+  justify-content: center;
+  flex-wrap:       wrap;
+  margin-bottom:   28px;
+}
+.footer-links a {
+  font-size:      .8rem;
+  color:          rgba(123,174,200,.5);
+  text-decoration: none;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition:     color .2s;
+}
+.footer-links a:hover { color: var(--terra); }
+
+.footer-tagline {
+  font-family:   var(--ff-display);
+  font-style:    italic;
+  font-size:     .92rem;
+  color:         rgba(123,111,181,.4);
+  margin-bottom: 20px;
+}
+.footer-copy {
+  font-size: .75rem;
+  color:     rgba(123,174,200,.2);
+}
+
+/* ─── 13. BOTÓN FLOTANTE WHATSAPP ────────────────────────────── */
+.whatsapp-fab {
+  position:      fixed;
+  bottom:        22px;
+  right:         18px;
+  z-index:       200;
+  width:         52px;
+  height:        52px;
+  border-radius: 50%;
+  background:    #25D366;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  box-shadow:    0 4px 16px rgba(0,0,0,.4);
+  text-decoration: none;
+  transition:    transform .2s, box-shadow .2s;
+}
+.whatsapp-fab:hover {
+  transform:  scale(1.1);
+  box-shadow: 0 6px 24px rgba(0,0,0,.5);
+}
+.whatsapp-fab svg {
+  width:  26px;
+  height: 26px;
+  fill:   white;
+}
+
+/* ─── 14. DIVIDER ────────────────────────────────────────────── */
+.divider {
+  border:     none;
+  border-top: 1px solid var(--sand);
+  margin:     0;
+}
+
+/* ─── 15. REVEAL (scroll animation) ─────────────────────────── */
+/* El JS en ui.js agrega .visible cuando el elemento entra al viewport */
+.reveal {
+  opacity:    0;
+  transform:  translateY(22px);
+  transition: opacity .55s ease, transform .55s ease;
+}
+.reveal.visible {
+  opacity:   1;
+  transform: translateY(0);
+}
+
+/* ─── 16. ANIMACIONES ────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── 17. MEDIA QUERIES ──────────────────────────────────────── */
+/* Mobile first: las reglas base son mobile.
+   Solo agregamos ajustes para pantallas más grandes aquí. */
+
+@media (min-width: 480px) {
+  .galeria-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 640px) {
+  .hero-ctas {
+    flex-wrap: nowrap;
+  }
+  .ejemplos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: var(--space-xl) 32px;
+  }
+  .nav {
+    padding: 0 32px;
+  }
+}
