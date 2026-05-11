@@ -498,6 +498,9 @@ details summary::-webkit-details-marker { display: none; }
   opacity:         .6;
 }
 
+/* Foto 3 (wide) ocupa toda la fila — las demás en pares de 2 */
+.galeria-strip .galeria-item:nth-child(3) { grid-column: span 2; aspect-ratio: 16/9; }
+
 /* ─── 8. TESTIMONIOS ─────────────────────────────────────────── */
 .testimonios {
   display:    grid;
