@@ -72,21 +72,36 @@ const storage = (() => {
     // DESARROLLO: simula guardado exitoso
     if (isLocalDev()) {
       console.log('[DEV] Guardado simulado:', endpoint, data);
+      await new Promise(r => setTimeout(r, 800)); // Simular latencia
       return { ok: true, id: Date.now() };
     }
 
-    // PRODUCCIÓN: envía al endpoint real
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
+    // PRODUCCIÓN: envía al endpoint real con TIMEOUT
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 segundos de espera
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('El servidor tardó demasiado en responder (Timeout)');
+      }
+      throw error;
     }
-
-    return await response.json();
   }
 
   // ── API PÚBLICA ───────────────────────────────────────────────
