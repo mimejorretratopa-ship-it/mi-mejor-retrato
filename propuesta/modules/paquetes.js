@@ -116,11 +116,17 @@ const paquetesModule = (() => {
       if (pendiente) pendiente.classList.remove('hidden');
       mostrarPendienteEnFormulario();
     } else {
-      // no_publicar → ocultar sección
+      // no_publicar → ocultar sección de precios pública
       if (section) section.style.display = 'none';
       if (divider) divider.style.display = 'none';
-    }
+
+      // Pero si hay paquetes definidos, igual los carga en el formulario
+      if (paquetes && paquetes.length > 0) {
+      mostrarPaquetesEnFormulario(paquetes);  // ← ESTA línea faltaba
+      } else {
+      mostrarPendienteEnFormulario();
   }
+}
 
   return { render };
 })();
