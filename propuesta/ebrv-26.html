@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Mi Mejor Retrato — Fotografía escolar en Panamá">
+<title id="page-title">Mi Mejor Retrato — Fotografía Escolar · Panamá</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="brochure.css">
+
+<!-- ══════════════════════════════════════════════════════════
+     NUEVA ARQUITECTURA - SCRIPTS MODULARES
+     ══════════════════════════════════════════════════════════
+     Orden de carga:
+     1. Config estática
+     2. Librerías base (storage, state, validators, utils)
+     3. Módulos de dominio
+     4. Inicialización de la app (al final del body)
+══════════════════════════════════════════════════════════ -->
+
+<!-- Config -->
+<script src="config/brochure-config.js"></script>
+
+<!-- Librerías base -->
+<script src="lib/storage.js"></script>
+<script src="lib/state.js"></script>
+<script src="lib/validators.js"></script>
+<script src="lib/utils.js"></script>
+
+<!-- Módulos de dominio -->
+<script src="modules/analytics.js"></script>
+<script src="modules/secciones.js"></script>
+<script src="modules/galerias.js"></script>
+<script src="modules/paquetes.js"></script>
+<script src="modules/ubicacion.js"></script>
+<script src="modules/form-renderer.js"></script>
+
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#inicio" class="nav-logo">Mi Mejor <span>Retrato</span></a>
+  <a href="#reserva" class="nav-cta">Reservar espacio</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-texture"></div>
+  <div class="hero-content">
+    <span class="hero-label" id="hero-label">Fotografía escolar · Panamá</span>
+    <h1 class="hero-h1">
+      Tu hijo no va<br>
+      a posar.<br>
+      Va a <em>brillar.</em>
+    </h1>
+    <p class="hero-sub">
+      Sesiones de 15 minutos donde los estudiantes<br>
+      se olvidan de la cámara. Las fotos son el resultado.
+    </p>
+    <div class="hero-ctas">
+      <a href="#como-funciona" class="btn-primary">Cómo funciona</a>
+      <a href="#reserva" class="btn-ghost">Reservar espacio →</a>
+    </div>
+  </div>
+  <div class="hero-quote-pill">
+    <blockquote>
+      No es una sesión de fotos. Es un momento que marca el cierre de una etapa.
+    </blockquote>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- LA DIFERENCIA -->
+<section class="section reveal" id="la-diferencia">
+  <p class="section-label">Por qué es diferente</p>
+  <h2 class="section-h2">
+    Antes de llegar,<br>
+    ya sé su <em>canción favorita.</em>
+  </h2>
+  <div class="section-body">
+    <p>
+      Antes de cada sesión envío a los papás un cuestionario corto.
+      Me cuentan qué le gusta a su hijo, si es introvertido,
+      qué lo hace reír o de qué está orgulloso.
+    </p>
+    <p>
+      Con esa información diseño los 15 minutos de sesión
+      solo para ese estudiante. No hay receta genérica.
+    </p>
+  </div>
+  <div class="uvp-callout">
+    <p>
+      Si le gusta el fútbol, llegamos hablando de
+      <strong>su equipo favorito.</strong><br>
+      Si le gusta la música, abrimos con
+      <strong>su playlist.</strong><br>
+      Si tiene memes guardados, hacemos
+      <strong>concurso de memes.</strong>
+    </p>
+  </div>
+  <div class="ejemplos-grid">
+    <div class="ejemplo-card reveal">
+      <span class="ejemplo-icon">📋</span>
+      <p class="ejemplo-text">
+        <strong>El cuestionario previo</strong> — Nuestro truco secreto.
+        Los papás nos cuentan, nosotros preparamos.
+        El estudiante llega y ya somos amigos.
+      </p>
+    </div>
+    <div class="ejemplo-card reveal">
+      <span class="ejemplo-icon">😄</span>
+      <p class="ejemplo-text">
+        <strong>Nunca decimos "sonríe".</strong> Le damos al estudiante
+        algo genuino de qué hablar y esperamos a que
+        la cara lo diga sola.
+      </p>
+    </div>
+    <div class="ejemplo-card reveal">
+      <span class="ejemplo-icon">📸</span>
+      <p class="ejemplo-text">
+        <strong>Las risas son reales.</strong> En las fotos se nota
+        la diferencia entre una sonrisa actuada
+        y una que no podía parar.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PAQUETES (data-driven) -->
+<section class="section reveal" id="paquetes">
+  <p class="section-label">Lo que incluye</p>
+  <h2 class="section-h2">Paquetes y <em>precios</em></h2>
+  <p class="section-body">Elige el que mejor se adapte a lo que quieres conservar.</p>
+
+  <div id="paquetes-loading">
+    <div class="paquete-skeleton"></div>
+    <div class="paquete-skeleton"></div>
+    <div class="paquete-skeleton"></div>
+  </div>
+
+  <div class="paquetes-grid hidden" id="paquetes-grid"></div>
+
+  <div class="paquete-pendiente hidden" id="paquetes-pendiente">
+    <div class="paquete-pendiente-icon">🕐</div>
+    <p class="paquete-pendiente-titulo">Precio pendiente por definir</p>
+    <p class="paquete-pendiente-texto">
+      Los precios para tu institución están siendo coordinados.<br>
+      Escríbenos por WhatsApp y te informamos en cuanto estén disponibles.
+    </p>
+    <a href="#reserva" class="btn-primary" style="display:inline-block;margin-top:18px;">Escríbenos →</a>
+  </div>
+</section>
+
+<hr class="divider" id="divider-paquetes">
+
+<!-- CÓMO FUNCIONA -->
+<div class="proceso-bg">
+<section class="section reveal" id="como-funciona">
+  <p class="section-label">De principio a fin</p>
+  <h2 class="section-h2">Así funciona<br>una sesión</h2>
+  <div class="proceso-steps">
+    <div class="paso reveal">
+      <div class="paso-num">01</div>
+      <div>
+        <p class="paso-label">Primero</p>
+        <h3 class="paso-titulo">Reserva tu espacio</h3>
+        <p class="paso-desc">
+          Completa el formulario al final de esta página.
+          Te contactamos por WhatsApp para coordinar el abono
+          (aceptamos Yappy o transferencia).
+        </p>
+      </div>
+    </div>
+    <div class="paso reveal">
+      <div class="paso-num">02</div>
+      <div>
+        <p class="paso-label">El día</p>
+        <h3 class="paso-titulo">15-20 minutos auténticos</h3>
+        <p class="paso-desc">
+          Tu hijo conversa, ríe, se relaja, muestra quién es.
+          El fotógrafo está ahí, disparando mientras sucede.
+          Los papás participan al final para las fotos familiares.
+        </p>
+      </div>
+    </div>
+    <div class="paso reveal">
+      <div class="paso-num">03</div>
+      <div>
+        <p class="paso-label">Después</p>
+        <h3 class="paso-titulo">Tu galería privada en el celular</h3>
+        <p class="paso-desc">
+          Te llega el link de tu galería individual por WhatsApp.
+          Tienes 2 semanas para escoger las fotos favoritas.
+          Las retocamos y entregamos listas.
+        </p>
+      </div>
+    </div>
+    <div class="paso reveal">
+      <div class="paso-num">04</div>
+      <div>
+        <p class="paso-label">Entrega final</p>
+        <h3 class="paso-titulo">Fotos impresas + galería digital</h3>
+        <p class="paso-desc">
+          Recibes tus fotos impresas dos semanas después de tu selección.
+          Tu galería digital queda disponible por 6 meses.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="divider">
+
+<!-- UBICACIÓN (data-driven) -->
+<section class="section reveal" id="ubicacion">
+  <p class="section-label">Dónde nos vemos</p>
+  <h2 class="section-h2" id="ubicacion-titulo">Dónde se hacen<br>las <em>fotos.</em></h2>
+  <div id="ubicacion-contenido"></div>
+</section>
+
+<hr class="divider" id="divider-ubicacion">
+
+<!-- PORTAFOLIO INICIO -->
+<section class="section reveal" id="portafolio-inicio">
+  <p class="section-label">El resultado en fotos</p>
+  <h2 class="section-h2">Cada foto<br>tiene una <em>historia.</em></h2>
+  <p class="section-body">Estas no son poses. Son momentos que sucedieron.</p>
+  <div class="galeria-masonry" id="galeria-inicio"></div>
+</section>
+
+<hr class="divider" id="divider-portafolio-inicio">
+
+<!-- PORTAFOLIO MEDIO -->
+<section class="section reveal" id="portafolio-medio">
+  <p class="section-label">Más momentos</p>
+  <h2 class="section-h2">Así se ve<br>una sesión <em>real.</em></h2>
+  <div class="galeria-masonry" id="galeria-medio"></div>
+</section>
+
+<hr class="divider" id="divider-portafolio-medio">
+
+<!-- TESTIMONIOS -->
+<section class="section reveal" id="testimonios-section">
+  <div class="testimonios">
+    <div class="testimonio">
+      <q>Nunca había visto a mi hijo así de natural en unas fotos escolares.</q>
+      <cite>— Mamá de sexto grado, La Chorrera</cite>
+    </div>
+    <div class="testimonio">
+      <q>¿Cómo lograste que riera tanto?</q>
+      <cite>— Lo que nos preguntan los papás al ver la galería</cite>
+    </div>
+    <div class="testimonio">
+      <q>La primera vez que veo algo así de interactivo, y que les pareció muy positivo para los estudiantes.</q>
+      <cite>— Maestra de sexto grado.</cite>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SOBRE MIKE -->
+<div class="sobre-bg">
+<section class="section reveal" id="sobre-mike">
+  <p class="section-label">Quién está detrás</p>
+  <h2 class="section-h2">
+    Soy Mike.<br>
+    Fotógrafo escolar<br>
+    en <em>Panamá.</em>
+  </h2>
+  <div class="section-body">
+    <p>
+      Empecé en la fotografía en 2011 cuando entendí que la composición visual
+      es un lenguaje universal. Sirve para la pintura, la escultura
+      y — por supuesto — la fotografía.
+    </p>
+    <p>
+      Durante casi diez años fotografié bodas. La pandemia cerró ese mundo.
+      Y ser papá me abrió otro.
+    </p>
+    <p>
+      Tengo dos hijas. Cuando entro al set con un estudiante de sexto grado,
+      entiendo lo que están sintiendo los papás afuera:
+      <strong>esta etapa no vuelve. Vale la pena congelarla bien.</strong>
+    </p>
+    <p>
+      He fotografiado niños en Oxford, Chiara Lubich, Panama Bright Academy y otros colegios de Panamá y La Chorrera.
+      Cada año mejora. Cada sesión enseña algo nuevo.
+    </p>
+  </div>
+  <div class="sobre-quote reveal">
+    <p>
+      "No es que yo sea un buen fotógrafo.
+      Es que yo me organizo, y yo necesito de usted."
+    </p>
+  </div>
+</section>
+</div>
+
+<hr class="divider">
+
+<!-- PREGUNTAS FRECUENTES -->
+<section class="section reveal" id="preguntas">
+  <p class="section-label">Preguntas frecuentes</p>
+  <h2 class="section-h2">Antes de escribir,<br>esto puede ayudarte.</h2>
+  <div class="faq-list">
+    <details class="faq-item reveal">
+      <summary>¿Y si mi hijo es muy introvertido o serio? <span class="faq-icon">+</span></summary>
+      <div class="faq-answer">
+        <p>Los introvertidos son nuestra especialidad. No los presionamos.
+        Empezamos con algo que realmente les interesa: su deporte, su música, sus planes después de graduarse.</p>
+        <p>Si nos cuentas en el cuestionario cómo es tu hijo,
+        llegamos preparados para él específicamente. Algo siempre conecta.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>¿Cuánto dura la sesión? <span class="faq-icon">+</span></summary>
+      <div class="faq-answer">
+        <p>15 a 20 minutos por niño. Hacemos fotos individuales,
+        poses formales, momentos espontáneos y fotos familiares al final.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>¿Cuándo recibo las fotos? <span class="faq-icon">+</span></summary>
+      <div class="faq-answer">
+        <p>Entre martes y miércoles de la semana siguiente te llega el link
+        de tu galería privada por WhatsApp. Tienes dos semanas para elegir.
+        Después retocamos y entregamos en alta resolución.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>¿Dónde se hacen las fotos? <span class="faq-icon">+</span></summary>
+      <div class="faq-answer">
+        <p>Las fotos se toman en el colegio o en nuestro estudio en
+        Las Arboledas de La Chorrera, según convenga mejor a los padres de familia.</p>
+      </div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>¿En qué zonas de Panamá trabajan? <span class="faq-icon">+</span></summary>
+      <div class="faq-answer">
+        <p>Cubrimos La Chorrera, Ciudad de Panamá y Panamá Oeste.
+        Para otras zonas lo evaluamos según el proyecto. Escríbenos y vemos cómo coordinamos.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<hr class="divider" id="divider-portafolio-cierre">
+
+<!-- PORTAFOLIO CIERRE -->
+<section class="section reveal" id="portafolio-cierre">
+  <p class="section-label">Una última mirada</p>
+  <h2 class="section-h2">Antes de <em>reservar.</em></h2>
+  <div class="galeria-masonry" id="galeria-cierre"></div>
+</section>
+
+<hr class="divider">
+
+<!-- MASCOTAS (inicialmente oculta, secciones.js la muestra si activo: true) -->
+<section class="section reveal" id="mascotas" style="display:none">
+  <p class="section-label">También fotografiamos</p>
+  <h2 class="section-h2">Sesiones con <em>mascotas.</em></h2>
+  <p class="section-body">¿Quieres incluir a la mascota de la familia? Podemos coordinarlo. Pregúntanos.</p>
+</section>
+
+<!-- FONDOS OPCIONALES (inicialmente oculta) -->
+<section class="section reveal" id="fondos" style="display:none">
+  <p class="section-label">Personalización</p>
+  <h2 class="section-h2">Elige tu <em>fondo.</em></h2>
+  <p class="section-body">Para esta sesión ofrecemos fondos temáticos adicionales. Selecciona al reservar.</p>
+</section>
+
+<!-- DIRECCIÓN ESTUDIO (inicialmente oculta) -->
+<section class="section reveal" id="direccion-estudio" style="display:none">
+  <p class="section-label">También puedes venir a nosotros</p>
+  <h2 class="section-h2">Nuestro <em>estudio.</em></h2>
+  <p class="section-body">Si prefieres una sesión individual en nuestro estudio, estamos en Ciudad de Panamá. Escríbenos para coordinar.</p>
+</section>
+
+<!-- FORMULARIO (data-driven) -->
+<div class="form-bg">
+<section class="section reveal" id="reserva">
+  <p class="section-label">Hablemos</p>
+  <h2 class="section-h2" id="form-titulo">¿Listo para <em>reservar?</em></h2>
+  <p class="form-intro">
+    Completa el formulario. Te escribimos por WhatsApp en menos de 2 horas
+    para coordinar el abono y confirmar tu espacio.
+  </p>
+
+  <form class="form-grid" id="form-reserva" novalidate>
+    <input type="hidden" id="idEscuela" name="idEscuela">
+    <div id="form-campos-dinamicos">
+      <div class="campo" style="opacity:.4;pointer-events:none">
+        <div style="height:14px;width:120px;background:var(--sand);border-radius:4px;margin-bottom:8px;"></div>
+        <div style="height:44px;background:var(--sand);border-radius:8px;"></div>
+      </div>
+      <div class="campo" style="opacity:.4;pointer-events:none">
+        <div style="height:14px;width:160px;background:var(--sand);border-radius:4px;margin-bottom:8px;"></div>
+        <div style="height:44px;background:var(--sand);border-radius:8px;"></div>
+      </div>
+    </div>
+
+    <!-- Selector visual de paquete (lo llena paquetesModule) -->
+    <div class="campo hidden" id="campo-paquete">
+      <label>Quiero el paquete <span class="req">*</span></label>
+      <div class="paquete-selector" id="paquete-selector">
+        <div class="paquete-skeleton-item"></div>
+        <div class="paquete-skeleton-item"></div>
+        <div class="paquete-skeleton-item"></div>
+      </div>
+      <input type="hidden" id="paquete"      name="paquete">
+      <input type="hidden" id="paqueteLabel" name="paqueteLabel">
+      <input type="hidden" id="precio"       name="precio">
+      <p class="campo-error-msg">Por favor selecciona un paquete.</p>
+    </div>
+
+    <div id="form-submit-area" class="hidden">
+      <button type="submit" class="btn-enviar" id="btn-enviar">
+        Enviar formulario
+      </button>
+      <p class="form-note">
+        Sin spam. Solo una conversación por WhatsApp<br>
+        para confirmar tu espacio.
+      </p>
+    </div>
+  </form>
+
+  <div class="msg-exito" id="msg-exito">
+    <div class="exito-icon">🎉</div>
+    <h3>¡Formulario recibido!</h3>
+    <p id="msg-exito-texto">
+      Mike te escribe en un momento por WhatsApp para coordinar.<br>
+      Si prefieres escribirle directo:<br>
+      <a href="https://wa.me/50767438951" target="_blank">+507 6979-3961</a>
+    </p>
+  </div>
+
+  <div class="msg-error-form" id="msg-error-form">
+    <p>
+      Algo no funcionó. Escríbele directo a Mike:
+      <a href="https://wa.me/50767438951" target="_blank" style="font-weight:500;">+507 6979-3961</a>
+    </p>
+  </div>
+</section>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-logo">Mi Mejor <span>Retrato</span></p>
+    <p class="footer-sub" id="footer-sub">Fotografía escolar · Mike Morelos · La Chorrera, Panamá</p>
+    <div class="footer-links">
+      <a href="https://instagram.com/mimejorretrato" target="_blank">Instagram</a>
+      <a href="https://wa.me/50767438951" target="_blank">WhatsApp</a>
+    </div>
+    <p class="footer-tagline">"Nunca te pediré que sonrías para la foto."</p>
+    <p class="footer-copy">© 2026 Mi Mejor Retrato · Todos los derechos reservados</p>
+  </div>
+</footer>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://wa.me/50767438951" class="whatsapp-fab" target="_blank" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- ══════════════════════════════════════════════════════════
+     ORQUESTACIÓN DE LA APP
+     ══════════════════════════════════════════════════════════
+     Orden de ejecución (según plan):
+     1. initBrochure()          → state.brochure + state.schools
+     2. loadAppData()           → state.form + state.pricing + state.sections
+     3. seccionesModule.init()  → oculta/muestra secciones
+     4. (paralelo) galerías + paquetes + ubicación + form
+     5. initReveal()
+     6. initAnalytics()
+══════════════════════════════════════════════════════════ -->
+<script>
+(async function initApp() {
+
+  // ── 1. CONFIGURAR BROCHURE ──────────────────────────────────
+
+  /**
+   * Extrae la configuración del brochure desde el nombre del archivo HTML.
+   * ej: ebrv-26.html → { code: 'ebrv', year: 26, id: 'ebrv-26' }
+   */
+  function extractBrochureConfig() {
+    const filename = window.location.pathname.split('/').pop();
+    const match = filename.match(/([a-z]{4})-(\d{2})\.html/i);
+
+    if (!match) {
+      console.error('[APP] Formato de archivo HTML inválido:', filename);
+      return null;
+    }
+
+    const code = match[1].toLowerCase();
+    const year = parseInt(match[2], 10);
+    const id   = `${code}-${year}`;
+
+    return { code, year, id };
+  }
+
+  async function initBrochure() {
+    const brochureConfig = extractBrochureConfig();
+    if (!brochureConfig) {
+      alert('Error: Configuración del brochure inválida');
+      return false;
+    }
+
+    const schools = await storage.loadJSON('escuelas.json');
+    const school  = schools.schools.find(s =>
+      s.code.toLowerCase() === brochureConfig.code
+    );
+
+    if (!school) {
+      console.error(`[APP] Escuela no encontrada: ${brochureConfig.code}`);
+      return false;
+    }
+
+    state.set('brochure', { ...brochureConfig, schoolName: school.name });
+    state.set('schools', schools);
+
+    const name = school.name;
+    const yr   = `20${String(brochureConfig.year).padStart(2, '0')}`;
+
+    document.getElementById('page-title').textContent =
+      `Mi Mejor Retrato — ${name} ${yr}`;
+    document.getElementById('hero-label').textContent =
+      `Fotografía escolar · ${name} · ${yr}`;
+
+    const footerSub = document.getElementById('footer-sub');
+    if (footerSub) footerSub.textContent =
+      `Fotografía escolar · ${name} ${yr} · Mike Morelos · Panamá`;
+
+    const formTitulo = document.getElementById('form-titulo');
+    if (formTitulo) formTitulo.innerHTML = `Reserva tu espacio<br><em>${name}</em>`;
+
+    const idEscuela = document.getElementById('idEscuela');
+    if (idEscuela) idEscuela.value = brochureConfig.id;
+
+    console.log('[APP] Brochure configurado:', state.get('brochure'));
+    return true;
+  }
+
+  // ── 2. CARGAR DATOS ──────────────────────────────────────────
+
+  async function loadAppData() {
+    const brochure = state.get('brochure');
+
+    try {
+      const [formDef, pricing, sections] = await Promise.all([
+        storage.loadJSON('formulario.json'),
+        storage.loadJSON('precios.json'),
+        storage.loadJSON(`${brochure.code}_secciones.json`)
+      ]);
+
+      state.set('form',    formDef);
+      state.set('pricing', pricing);
+      state.set('sections', sections);
+
+      console.log('[APP] Datos cargados.');
+      return true;
+    } catch (error) {
+      console.error('[APP] Error cargando datos:', error);
+      alert('Error al cargar la configuración. Por favor recarga la página.');
+      return false;
+    }
+  }
+
+  // ── 4. INICIALIZAR UI EFFECTS ────────────────────────────────
+
+  function initReveal() {
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: config.ui.revealThreshold }
+    );
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
+
+  // ── 5. INICIALIZAR ANALYTICS ─────────────────────────────────
+
+  async function initAnalytics() {
+    try {
+      const registro = await storage.loadJSON('registro.json');
+      const brochure = state.get('brochure');
+
+      const entry = registro.brochures.find(b => b.id === brochure.id);
+      const gaId  = entry ? entry.ga_id : null;
+
+      if (gaId) {
+        analyticsModule.init(gaId);
+        state.set('brochure', { gaId });
+      }
+    } catch (error) {
+      console.warn('[APP] No se pudo cargar analytics:', error);
+    }
+  }
+
+  // ── FLUJO PRINCIPAL ──────────────────────────────────────────
+
+  console.log('[APP] Iniciando aplicación...');
+
+  // 1. Configurar brochure (necesita escuelas.json)
+  const brochureOk = await initBrochure();
+  if (!brochureOk) return;
+
+  // 2. Cargar datos (form, precios, secciones)
+  const dataOk = await loadAppData();
+  if (!dataOk) return;
+
+  // 3. Aplicar visibilidad de secciones (necesita state.sections)
+  seccionesModule.init();
+
+  // 4. Renderizar módulos dinámicos en paralelo
+  await Promise.all([
+    galeriasModule.init(),     // lee state.sections.portafolio_*
+    paquetesModule.render(),   // independiente de secciones
+    ubicacionModule.render(),  // independiente de secciones
+    formModule.init()          // lee state.sections.salones
+  ]);
+
+  // 5. UI effects (después de que el DOM esté poblado)
+  initReveal();
+
+  // 6. Analytics
+  await initAnalytics();
+
+  console.log('[APP] Aplicación inicializada exitosamente.');
+
+  // Debug en desarrollo
+  if (config.isDev) {
+    window.appState   = state;
+    window.appStorage = storage;
+    console.log('[DEV] state y storage disponibles en window');
+  }
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "timestamp": "2026-04-29T14:32:00.000Z",
+    "propuesta": "clia-26",
+    "schoolName": "Chiara Lubich International Academy",
+    "whatsapp_limpio": "50760138765",
+    "student_id": "50760138765_scarla-kalentis_kinder"
+  },
+  "idEscuela": "clia-26",
+  "nombre": "Barquiteño Scaldis",
+  "nombreEstudiante": "Scarla Kalentis",
+  "relacion": "papa",
+  "salon": "kinder",
+  "email": "",
+  "codigoPais": "+507",
+  "celular": "60138765",
+  "celularOtro": "",
+  "paquete": "paquete_2",
+  "paqueteLabel": "Paquete 2",
+  "precio": "200"
+}

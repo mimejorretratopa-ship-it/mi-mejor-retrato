@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MMR · Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg:      #0e0e0e;
+    --surface: #161616;
+    --card:    #1c1c1c;
+    --border:  #2a2a2a;
+    --border2: #333;
+    --text:    #e8e8e8;
+    --muted:   #666;
+    --accent:  #f07030;
+    --green:   #3ecf8e;
+    --yellow:  #f5c842;
+    --red:     #e05252;
+    --blue:    #60a5fa;
+    --mono:    'IBM Plex Mono', monospace;
+    --sans:    'IBM Plex Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── UNSAVED BANNER ── */
+  #unsaved-banner {
+    display: none;
+    background: rgba(245,200,66,.12);
+    border-bottom: 1px solid rgba(245,200,66,.3);
+    padding: 8px 28px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--yellow);
+    letter-spacing: .06em;
+    text-align: center;
+  }
+  #unsaved-banner.visible { display: block; }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 20;
+    gap: 24px;
+  }
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    color: var(--accent);
+    padding: 18px 0;
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--muted); font-weight: 400; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 0 22px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── HEADER ACTIONS ── */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+  }
+  .btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .05em;
+    padding: 7px 14px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .btn:hover { opacity: .82; transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-accent   { background: var(--accent); color: #fff; }
+  .btn-surface  { background: var(--surface); color: var(--text); border: 1px solid var(--border2); }
+  .btn-green    { background: var(--green); color: #0e0e0e; }
+  .btn-muted    { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+
+  /* ── MAIN ── */
+  main { padding: 28px; }
+
+  /* ── EMPTY STATE ── */
+  #empty-state {
+    text-align: center;
+    padding: 80px 0;
+  }
+  .empty-icon { font-size: 40px; margin-bottom: 16px; }
+  .empty-title {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .empty-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-input {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    padding: 7px 12px;
+    outline: none;
+    transition: border-color .15s;
+    min-width: 180px;
+  }
+  .filter-input:focus { border-color: var(--border2); }
+  .filter-input::placeholder { color: var(--muted); }
+  .filter-select {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    padding: 7px 28px 7px 12px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    cursor: pointer;
+  }
+  .filter-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── SUMMARY CHIPS (finanzas) ── */
+  .summary-chips {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .chip strong { font-size: 14px; font-weight: 600; }
+  .chip.green { border-color: rgba(62,207,142,.3); background: rgba(62,207,142,.06); }
+  .chip.green strong { color: var(--green); }
+  .chip.yellow { border-color: rgba(245,200,66,.3); background: rgba(245,200,66,.06); }
+  .chip.yellow strong { color: var(--yellow); }
+  .chip.red { border-color: rgba(224,82,82,.3); background: rgba(224,82,82,.06); }
+  .chip.red strong { color: var(--red); }
+  .chip.accent { border-color: rgba(240,112,48,.3); background: rgba(240,112,48,.06); }
+  .chip.accent strong { color: var(--accent); }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  thead th {
+    background: var(--surface);
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+  }
+  thead th:hover { color: var(--text); }
+  thead th.sorted { color: var(--accent); }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,.025); }
+  td {
+    padding: 10px 14px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  td.muted { color: var(--muted); }
+  td.mono  { font-family: var(--mono); }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .badge-pendiente { background: rgba(102,102,102,.2); color: var(--muted); border: 1px solid var(--border2); }
+  .badge-parcial   { background: rgba(245,200,66,.15); color: var(--yellow); border: 1px solid rgba(245,200,66,.3); }
+  .badge-pagado    { background: rgba(62,207,142,.12); color: var(--green); border: 1px solid rgba(62,207,142,.28); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { display: flex; align-items: center; gap: 8px; }
+  .progress {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width .3s ease;
+  }
+  .fill-green  { background: var(--green); }
+  .fill-yellow { background: var(--yellow); }
+  .fill-red    { background: var(--muted); }
+
+  /* ── TOGGLE STATES (CRM) ── */
+  .toggle-cell { display: flex; gap: 4px; align-items: center; }
+  .state-btn {
+    width: 26px; height: 26px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, border-color .15s, color .15s;
+    flex-shrink: 0;
+  }
+  .state-btn:hover { border-color: var(--border2); color: var(--text); }
+  .state-btn.on {
+    background: rgba(62,207,142,.15);
+    border-color: rgba(62,207,142,.4);
+    color: var(--green);
+  }
+
+  /* ── ACTION BUTTONS IN TABLE ── */
+  .row-action {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  .row-action:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 28px;
+    width: 420px;
+    max-width: 95vw;
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .modal-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .modal-sub {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .modal-field { margin-bottom: 16px; }
+  .modal-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .modal-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    justify-content: flex-end;
+  }
+
+  /* ── PAGOS LIST ── */
+  .pagos-list {
+    margin-bottom: 20px;
+    display: grid;
+    gap: 6px;
+  }
+  .pago-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .pago-monto { color: var(--green); font-weight: 600; min-width: 60px; }
+  .pago-fecha { color: var(--muted); }
+  .pago-nota  { color: var(--text); flex: 1; }
+  .pago-del {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 0 4px;
+    transition: color .15s;
+  }
+  .pago-del:hover { color: var(--red); }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .22s, transform .22s;
+    pointer-events: none;
+    z-index: 200;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.ok   { border-color: var(--green); color: var(--green); }
+  #toast.warn { border-color: var(--yellow); color: var(--yellow); }
+  #toast.err  { border-color: var(--red); color: var(--red); }
+
+  input[type="file"] { display: none; }
+</style>
+</head>
+<body>
+
+<!-- UNSAVED BANNER -->
+<div id="unsaved-banner">⚠ Hay cambios sin guardar — recuerda exportar antes de cerrar</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">MMR<span> / dashboard</span></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('finanzas')" id="tab-finanzas">Finanzas</button>
+    <button class="tab" onclick="switchTab('crm')" id="tab-crm">Entregables</button>
+  </div>
+
+  <div class="header-actions">
+    <button class="btn btn-muted" onclick="document.getElementById('importFile').click()">↑ Importar</button>
+    <input type="file" id="importFile" accept=".json" onchange="importarDatos(this)">
+    <button class="btn btn-surface" onclick="exportarDatos()">↓ Exportar</button>
+    <button class="btn btn-green" onclick="guardarDatos()" id="btn-guardar">Guardar</button>
+  </div>
+</header>
+
+<!-- EMPTY STATE -->
+<main>
+<div id="empty-state">
+  <div class="empty-icon">📋</div>
+  <div class="empty-title">Sin datos cargados</div>
+  <div class="empty-sub">Importa un archivo estudiantes.json para comenzar</div>
+  <button class="btn btn-accent" onclick="document.getElementById('importFile').click()">↑ Cargar estudiantes.json</button>
+</div>
+
+<!-- ══ FINANZAS ══════════════════════════════════════════════ -->
+<div id="panel-finanzas" style="display:none">
+
+  <div class="summary-chips" id="chips-finanzas"></div>
+
+  <div class="filter-bar">
+    <input class="filter-input" id="fin-search" placeholder="Buscar acudiente o estudiante..." oninput="renderFinanzas()">
+    <select class="filter-select" id="fin-escuela" onchange="renderFinanzas()">
+      <option value="">Todas las escuelas</option>
+    </select>
+    <select class="filter-select" id="fin-estado" onchange="renderFinanzas()">
+      <option value="">Todos los estados</option>
+      <option value="pendiente">Pendiente</option>
+      <option value="parcial">Parcial</option>
+      <option value="pagado">Pagado</option>
+    </select>
+    <span class="filter-count" id="fin-count"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Acudiente</th>
+          <th>Estudiante</th>
+          <th>Escuela · Salón</th>
+          <th>Paquete</th>
+          <th>Total</th>
+          <th>Pagado</th>
+          <th>Saldo</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody-finanzas"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ CRM ENTREGABLES ══════════════════════════════════════ -->
+<div id="panel-crm" style="display:none">
+
+  <div class="filter-bar">
+    <input class="filter-input" id="crm-search" placeholder="Buscar estudiante..." oninput="renderCRM()">
+    <select class="filter-select" id="crm-escuela" onchange="renderCRM()">
+      <option value="">Todas las escuelas</option>
+    </select>
+    <select class="filter-select" id="crm-salon" onchange="renderCRM()">
+      <option value="">Todos los salones</option>
+    </select>
+    <span class="filter-count" id="crm-count"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Estudiante</th>
+          <th>Escuela · Salón</th>
+          <th title="Filtrado">Filt</th>
+          <th title="Retocado">Ret</th>
+          <th title="Preparado">Prep</th>
+          <th title="Impreso">Imp</th>
+          <th title="Online en galería">Online</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody id="tbody-crm"></tbody>
+    </table>
+  </div>
+</div>
+</main>
+
+<!-- ══ MODAL PAGOS ══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-pagos">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Registrar pago</div>
+    <div class="modal-sub" id="modal-sub"></div>
+
+    <div class="section-label">Pagos registrados</div>
+    <div class="pagos-list" id="pagos-list"></div>
+
+    <div class="section-label">Nuevo pago</div>
+
+    <div class="modal-field">
+      <label class="modal-label">Monto ($)</label>
+      <input class="modal-input" id="pago-monto" type="number" min="0" step="0.01" placeholder="0.00">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Fecha</label>
+      <input class="modal-input" id="pago-fecha" type="date">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Nota (ej: screenshot Nequi #1234)</label>
+      <input class="modal-input" id="pago-nota" type="text" placeholder="Confirmación Nequi · captura recibida">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-muted" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-green" onclick="agregarPago()">Agregar pago</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL NOTAS CRM ══════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-notas">
+  <div class="modal">
+    <div class="modal-title" id="modal-notas-title">Notas</div>
+    <div class="modal-field" style="margin-top:16px">
+      <textarea class="modal-input" id="notas-text" rows="5"
+        style="resize:vertical; min-height:100px"
+        placeholder="Anotaciones sobre retoque, entrega especial, instrucciones..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-muted" onclick="cerrarModalNotas()">Cancelar</button>
+      <button class="btn btn-accent" onclick="guardarNota()">Guardar nota</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════════
+let estudiantes  = [];  // datos base de estudiantes.json
+let estadoFinanz = {};  // { student_id: { pagos: [{monto,fecha,nota}] } }
+let estadoCRM    = {};  // { student_id: { filtrado,retocado,preparado,impreso,online, notas } }
+let hayPendiente = false;
+let tabActual    = 'finanzas';
+let modalStudentId = null;
+
+const ESTADOS_CRM = ['filtrado','retocado','preparado','impreso','online'];
+const ICONOS_CRM  = { filtrado:'🔍', retocado:'✏️', preparado:'📦', impreso:'🖨️', online:'🌐' };
+
+// ═══════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════
+function switchTab(tab) {
+  tabActual = tab;
+  document.getElementById('tab-finanzas').classList.toggle('active', tab === 'finanzas');
+  document.getElementById('tab-crm').classList.toggle('active', tab === 'crm');
+  document.getElementById('panel-finanzas').style.display = tab === 'finanzas' ? 'block' : 'none';
+  document.getElementById('panel-crm').style.display      = tab === 'crm'      ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// IMPORTAR / EXPORTAR / GUARDAR
+// ═══════════════════════════════════════════════════════════
+function importarDatos(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      // Detectar si es estudiantes.json o un export del dashboard
+      if (Array.isArray(data)) {
+        // es estudiantes.json — MERGE: agrega nuevos, conserva existentes con sus pagos y estados
+        const idsExistentes = new Set(estudiantes.map(e => e.student_id));
+        const nuevos    = data.filter(e => !idsExistentes.has(e.student_id));
+        const ignorados = data.length - nuevos.length;
+        estudiantes = [...estudiantes, ...nuevos];
+        const msg = nuevos.length === 0
+          ? `Sin cambios — ${ignorados} ya existían`
+          : ignorados > 0
+            ? `${nuevos.length} agregados · ${ignorados} ya existían (sin cambios)`
+            : `${nuevos.length} estudiantes agregados`;
+        toast(msg, nuevos.length > 0 ? 'ok' : 'warn');
+        log(`Merge: +${nuevos.length} nuevos, ${ignorados} ignorados`);
+      } else if (data._dashboard) {
+        // es un export del dashboard
+        estudiantes  = data.estudiantes  || estudiantes;
+        estadoFinanz = data.estadoFinanz  || {};
+        estadoCRM    = data.estadoCRM     || {};
+        toast('Dashboard restaurado', 'ok');
+        log('Export del dashboard importado');
+      } else {
+        toast('Formato no reconocido', 'err');
+        return;
+      }
+
+      // Inicializar estados vacíos para estudiantes nuevos
+      estudiantes.forEach(e => {
+        const id = e.student_id;
+        if (!estadoFinanz[id]) estadoFinanz[id] = { pagos: [] };
+        if (!estadoCRM[id])    estadoCRM[id]    = { filtrado:false, retocado:false, preparado:false, impreso:false, online:false, notas:'' };
+      });
+
+      poblarFiltros();
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('panel-finanzas').style.display = tabActual === 'finanzas' ? 'block' : 'none';
+      document.getElementById('panel-crm').style.display      = tabActual === 'crm'      ? 'block' : 'none';
+      renderFinanzas();
+      renderCRM();
+      marcarPendiente(false);
+    } catch(err) {
+      toast('Error al leer el archivo', 'err');
+      console.error(err);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function guardarDatos() {
+  try {
+    localStorage.setItem('mmr_estudiantes',  JSON.stringify(estudiantes));
+    localStorage.setItem('mmr_finanzas',     JSON.stringify(estadoFinanz));
+    localStorage.setItem('mmr_crm',          JSON.stringify(estadoCRM));
+    marcarPendiente(false);
+    toast('Guardado en localStorage ✓', 'ok');
+  } catch(e) {
+    toast('Error al guardar', 'err');
+  }
+}
+
+function exportarDatos() {
+  const payload = {
+    _dashboard: true,
+    _exportado: new Date().toISOString(),
+    estudiantes,
+    estadoFinanz,
+    estadoCRM,
+  };
+  const fecha = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  descargar(JSON.stringify(payload, null, 2), `mmr_dashboard_${fecha}.json`, 'application/json');
+  toast('Exportado ✓', 'ok');
+}
+
+function cargarDesdeStorage() {
+  try {
+    const e  = localStorage.getItem('mmr_estudiantes');
+    const f  = localStorage.getItem('mmr_finanzas');
+    const c  = localStorage.getItem('mmr_crm');
+    if (e) {
+      estudiantes  = JSON.parse(e);
+      estadoFinanz = f ? JSON.parse(f) : {};
+      estadoCRM    = c ? JSON.parse(c) : {};
+      // Inicializar estados para posibles nuevos estudiantes
+      estudiantes.forEach(est => {
+        const id = est.student_id;
+        if (!estadoFinanz[id]) estadoFinanz[id] = { pagos: [] };
+        if (!estadoCRM[id])    estadoCRM[id]    = { filtrado:false, retocado:false, preparado:false, impreso:false, online:false, notas:'' };
+      });
+      poblarFiltros();
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('panel-finanzas').style.display = 'block';
+      renderFinanzas();
+      renderCRM();
+      toast(`${estudiantes.length} estudiantes desde localStorage`, 'ok');
+    }
+  } catch(e) { console.warn('No hay datos en localStorage'); }
+}
+
+function marcarPendiente(val) {
+  hayPendiente = val;
+  document.getElementById('unsaved-banner').classList.toggle('visible', val);
+  document.getElementById('btn-guardar').style.background = val ? 'var(--yellow)' : 'var(--green)';
+  document.getElementById('btn-guardar').style.color = val ? '#0e0e0e' : '#0e0e0e';
+}
+
+// ═══════════════════════════════════════════════════════════
+// FILTROS
+// ═══════════════════════════════════════════════════════════
+function poblarFiltros() {
+  const escuelas = [...new Set(estudiantes.map(e => e.estudiante.escuela_code))].sort();
+  const salones  = [...new Set(estudiantes.map(e => e.estudiante.salon))].sort();
+
+  ['fin-escuela','crm-escuela'].forEach(id => {
+    const sel = document.getElementById(id);
+    const val = sel.value;
+    sel.innerHTML = '<option value="">Todas las escuelas</option>' +
+      escuelas.map(e => `<option value="${e}">${e.toUpperCase()}</option>`).join('');
+    sel.value = val;
+  });
+
+  const crmSalon = document.getElementById('crm-salon');
+  const val = crmSalon.value;
+  crmSalon.innerHTML = '<option value="">Todos los salones</option>' +
+    salones.map(s => `<option value="${s}">${s}</option>`).join('');
+  crmSalon.value = val;
+}
+
+function filtrarEstudiantes(searchId, escuelaId, salonId) {
+  const q  = (document.getElementById(searchId)?.value || '').toLowerCase();
+  const es = document.getElementById(escuelaId)?.value || '';
+  const sa = salonId ? (document.getElementById(salonId)?.value || '') : '';
+  return estudiantes.filter(e => {
+    const matchQ  = !q  || e.acudiente.nombre.toLowerCase().includes(q)
+                        || e.estudiante.nombre.toLowerCase().includes(q);
+    const matchEs = !es || e.estudiante.escuela_code === es;
+    const matchSa = !sa || e.estudiante.salon === sa;
+    return matchQ && matchEs && matchSa;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// FINANZAS
+// ═══════════════════════════════════════════════════════════
+function calcPago(id) {
+  const pagos  = estadoFinanz[id]?.pagos || [];
+  const pagado = pagos.reduce((s, p) => s + (parseFloat(p.monto)||0), 0);
+  return pagado;
+}
+
+function estadoPago(pagado, total) {
+  if (pagado <= 0)       return 'pendiente';
+  if (pagado < total)    return 'parcial';
+  return 'pagado';
+}
+
+function renderFinanzas() {
+  const filtrados = filtrarEstudiantes('fin-search','fin-escuela', null)
+    .filter(e => {
+      const est = document.getElementById('fin-estado').value;
+      if (!est) return true;
+      const pagado = calcPago(e.student_id);
+      const total  = parseFloat(e.reserva.precio) || 0;
+      return estadoPago(pagado, total) === est;
+    });
+
+  document.getElementById('fin-count').textContent = `${filtrados.length} / ${estudiantes.length}`;
+
+  // Chips resumen
+  const totalGeneral  = estudiantes.reduce((s,e) => s + (parseFloat(e.reserva.precio)||0), 0);
+  const pagadoGeneral = estudiantes.reduce((s,e) => s + calcPago(e.student_id), 0);
+  const saldoGeneral  = totalGeneral - pagadoGeneral;
+  const countPagados  = estudiantes.filter(e => {
+    const p = calcPago(e.student_id);
+    const t = parseFloat(e.reserva.precio)||0;
+    return estadoPago(p,t) === 'pagado';
+  }).length;
+
+  document.getElementById('chips-finanzas').innerHTML = `
+    <div class="chip accent"><strong>$${fmt(totalGeneral)}</strong> total facturado</div>
+    <div class="chip green"><strong>$${fmt(pagadoGeneral)}</strong> cobrado</div>
+    <div class="chip red"><strong>$${fmt(saldoGeneral)}</strong> por cobrar</div>
+    <div class="chip yellow"><strong>${countPagados}/${estudiantes.length}</strong> pagados completo</div>
+  `;
+
+  const tbody = document.getElementById('tbody-finanzas');
+  tbody.innerHTML = '';
+
+  if (!filtrados.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted);font-family:var(--mono);font-size:12px">Sin resultados</td></tr>`;
+    return;
+  }
+
+  filtrados.forEach(e => {
+    const id     = e.student_id;
+    const total  = parseFloat(e.reserva.precio) || 0;
+    const pagado = calcPago(id);
+    const saldo  = total - pagado;
+    const estado = estadoPago(pagado, total);
+    const pct    = total > 0 ? Math.min(100, Math.round(pagado / total * 100)) : 0;
+    const fillClass = estado === 'pagado' ? 'fill-green' : estado === 'parcial' ? 'fill-yellow' : 'fill-red';
+    const badgeClass = `badge-${estado}`;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${esc(e.acudiente.nombre)}<br><span style="color:var(--muted);font-size:10px">${esc(e.acudiente.relacion)}</span></td>
+      <td>${esc(e.estudiante.nombre)}</td>
+      <td class="muted">${esc(e.estudiante.escuela_code.toUpperCase())} · ${esc(e.estudiante.salon)}</td>
+      <td class="muted" style="max-width:140px;overflow:hidden;text-overflow:ellipsis">${esc(e.reserva.paquete)}</td>
+      <td>$${fmt(total)}</td>
+      <td style="color:var(--green)">$${fmt(pagado)}</td>
+      <td style="color:${saldo>0?'var(--yellow)':'var(--muted)'}">$${fmt(saldo)}</td>
+      <td>
+        <span class="badge ${badgeClass}">${estado}</span>
+        <div class="progress-wrap" style="margin-top:4px">
+          <div class="progress"><div class="progress-fill ${fillClass}" style="width:${pct}%"></div></div>
+          <span style="font-size:10px;color:var(--muted)">${pct}%</span>
+        </div>
+      </td>
+      <td><button class="row-action" onclick="abrirModalPagos('${id}')">+ Pago</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL PAGOS
+// ═══════════════════════════════════════════════════════════
+function abrirModalPagos(studentId) {
+  modalStudentId = studentId;
+  const e = estudiantes.find(x => x.student_id === studentId);
+  if (!e) return;
+
+  document.getElementById('modal-title').textContent = `Pagos — ${e.estudiante.nombre}`;
+  document.getElementById('modal-sub').textContent   = `${e.acudiente.nombre} · $${fmt(parseFloat(e.reserva.precio)||0)} total`;
+
+  // Hoy como fecha default
+  document.getElementById('pago-fecha').value = new Date().toISOString().slice(0,10);
+  document.getElementById('pago-monto').value = '';
+  document.getElementById('pago-nota').value  = '';
+
+  renderPagosList(studentId);
+  document.getElementById('modal-pagos').classList.add('open');
+}
+
+function renderPagosList(studentId) {
+  const pagos = estadoFinanz[studentId]?.pagos || [];
+  const lista = document.getElementById('pagos-list');
+
+  if (!pagos.length) {
+    lista.innerHTML = `<div style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 0">Sin pagos registrados</div>`;
+    return;
+  }
+
+  lista.innerHTML = pagos.map((p,i) => `
+    <div class="pago-item">
+      <span class="pago-monto">$${fmt(p.monto)}</span>
+      <span class="pago-fecha">${p.fecha}</span>
+      <span class="pago-nota">${esc(p.nota||'')}</span>
+      <button class="pago-del" onclick="eliminarPago('${studentId}',${i})" title="Eliminar pago">×</button>
+    </div>
+  `).join('');
+}
+
+function agregarPago() {
+  const monto = parseFloat(document.getElementById('pago-monto').value);
+  const fecha = document.getElementById('pago-fecha').value;
+  const nota  = document.getElementById('pago-nota').value.trim();
+
+  if (!monto || monto <= 0) { toast('Ingresa un monto válido', 'warn'); return; }
+  if (!fecha)               { toast('Selecciona una fecha', 'warn'); return; }
+
+  if (!estadoFinanz[modalStudentId]) estadoFinanz[modalStudentId] = { pagos: [] };
+  estadoFinanz[modalStudentId].pagos.push({ monto, fecha, nota });
+
+  renderPagosList(modalStudentId);
+  renderFinanzas();
+  marcarPendiente(true);
+  toast(`$${fmt(monto)} registrado ✓`, 'ok');
+
+  document.getElementById('pago-monto').value = '';
+  document.getElementById('pago-nota').value  = '';
+}
+
+function eliminarPago(studentId, idx) {
+  estadoFinanz[studentId].pagos.splice(idx, 1);
+  renderPagosList(studentId);
+  renderFinanzas();
+  marcarPendiente(true);
+  toast('Pago eliminado', 'warn');
+}
+
+function cerrarModal() {
+  document.getElementById('modal-pagos').classList.remove('open');
+  modalStudentId = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CRM ENTREGABLES
+// ═══════════════════════════════════════════════════════════
+function renderCRM() {
+  const filtrados = filtrarEstudiantes('crm-search','crm-escuela','crm-salon');
+  document.getElementById('crm-count').textContent = `${filtrados.length} / ${estudiantes.length}`;
+
+  const tbody = document.getElementById('tbody-crm');
+  tbody.innerHTML = '';
+
+  if (!filtrados.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted);font-family:var(--mono);font-size:12px">Sin resultados</td></tr>`;
+    return;
+  }
+
+  filtrados.forEach(e => {
+    const id  = e.student_id;
+    const crm = estadoCRM[id] || {};
+    const notaPreview = crm.notas ? crm.notas.slice(0,30) + (crm.notas.length > 30 ? '…' : '') : '';
+
+    const toggles = ESTADOS_CRM.map(s => `
+      <button class="state-btn ${crm[s]?'on':''}"
+        onclick="toggleEstado('${id}','${s}',this)"
+        title="${s}">
+        ${ICONOS_CRM[s]}
+      </button>
+    `).join('');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        ${esc(e.estudiante.nombre)}
+        <br><span style="color:var(--muted);font-size:10px">${esc(e.acudiente.nombre)}</span>
+      </td>
+      <td class="muted">${esc(e.estudiante.escuela_code.toUpperCase())} · ${esc(e.estudiante.salon)}</td>
+      ${ESTADOS_CRM.map(s => `
+        <td>
+          <button class="state-btn ${crm[s]?'on':''}"
+            onclick="toggleEstado('${id}','${s}',this)"
+            title="${s}">
+            ${ICONOS_CRM[s]}
+          </button>
+        </td>
+      `).join('')}
+      <td>
+        <button class="row-action" onclick="abrirModalNotas('${id}')" title="${esc(crm.notas||'')}">
+          ${notaPreview || '+ nota'}
+        </button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function toggleEstado(studentId, estado, btn) {
+  if (!estadoCRM[studentId]) estadoCRM[studentId] = {};
+  estadoCRM[studentId][estado] = !estadoCRM[studentId][estado];
+  btn.classList.toggle('on', estadoCRM[studentId][estado]);
+  marcarPendiente(true);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL NOTAS CRM
+// ═══════════════════════════════════════════════════════════
+function abrirModalNotas(studentId) {
+  modalStudentId = studentId;
+  const e = estudiantes.find(x => x.student_id === studentId);
+  document.getElementById('modal-notas-title').textContent = `Notas — ${e?.estudiante.nombre || ''}`;
+  document.getElementById('notas-text').value = estadoCRM[studentId]?.notas || '';
+  document.getElementById('modal-notas').classList.add('open');
+}
+
+function guardarNota() {
+  if (!estadoCRM[modalStudentId]) estadoCRM[modalStudentId] = {};
+  estadoCRM[modalStudentId].notas = document.getElementById('notas-text').value.trim();
+  cerrarModalNotas();
+  renderCRM();
+  marcarPendiente(true);
+  toast('Nota guardada ✓', 'ok');
+}
+
+function cerrarModalNotas() {
+  document.getElementById('modal-notas').classList.remove('open');
+  modalStudentId = null;
+}
+
+// Cerrar modales al hacer clic en overlay
+document.getElementById('modal-pagos').addEventListener('click', e => {
+  if (e.target === e.currentTarget) cerrarModal();
+});
+document.getElementById('modal-notas').addEventListener('click', e => {
+  if (e.target === e.currentTarget) cerrarModalNotas();
+});
+
+// Cerrar con Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { cerrarModal(); cerrarModalNotas(); }
+});
+
+// ═══════════════════════════════════════════════════════════
+// UTILIDADES
+// ═══════════════════════════════════════════════════════════
+function fmt(n) { return Number(n||0).toFixed(2); }
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function descargar(contenido, nombre, tipo) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([contenido],{type:tipo}));
+  a.download = nombre; a.click();
+}
+function log(msg) { console.log(`[MMR Dashboard] ${msg}`); }
+
+let toastTimer;
+function toast(msg, tipo='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${tipo}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', 2800);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('beforeunload', e => {
+  if (hayPendiente) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+cargarDesdeStorage();
+</script>
+</body>
+</html>

@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MMR · JSON → CSV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0a0a0a;
+  --surface:   #111111;
+  --border:    #222222;
+  --border2:   #2a2a2a;
+  --text:      #e0e0e0;
+  --muted:     #555555;
+  --accent:    #f07030;
+  --accent2:   #f0a030;
+  --green:     #30c060;
+  --red:       #e03030;
+  --yellow:    #e0b030;
+  --mono:      'IBM Plex Mono', monospace;
+  --sans:      'IBM Plex Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+.app {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.header-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: .06em;
+}
+
+.header-sep { color: var(--border2); }
+
+.status-pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+main {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  overflow: hidden;
+}
+
+/* ── PANEL IZQUIERDO ─────────────────────────────────────── */
+.panel-left {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.panel-section {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 20px;
+}
+
+.panel-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* Drop zone */
+.dropzone {
+  border: 1px dashed var(--border2);
+  border-radius: 4px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  position: relative;
+}
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--accent);
+  background: rgba(240,112,48,.04);
+}
+.dropzone input {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer; width: 100%;
+}
+.dropzone-icon {
+  font-size: 24px; margin-bottom: 8px;
+  opacity: .4;
+}
+.dropzone-text {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.dropzone-text strong { color: var(--accent); }
+
+/* File list */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+.file-item .file-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+.file-item .file-dot.err { background: var(--red); }
+.file-item .file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+.file-item .file-remove {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color .1s;
+}
+.file-item .file-remove:hover { color: var(--red); }
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.stat-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 10px 12px;
+}
+.stat-val {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-val.accent { color: var(--accent); }
+.stat-val.yellow { color: var(--yellow); }
+.stat-val.red    { color: var(--red); }
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Acciones */
+.btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 14px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+  background: transparent;
+  color: var(--muted);
+}
+.btn:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+.btn-accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.btn-accent:hover:not(:disabled) {
+  background: #d95e20;
+  border-color: #d95e20;
+}
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn + .btn { margin-top: 6px; }
+
+/* ── PANEL DERECHO ───────────────────────────────────────── */
+.panel-right {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.table-toolbar {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.toolbar-filter {
+  display: flex;
+  gap: 4px;
+}
+
+.filter-btn {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  padding: 4px 10px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .1s;
+}
+.filter-btn.active, .filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(240,112,48,.06);
+}
+
+.toolbar-search {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  padding: 5px 10px;
+  color: var(--text);
+  width: 200px;
+  outline: none;
+}
+.toolbar-search:focus { border-color: var(--accent); }
+.toolbar-search::placeholder { color: var(--muted); }
+
+/* Table */
+.table-wrap {
+  flex: 1;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+thead {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface);
+}
+
+th {
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+th:hover { color: var(--text); }
+th .sort-arrow { margin-left: 4px; opacity: .4; }
+th.sorted .sort-arrow { opacity: 1; color: var(--accent); }
+
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+tr:hover td { background: rgba(255,255,255,.02); }
+
+tr.dup td { background: rgba(224,176,48,.04); }
+tr.dup td:first-child { border-left: 2px solid var(--yellow); }
+
+.badge {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+.badge-dup  { background: rgba(224,176,48,.15); color: var(--yellow); border: 1px solid rgba(224,176,48,.3); }
+.badge-new  { background: rgba(48,192,96,.12);  color: var(--green);  border: 1px solid rgba(48,192,96,.25); }
+.badge-err  { background: rgba(224,48,48,.12);  color: var(--red);    border: 1px solid rgba(224,48,48,.25); }
+
+.cell-id {
+  color: var(--muted);
+  font-size: 10px;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+}
+.empty-state .empty-icon { font-size: 32px; opacity: .2; }
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface);
+}
+.footer-info {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .04em;
+}
+.footer-info span { color: var(--text); }
+
+/* ── TOAST ──────────────────────────────────────────────── */
+.toast-wrap {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  display: flex; flex-direction: column; gap: 6px;
+  z-index: 1000;
+}
+.toast {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 10px 14px;
+  border-radius: 2px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  animation: slideIn .15s ease;
+  max-width: 320px;
+}
+.toast.success { border-left-color: var(--green); }
+.toast.error   { border-left-color: var(--red);   }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <span class="logo">MMR</span>
+      <span class="header-sep">·</span>
+      <span class="header-title">Conversor JSON → CSV + estudiantes.json</span>
+    </div>
+    <span class="status-pill" id="status-pill">Sin datos</span>
+  </header>
+
+  <main>
+
+    <!-- PANEL IZQUIERDO -->
+    <div class="panel-left">
+
+      <!-- Drop zone -->
+      <div class="panel-section">
+        <div class="panel-label">Archivos de entrada</div>
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="file-input" accept=".json" multiple>
+          <div class="dropzone-icon">📂</div>
+          <div class="dropzone-text">
+            <strong>Arrastra los JSON aquí</strong><br>
+            o haz click para seleccionar<br>
+            Acepta múltiples archivos
+          </div>
+        </div>
+        <div class="file-list" id="file-list"></div>
+      </div>
+
+      <!-- Stats -->
+      <div class="panel-section">
+        <div class="panel-label">Resumen</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-val accent" id="stat-total">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val" id="stat-nuevos" style="color:var(--green)">0</div>
+            <div class="stat-label">Nuevos</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val yellow" id="stat-dups">0</div>
+            <div class="stat-label">Duplicados</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val red" id="stat-errs">0</div>
+            <div class="stat-label">Con error</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="panel-section">
+        <div class="panel-label">Exportar</div>
+        <button class="btn btn-accent" id="btn-csv" disabled onclick="exportarCSV()">
+          ⬇ Descargar CSV
+        </button>
+        <button class="btn btn-secondary" id="btn-json" disabled onclick="exportarJSON()">
+          ⬇ Descargar estudiantes.json
+        </button>
+        <button class="btn btn-secondary" id="btn-limpiar" disabled onclick="limpiarTodo()" style="margin-top:12px">
+          ✕ Limpiar todo
+        </button>
+      </div>
+
+      <!-- Opciones -->
+      <div class="panel-section">
+        <div class="panel-label">Opciones</div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--muted)">
+          <input type="checkbox" id="opt-skip-dups" checked
+            style="accent-color:var(--accent);width:13px;height:13px">
+          Excluir duplicados del CSV
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:8px">
+          <input type="checkbox" id="opt-skip-errs" checked
+            style="accent-color:var(--accent);width:13px;height:13px">
+          Excluir registros con error
+        </label>
+      </div>
+
+    </div>
+
+    <!-- PANEL DERECHO — TABLE -->
+    <div class="panel-right">
+
+      <div class="table-toolbar">
+        <div class="toolbar-filter">
+          <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Todos</button>
+          <button class="filter-btn" data-filter="new" onclick="setFilter('new', this)">Nuevos</button>
+          <button class="filter-btn" data-filter="dup" onclick="setFilter('dup', this)">Duplicados</button>
+          <button class="filter-btn" data-filter="err" onclick="setFilter('err', this)">Errores</button>
+        </div>
+        <input class="toolbar-search" type="text" placeholder="Buscar..." id="search-input" oninput="renderTabla()">
+      </div>
+
+      <div class="table-wrap" id="table-wrap">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">📋</div>
+          <div>Carga archivos JSON para comenzar</div>
+        </div>
+        <table id="data-table" style="display:none">
+          <thead>
+            <tr>
+              <th onclick="sortBy('estado')">Estado <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('nombre')">Acudiente <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('relacion')">Relación <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('celular')">Teléfono <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('nombreEstudiante')">Estudiante <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('salon')">Salón <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('escuela')">Escuela <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('paqueteLabel')">Paquete <span class="sort-arrow">↕</span></th>
+              <th onclick="sortBy('student_id')">student_id <span class="sort-arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-info">
+      MMR · Herramienta local · No sube datos a ningún servidor
+    </div>
+    <div class="footer-info" id="footer-sel">
+      Mostrando <span id="footer-count">0</span> registros
+    </div>
+  </footer>
+
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// ESTADO
+// ─────────────────────────────────────────────────────────────
+let registros = [];        // todos los registros procesados
+let filtroActual = 'all';
+let sortCol = 'nombre';
+let sortAsc = true;
+
+// ─────────────────────────────────────────────────────────────
+// DRAG & DROP + FILE INPUT
+// ─────────────────────────────────────────────────────────────
+const dropzone   = document.getElementById('dropzone');
+const fileInput  = document.getElementById('file-input');
+
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.classList.add('dragover');
+});
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+  procesarArchivos(Array.from(e.dataTransfer.files));
+});
+fileInput.addEventListener('change', () => {
+  procesarArchivos(Array.from(fileInput.files));
+  fileInput.value = '';
+});
+
+// ─────────────────────────────────────────────────────────────
+// PROCESAR ARCHIVOS
+// ─────────────────────────────────────────────────────────────
+function procesarArchivos(files) {
+  const jsons = files.filter(f => f.name.endsWith('.json'));
+  if (!jsons.length) { toast('No se encontraron archivos .json', 'error'); return; }
+
+  let pendientes = jsons.length;
+  jsons.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        const registroNuevo = parsearSubmission(data, file.name);
+        agregarRegistro(registroNuevo, file.name, null);
+      } catch (err) {
+        agregarRegistro(null, file.name, err.message);
+      }
+      pendientes--;
+      if (pendientes === 0) actualizarUI();
+    };
+    reader.readAsText(file);
+  });
+}
+
+function parsearSubmission(data, filename) {
+  // Acepta tanto el formato plano como el formato con _meta
+  const meta = data._meta || {};
+
+  const nombre           = (data.nombre           || '').trim();
+  const nombreEstudiante = (data.nombreEstudiante  || '').trim();
+  const relacion         = (data.relacion          || '').trim();
+  const salon            = (data.salon             || '').trim();
+  const codigoPais       = (data.codigoPais        || '+507').trim();
+  const celular          = (data.celular           || '').trim();
+  const celularOtro      = (data.celularOtro       || '').trim();
+  const email            = (data.email             || '').trim();
+  const paquete          = (data.paquete           || '').trim();
+  const paqueteLabel     = (data.paqueteLabel      || '').trim();
+  const precio           = (data.precio            || '').toString().trim();
+  const idEscuela        = (data.idEscuela         || '').trim();
+
+  // Extraer code y año del idEscuela (ej: "clia-26" → code="clia", yy="26")
+  const partes       = idEscuela.split('-');
+  const escuelaCode  = partes[0] || '';
+  const escuelaAnio  = partes[1] || '';
+
+  // Teléfono limpio para WhatsApp
+  const telefonoLimpio = (meta.whatsapp_limpio ||
+    (codigoPais + celular).replace(/[\s\-\(\)]/g, ''));
+
+  // student_id
+  const studentIdBase = meta.student_id || [
+    telefonoLimpio,
+    slugify(nombreEstudiante),
+    slugify(salon)
+  ].filter(Boolean).join('_');
+
+  const schoolName = meta.schoolName || escuelaCode.toUpperCase();
+  const timestamp  = meta.timestamp  || new Date().toISOString();
+
+  // Validaciones básicas
+  const errores = [];
+  if (!nombre)           errores.push('falta nombre');
+  if (!nombreEstudiante) errores.push('falta nombreEstudiante');
+  if (!celular)          errores.push('falta celular');
+  if (!salon)            errores.push('falta salon');
+  if (!escuelaCode)      errores.push('falta idEscuela');
+
+  return {
+    // Datos para CSV
+    Acudiente:  nombre,
+    Relacion:   relacion,
+    Teléfono:   codigoPais + celular.replace(/[\s\-]/g, ''),
+    Estudiante: nombreEstudiante,
+    Salón:      salon,
+    Escuela:    escuelaCode,
+
+    // Datos completos para estudiantes.json
+    student_id: studentIdBase,
+    acudiente: {
+      nombre, relacion,
+      whatsapp: telefonoLimpio,
+      codigoPais, celular, celularOtro, email
+    },
+    estudiante: {
+      nombre: nombreEstudiante,
+      salon,
+      escuela_code: escuelaCode,
+      escuela_nombre: schoolName,
+      escuela_anio: escuelaAnio
+    },
+    reserva: {
+      propuesta: idEscuela,
+      paquete, paqueteLabel,
+      precio: parseFloat(precio) || 0,
+      timestamp
+    },
+
+    // Meta para la tabla
+    _filename:  filename,
+    _timestamp: timestamp,
+    _errores:   errores,
+    _raw:       data
+  };
+}
+
+function slugify(str) {
+  return (str || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function agregarRegistro(registro, filename, errorMsg) {
+  if (!registro) {
+    registros.push({
+      _filename: filename,
+      _estado: 'err',
+      _errorMsg: errorMsg,
+      nombre: '—', relacion: '—', Teléfono: '—',
+      nombreEstudiante: '—', salon: '—', Escuela: '—',
+      paqueteLabel: '—', student_id: '—',
+      _errores: [errorMsg]
+    });
+    return;
+  }
+
+  // Detectar duplicado por student_id
+  const isDup = registros.some(r =>
+    r._estado !== 'err' && r.student_id === registro.student_id
+  );
+
+  registro._estado = registro._errores.length > 0 ? 'err'
+                   : isDup                         ? 'dup'
+                   :                                 'new';
+  registros.push(registro);
+}
+
+// ─────────────────────────────────────────────────────────────
+// UI
+// ─────────────────────────────────────────────────────────────
+function actualizarUI() {
+  // Stats
+  const total  = registros.length;
+  const nuevos = registros.filter(r => r._estado === 'new').length;
+  const dups   = registros.filter(r => r._estado === 'dup').length;
+  const errs   = registros.filter(r => r._estado === 'err').length;
+
+  document.getElementById('stat-total').textContent  = total;
+  document.getElementById('stat-nuevos').textContent = nuevos;
+  document.getElementById('stat-dups').textContent   = dups;
+  document.getElementById('stat-errs').textContent   = errs;
+
+  // Status pill
+  const pill = document.getElementById('status-pill');
+  pill.textContent = `${total} registro${total !== 1 ? 's' : ''}`;
+  pill.style.borderColor = total > 0 ? 'var(--accent)' : 'var(--border2)';
+  pill.style.color       = total > 0 ? 'var(--accent)' : 'var(--muted)';
+
+  // Botones
+  const hayDatos = total > 0;
+  document.getElementById('btn-csv').disabled    = !hayDatos;
+  document.getElementById('btn-json').disabled   = !hayDatos;
+  document.getElementById('btn-limpiar').disabled = !hayDatos;
+
+  // File list
+  renderFileList();
+  renderTabla();
+}
+
+function renderFileList() {
+  const container = document.getElementById('file-list');
+  const archivos = [...new Set(registros.map(r => r._filename))];
+  container.innerHTML = archivos.map(f => {
+    const tieneErr = registros.some(r => r._filename === f && r._estado === 'err');
+    return `<div class="file-item">
+      <div class="file-dot ${tieneErr ? 'err' : ''}"></div>
+      <span class="file-name">${f}</span>
+      <span class="file-remove" onclick="eliminarArchivo('${f}')">×</span>
+    </div>`;
+  }).join('');
+}
+
+function eliminarArchivo(filename) {
+  registros = registros.filter(r => r._filename !== filename);
+  // Re-detectar duplicados
+  const vistos = new Set();
+  registros.forEach(r => {
+    if (r._estado === 'err') return;
+    if (vistos.has(r.student_id)) { r._estado = 'dup'; }
+    else { r._estado = r._errores?.length > 0 ? 'err' : 'new'; vistos.add(r.student_id); }
+  });
+  actualizarUI();
+}
+
+function renderTabla() {
+  const query  = document.getElementById('search-input').value.toLowerCase();
+  const tbody  = document.getElementById('tabla-body');
+  const table  = document.getElementById('data-table');
+  const empty  = document.getElementById('empty-state');
+
+  let datos = [...registros];
+
+  // Filtro de estado
+  if (filtroActual !== 'all') {
+    datos = datos.filter(r => r._estado === filtroActual);
+  }
+
+  // Búsqueda
+  if (query) {
+    datos = datos.filter(r =>
+      [r.nombre, r.nombreEstudiante, r.Teléfono,
+       r.salon, r.Escuela, r.student_id, r.paqueteLabel]
+      .some(v => (v || '').toLowerCase().includes(query))
+    );
+  }
+
+  // Sort
+  datos.sort((a, b) => {
+    const va = (a[sortCol] || '').toString().toLowerCase();
+    const vb = (b[sortCol] || '').toString().toLowerCase();
+    return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+
+  // Actualizar sort arrows
+  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
+  document.querySelectorAll('th').forEach(th => {
+    if (th.getAttribute('onclick') === `sortBy('${sortCol}')`) {
+      th.classList.add('sorted');
+      th.querySelector('.sort-arrow').textContent = sortAsc ? '↑' : '↓';
+    }
+  });
+
+  document.getElementById('footer-count').textContent = datos.length;
+
+  if (datos.length === 0 && registros.length === 0) {
+    empty.style.display = 'flex';
+    table.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  table.style.display = '';
+
+  tbody.innerHTML = datos.map(r => {
+    const estadoBadge =
+      r._estado === 'dup' ? '<span class="badge badge-dup">DUP</span>' :
+      r._estado === 'err' ? `<span class="badge badge-err" title="${r._errores?.join(', ')}">ERR</span>` :
+      '<span class="badge badge-new">NEW</span>';
+
+    const title = r._estado === 'err' ? `title="${r._errores?.join(', ')}"` : '';
+
+    return `<tr class="${r._estado === 'dup' ? 'dup' : ''}" ${title}>
+      <td>${estadoBadge}</td>
+      <td>${escHtml(r.Acudiente || r.nombre || '—')}</td>
+      <td>${escHtml(r.Relacion  || r.relacion || '—')}</td>
+      <td>${escHtml(r.Teléfono  || '—')}</td>
+      <td>${escHtml(r.Estudiante || r.nombreEstudiante || '—')}</td>
+      <td>${escHtml(r.Salón || r.salon || '—')}</td>
+      <td>${escHtml(r.Escuela || '—')}</td>
+      <td>${escHtml(r.paqueteLabel || r.reserva?.paqueteLabel || '—')}</td>
+      <td class="cell-id" title="${escHtml(r.student_id || '')}">${escHtml(r.student_id || '—')}</td>
+    </tr>`;
+  }).join('');
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function setFilter(filtro, btn) {
+  filtroActual = filtro;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTabla();
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortAsc = !sortAsc;
+  else { sortCol = col; sortAsc = true; }
+  renderTabla();
+}
+
+// ─────────────────────────────────────────────────────────────
+// EXPORTAR CSV
+// ─────────────────────────────────────────────────────────────
+function exportarCSV() {
+  const skipDups = document.getElementById('opt-skip-dups').checked;
+  const skipErrs = document.getElementById('opt-skip-errs').checked;
+
+  let datos = registros.filter(r => {
+    if (skipErrs && r._estado === 'err') return false;
+    if (skipDups && r._estado === 'dup') return false;
+    return true;
+  });
+
+  if (!datos.length) { toast('No hay registros para exportar con los filtros actuales', 'error'); return; }
+
+  const cols = ['Acudiente', 'Relacion', 'Teléfono', 'Estudiante', 'Salón', 'Escuela'];
+  const encabezado = cols.join(',');
+  const filas = datos.map(r =>
+    cols.map(col => {
+      const val = (r[col] || '').toString();
+      return val.includes(',') || val.includes('"') || val.includes('\n')
+        ? `"${val.replace(/"/g,'""')}"` : val;
+    }).join(',')
+  );
+
+  const csv = [encabezado, ...filas].join('\r\n');
+  descargar(csv, `mmr_contactos_${fechaHoy()}.csv`, 'text/csv;charset=utf-8;');
+  toast(`CSV exportado — ${datos.length} registros`, 'success');
+}
+
+// ─────────────────────────────────────────────────────────────
+// EXPORTAR estudiantes.json
+// ─────────────────────────────────────────────────────────────
+function exportarJSON() {
+  const skipDups = document.getElementById('opt-skip-dups').checked;
+  const skipErrs = document.getElementById('opt-skip-errs').checked;
+
+  let datos = registros.filter(r => {
+    if (skipErrs && r._estado === 'err') return false;
+    if (skipDups && r._estado === 'dup') return false;
+    return true;
+  });
+
+  if (!datos.length) { toast('No hay registros para exportar', 'error'); return; }
+
+  const exportar = datos.map(r => ({
+    student_id: r.student_id,
+    acudiente:  r.acudiente,
+    estudiante: r.estudiante,
+    reserva:    r.reserva
+  }));
+
+  descargar(
+    JSON.stringify(exportar, null, 2),
+    `mmr_estudiantes_${fechaHoy()}.json`,
+    'application/json'
+  );
+  toast(`estudiantes.json exportado — ${exportar.length} registros`, 'success');
+}
+
+// ─────────────────────────────────────────────────────────────
+// UTILIDADES
+// ─────────────────────────────────────────────────────────────
+function descargar(contenido, nombre, tipo) {
+  const blob = new Blob([contenido], { type: tipo });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = nombre;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function fechaHoy() {
+  return new Date().toISOString().slice(0,10).replace(/-/g,'');
+}
+
+function limpiarTodo() {
+  registros = [];
+  document.getElementById('search-input').value = '';
+  filtroActual = 'all';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-filter="all"]').classList.add('active');
+  actualizarUI();
+  toast('Todo limpiado');
+}
+
+function toast(msg, tipo = 'info') {
+  const wrap = document.getElementById('toast-wrap');
+  const el = document.createElement('div');
+  el.className = `toast ${tipo === 'success' ? 'success' : tipo === 'error' ? 'error' : ''}`;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.remove(); }, 3200);
+}
+</script>
+</body>
+</html>

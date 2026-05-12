@@ -1,0 +1,221 @@
+
+Actúa como senior frontend architect especializado en:
+
+- Vanilla JavaScript
+- aplicaciones estáticas
+- Netlify static hosting
+- frontend sin frameworks
+- arquitectura simple y mantenible
+- mínima fricción operacional
+
+Voy a desarrollar una mini web app nueva.
+
+STACK OBLIGATORIO:
+- HTML
+- CSS externo
+- Vanilla JavaScript puro
+
+NO usar:
+- React
+- Vue
+- Angular
+- TypeScript
+- Vite
+- Webpack
+- npm
+- bundlers
+- frameworks
+- dependencias innecesarias
+- arquitectura enterprise
+
+OBJETIVO PRINCIPAL:
+Crear una aplicación extremadamente fácil de:
+- desarrollar
+- probar localmente
+- debuggear
+- mantener
+- deployar en Netlify
+
+REQUERIMIENTO CRÍTICO:
+La app DEBE estar diseñada desde el inicio para soportar persistencia futura REAL sin necesidad de reescribir el frontend.
+
+IMPORTANTE:
+Aunque inicialmente la persistencia sea:
+- localStorage
+- mock JSON
+- datos fake
+
+la arquitectura DEBE permitir luego conectar fácilmente:
+- Netlify Functions
+- Supabase
+- Firebase
+- APIs REST
+- backend real
+
+SIN reescribir la UI.
+
+REQUISITOS ARQUITECTURALES OBLIGATORIOS:
+
+1. Separación estricta entre:
+   - UI
+   - estado
+   - persistencia
+   - lógica de negocio
+
+2. Toda persistencia debe pasar por:
+   - storage.js
+   o
+   - api.js
+
+3. La UI NUNCA debe:
+   - usar localStorage directamente
+   - usar fetch directamente
+   - modificar estado persistente directamente
+
+4. Toda operación de datos debe ser async desde el inicio.
+
+Ejemplo obligatorio:
+
+```js
+await storage.saveItem(data)
+const items = await storage.loadItems()
+````
+
+NO hacer:
+
+```js
+localStorage.setItem(...)
+fetch(...)
+```
+
+directamente en UI.
+
+5. Diseñar desde el inicio usando adapter pattern simple.
+
+Ejemplo conceptual:
+
+```js
+const storage =
+    ENV === 'local'
+      ? localStorageAdapter
+      : apiAdapter;
+```
+
+6. Mantener arquitectura SIMPLE.
+   NO overengineering.
+
+7. Priorizar:
+
+* claridad
+* simplicidad
+* mantenibilidad
+* debugging fácil
+
+sobre:
+
+* patterns complejos
+* abstracciones enterprise
+* optimización prematura
+
+8. Compatibilidad total con:
+
+* Live Server
+* VS Code
+* Netlify static hosting
+
+9. Todo debe funcionar SIN build step.
+
+10. Usar estructura de archivos clara y mínima.
+
+ESTRUCTURA RECOMENDADA:
+
+```text
+/app
+    index.html
+
+    /css
+        styles.css
+
+    /js
+        app.js
+        ui.js
+        state.js
+        storage.js
+        config.js
+
+    /data
+        mock-data.json
+```
+
+REQUISITOS DE DESARROLLO:
+
+* IDs únicos usando:
+
+```js
+crypto.randomUUID()
+```
+
+* Configuración centralizada.
+
+* Estado global controlado.
+
+* Renderizado desacoplado de persistencia.
+
+* Funciones pequeñas y fáciles de debuggear.
+
+* Comentarios útiles SOLO donde aporten valor.
+
+* Evitar magia oculta.
+
+* Evitar múltiples capas innecesarias.
+
+REQUISITOS DE TESTING:
+
+La app debe poder:
+
+* correr localmente con Live Server
+* usar localStorage para persistencia temporal
+* funcionar offline durante desarrollo
+
+SIN:
+
+* Docker
+* WSL2
+* Node backend
+* Netlify CLI
+
+REQUISITOS DE PRODUCCIÓN:
+
+La arquitectura debe permitir luego:
+
+* reemplazar localStorage por API real
+* conectar backend sin rehacer frontend
+* deploy simple en Netlify
+
+IMPORTANTE:
+Mi prioridad #1 es minimizar fricción futura de mantenimiento y deployment.
+
+Cada decisión arquitectónica debe favorecer:
+
+* simplicidad operacional
+* facilidad de debugging
+* facilidad de migración futura
+* rapidez de desarrollo
+
+NO quiero:
+
+* complejidad innecesaria
+* setup pesado
+* tooling avanzado
+* soluciones enterprise
+
+Cuando propongas código:
+
+* explica brevemente por qué
+* mantén nombres claros
+* evita abstracciones excesivas
+* entrega código listo para usar
+* preserva simplicidad.
+
+```
+```

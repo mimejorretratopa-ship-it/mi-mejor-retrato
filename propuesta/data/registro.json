@@ -1,0 +1,58 @@
+{
+  "brochures": [
+    {
+      "id": "clia-26",
+      "archivo": "clia-26.html",
+      "school_code": "clia",
+      "año": 2026,
+      "fecha_creacion": "2026-04-21",
+      "estado": "borrador",
+      "ga_id": "",
+      "url_netlify": "",
+      "basado_en": null,
+      "cambios_vs_anterior": "Primera versión para este colegio",
+      "secciones_activas": [
+        "hero",
+        "presentacion",
+        "galeria_preview",
+        "fecha_sesion",
+        "entrega",
+        "contacto_previo"
+      ],
+      "secciones_inactivas": [
+        "mascotas",
+        "fondos",
+        "direccion_estudio"
+      ],
+      "notas": "Propuesta inicial temporada 2026"
+    }
+  ],
+  "metadata": {
+    "descripcion": "Bitácora manual de todos los brochures generados. Se actualiza a mano al crear cada versión nueva.",
+    "version": "1.0",
+    "ultima_actualizacion": "2026-04-21",
+    "plantilla": {
+      "_comentario": "Copia este bloque al crear un nuevo brochure",
+      "id": "{code}-{yy}",
+      "archivo": "{code}-{yy}.html",
+      "school_code": "",
+      "school_name": "",
+      "año": 0,
+      "fecha_creacion": "",
+      "estado": "borrador",
+      "ga_id": "",
+      "url_netlify": "",
+      "basado_en": "{id_version_anterior_o_null}",
+      "cambios_vs_anterior": "",
+      "secciones_activas": [],
+      "secciones_inactivas": [],
+      "notas": ""
+    },
+    "estados_validos": [
+      "borrador",
+      "publicado",
+      "archivado"
+    ],
+    "nota_school_name": "school_name se obtiene por lookup en escuelas.json usando school_code"
+  }
+}

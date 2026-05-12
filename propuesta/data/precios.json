@@ -1,0 +1,273 @@
+{
+  "version": "2.0",
+  "metadata": {
+    "nota": "Cada escuela define su propia visibilidad y paquetes. visibilidad puede ser: 'publicar', 'no_publicar', o 'pendiente'.",
+    "visibilidad_opciones": {
+      "publicar": "Muestra la sección de precios con sus paquetes y precios",
+      "no_publicar": "Oculta la sección de precios completamente. Sin mensaje.",
+      "pendiente": "Muestra la sección pero con aviso 'Precio pendiente por definir'"
+    },
+    "moneda": "USD"
+  },
+  "escuelas": [
+    {
+"code": "clia",
+      "visibilidad": "no_publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Paquete 1",
+          "precio": 19,
+          "descripcion": "4 Fotos únicamente en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Paquete 2",
+          "precio": 34,
+          "descripcion": "6 Fotos impresas y en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Paquete 3",
+          "precio": 57,
+          "descripcion": "12 Fotos impresas y en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "dolo",
+      "visibilidad": "pendiente",
+      "paquetes": []
+    },
+    {
+      "code": "ebrv",
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Paquete 1",
+          "precio": 14,
+          "descripcion": "4 Fotos únicamente en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Paquete 2",
+          "precio": 29,
+          "descripcion": "6 Fotos impresas y en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Paquete 3",
+          "precio": 49,
+          "descripcion": "12 Fotos impresas y en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "lasa",
+      "visibilidad": "pendiente",
+      "paquetes": []
+    },
+    {
+      "code": "lion",
+      "visibilidad": "no_publicar",
+      "paquetes": []
+    },
+    {
+      "code": "ofxd",
+      "visibilidad": "pendiente",
+      "paquetes": []
+    },
+    {
+      "code": "sabi",
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Paquete 1",
+          "precio": 21,
+          "descripcion": "Sólo Digital",
+          "entregables": {
+            "impresos": [],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Paquete 2",
+          "precio": 36,
+          "descripcion": "Impresas + Digital",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Paquete 3",
+          "precio": 57,
+          "descripcion": "Impresas + Enmarcadas + Digital",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "sagu",
+      "visibilidad": "pendiente",
+      "paquetes": []
+    }
+  ]
+}

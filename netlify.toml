@@ -1,42 +1,11 @@
-# netlify.toml — Configuración de deploy para Netlify
-# ─────────────────────────────────────────────────────────────
-# No necesitas Node, npm, ni build step.
-# Netlify sirve los archivos estáticos directamente.
-#
-# Para agregar Netlify Functions en el futuro:
-#   1. Crea carpeta /netlify/functions/
-#   2. Agrega tu función: contacto.js
-#   3. En config.js: FORM_ENDPOINT: '/.netlify/functions/contacto'
-#   4. Netlify la detecta automáticamente por [functions] abajo
-
 [build]
-  publish = "."          # raíz del proyecto = lo que se sirve
-  # command = ""         # sin build step — es HTML estático puro
+  publish = "."
+  functions = "netlify/functions"
 
-[functions]
-  directory = "netlify/functions"   # carpeta para funciones futuras
-
-# Headers de seguridad
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options        = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy        = "strict-origin-when-cross-origin"
-
-# Cache para assets estáticos
-[[headers]]
-  for = "/css/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/js/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Redirigir 404 al index (SPA-friendly, útil si agregas rutas luego)
 [[redirects]]
-  from   = "/*"
-  to     = "/index.html"
+  from = "/propuesta/*"
+  to = "/:splat"
   status = 200
+
+# Esto permite que si alguien entra a /propuesta/ebrv-26.html 
+# cargue el archivo ebrv-26.html que está en la raíz.

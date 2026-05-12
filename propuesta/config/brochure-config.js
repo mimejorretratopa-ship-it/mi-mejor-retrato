@@ -1,0 +1,179 @@
+/**
+ * CONFIGURACIÓN ESTÁTICA
+ * ────────────────────────────────────────────────────────────
+ * Todas las constantes y configuraciones en un solo lugar.
+ * 
+ * VENTAJAS:
+ * - Un solo lugar para cambiar endpoints, URLs, etc.
+ * - Fácil de mantener
+ * - Fácil de sobrescribir por ambiente (dev/prod)
+ */
+
+const config = (() => {
+  
+  // ── AMBIENTE ──────────────────────────────────────────────────
+  const isDev = window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1';
+  const isProd = !isDev;
+
+  // ── URLs BASE ─────────────────────────────────────────────────
+  const baseURL = isDev 
+    ? '.' 
+    : 'https://tu-sitio.netlify.app';
+
+  // ── ENDPOINTS ─────────────────────────────────────────────────
+  const endpoints = {
+    // Netlify Functions
+    submitForm: '/.netlify/functions/submit-form',
+    createContact: '/.netlify/functions/create-contact',
+    notifyDiscord: '/.netlify/functions/notify-discord',
+    
+    // JSON estáticos (pueden ser CDN en producción)
+    jsonBase: baseURL
+  };
+
+  // ── WHATSAPP ──────────────────────────────────────────────────
+  const whatsapp = {
+    // Número del fotógrafo
+    photographerNumber: '50767438951',
+    
+    // Template de mensaje inicial
+    messageTemplate: (nombre, schoolName) => 
+      `Hola ${nombre}, gracias por reservar tu espacio para la sesión de fotos de ${schoolName}. Mike te escribe para coordinar.`
+  };
+
+  // ── GOOGLE ANALYTICS ──────────────────────────────────────────
+  const analytics = {
+    // Se sobrescribe desde registro.json si existe
+    defaultGAId: "G-6H4H52RL0T",
+    
+    // Eventos custom
+    events: {
+      formSubmit: 'form_submit',
+      packageSelect: 'package_select',
+      whatsappClick: 'whatsapp_click',
+      galleryView: 'gallery_view'
+    }
+  };
+
+  // ── UI ────────────────────────────────────────────────────────
+  const ui = {
+    // Duración de animaciones
+    animationDuration: 600,
+    
+    // Delay para loading states (evitar flashes)
+    minLoadingDelay: 300,
+    
+    // Intersection Observer threshold
+    revealThreshold: 0.1,
+    
+    // Tamaños de imágenes
+    imageSizes: {
+      thumbnail: 400,
+      preview: 800,
+      full: 1200
+    }
+  };
+
+  // ── VALIDACIÓN ────────────────────────────────────────────────
+  const validation = {
+    phone: {
+      minLength: 7,
+      maxLength: 15
+    },
+    name: {
+      minLength: 2,
+      maxLength: 100
+    },
+    email: {
+      pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    }
+  };
+
+  // ── CACHE ─────────────────────────────────────────────────────
+  const cache = {
+    // TTL para JSONs estáticos (5 minutos)
+    jsonTTL: 5 * 60 * 1000,
+    
+    // TTL para imágenes (1 hora)
+    imageTTL: 60 * 60 * 1000
+  };
+
+  // ── FEATURES FLAGS ────────────────────────────────────────────
+  const features = {
+    // Habilitar descarga local de JSON (desarrollo)
+    localDownload: isDev,
+    
+    // Habilitar Google Contacts integration
+    googleContacts: false, // TODO: implementar
+    
+    // Habilitar Discord notifications
+    discordNotifications: false, // TODO: implementar
+    
+    // Habilitar analytics
+    analytics: isProd,
+    
+    // Debugging avanzado
+    debug: isDev
+  };
+
+  // ── TEXTOS ────────────────────────────────────────────────────
+  const messages = {
+    errors: {
+      loadJSON: 'No se pudieron cargar los datos. Por favor recarga la página.',
+      submitForm: 'Hubo un error al enviar el formulario. Por favor intenta de nuevo.',
+      network: 'Error de conexión. Verifica tu internet e intenta de nuevo.',
+      generic: 'Algo salió mal. Por favor intenta de nuevo.'
+    },
+    success: {
+      formSubmit: 'Mike te escribe en un momento por WhatsApp para coordinar.',
+      contactCreated: 'Contacto creado exitosamente.'
+    },
+    loading: {
+      form: 'Cargando formulario...',
+      pricing: 'Cargando precios...',
+      sections: 'Cargando contenido...'
+    }
+  };
+
+  // ── RETORNAR CONFIGURACIÓN ────────────────────────────────────
+  return {
+    // Ambiente
+    isDev,
+    isProd,
+    baseURL,
+    
+    // Módulos
+    endpoints,
+    whatsapp,
+    analytics,
+    ui,
+    validation,
+    cache,
+    features,
+    messages,
+
+    /**
+     * Sobrescribe configuración (útil para testing)
+     */
+    override(overrides) {
+      Object.assign(this, overrides);
+    },
+
+    /**
+     * Debug: muestra configuración actual
+     */
+    debug() {
+      console.group('[CONFIG]');
+      console.log('Ambiente:', isDev ? 'Development' : 'Production');
+      console.log('Base URL:', baseURL);
+      console.log('Features:', features);
+      console.groupEnd();
+    }
+  };
+})();
+
+// ── EXPORTS ───────────────────────────────────────────────────
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = config;
+}

@@ -1,0 +1,60 @@
+{
+  "schools": [
+    {
+      "code": "clia",
+      "name": "Chiara Lubich International Academy"
+    },
+    {
+      "code": "dolo",
+      "name": "Nuestra Señora De Los Dolores"
+    },
+    {
+      "code": "ebrv",
+      "name": "Escuela Bilingüe Residencial Vacamonte"
+    },
+    {
+      "code": "lasa",
+      "name": "Colegio La Salle"
+    },
+    {
+      "code": "lion",
+      "name": "Lions School"
+    },
+    {
+      "code": "ofxd",
+      "name": "Oxford International School"
+    },
+    {
+      "code": "sabi",
+      "name": "Sabis International School"
+    },
+    {
+      "code": "sagu",
+      "name": "Colegio San Agustín"
+    }
+  ],
+  "metadata": {
+    "description": "Códigos de 4 letras para identificación de colegios",
+    "created": "2026-02-21",
+    "updated": "2026-04-28",
+    "total_schools": 8,
+    "format": "4-letter lowercase code — must match HTML filename prefix exactly"
+  },
+  "ubicaciones_catalogo": [
+    {
+      "id": "condado",
+      "nombre": "Estudio Condado del Rey",
+      "imagen": "ubicaciones/condado.jpg"
+    },
+    {
+      "id": "viaargentina",
+      "nombre": "Estudio Vía Argentina",
+      "imagen": "ubicaciones/viaargentina.jpg"
+    },
+    {
+      "id": "lachorrera",
+      "nombre": "Estudio La Chorrera",
+      "imagen": "ubicaciones/lachorrera.jpg"
+    }
+  ]
+}

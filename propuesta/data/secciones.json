@@ -1,0 +1,72 @@
+{
+  "secciones": {
+    "hero": {
+      "activo": true,
+      "nota": "El título y subtítulo se generan automáticamente desde escuelas.json"
+    },
+    "la_diferencia": {
+      "activo": true
+    },
+    "como_funciona": {
+      "activo": true
+    },
+    "paquetes": {
+      "nota": "La visibilidad de esta sección se controla desde precios.json, no aquí."
+    },
+    "ubicacion": {
+      "activo": true,
+      "estado": "pendiente",
+      "nota_estados": "pendiente | texto | colegio | estudios",
+      "mensaje": "",
+      "ubicaciones": []
+    },
+    "portafolio_inicio": {
+      "activo": true,
+      "carpeta": "portafolio",
+      "prefijo": "p1_",
+      "extension": "jpg"
+    },
+    "portafolio_medio": {
+      "activo": false,
+      "carpeta": "portafolio",
+      "prefijo": "p2_",
+      "extension": "jpg"
+    },
+    "sobre_mike": {
+      "activo": true
+    },
+    "faq": {
+      "activo": true
+    },
+    "portafolio_cierre": {
+      "activo": false,
+      "carpeta": "portafolio",
+      "prefijo": "p3_",
+      "extension": "jpg"
+    },
+    "mascotas": {
+      "activo": false
+    },
+    "fondos": {
+      "activo": false
+    },
+    "direccion_estudio": {
+      "activo": false
+    },
+    "reserva": {
+      "activo": true
+    }
+  },
+  "salones": [
+    {
+      "valor": "salon_ejemplo",
+      "label": "Salón Ejemplo",
+      "corto": "ex"
+    }
+  ],
+  "metadata": {
+    "version": "2.2",
+    "nota": "Esta es la plantilla maestra para propuestas v1.5. No agregar campos que no sean interpretados por modules/*.js",
+    "actualizado": "2026-05-10"
+  }
+}
