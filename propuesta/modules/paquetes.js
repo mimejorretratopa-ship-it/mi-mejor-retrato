@@ -86,6 +86,29 @@ const paquetesModule = (() => {
     if (elSubmit)   elSubmit.classList.remove('hidden');
   }
 
+  /**
+   * Para no_publicar: preselecciona el primer paquete en los hidden fields
+   * sin mostrar ningún selector al usuario. El botón de enviar aparece normal.
+   */
+  function preseleccionarPaqueteSilencioso(paquetes) {
+    const elSubmit = document.getElementById('form-submit-area');
+
+    if (paquetes && paquetes.length > 0) {
+      const pkg = paquetes[0]; // primer paquete = el acordado con la escuela
+      const inputPaquete      = document.getElementById('paquete');
+      const inputPaqueteLabel = document.getElementById('paqueteLabel');
+      const inputPrecio       = document.getElementById('precio');
+
+      if (inputPaquete)      inputPaquete.value      = pkg.id;
+      if (inputPaqueteLabel) inputPaqueteLabel.value  = pkg.nombre + ' ' + pkg.descripcion;
+      if (inputPrecio)       inputPrecio.value        = String(pkg.precio);
+    }
+
+    // campo-paquete permanece hidden (el usuario no ve nada)
+    // solo mostramos el botón de enviar
+    if (elSubmit) elSubmit.classList.remove('hidden');
+  }
+
   async function render() {
     const loading   = document.getElementById('paquetes-loading');
     const grid      = document.getElementById('paquetes-grid');
@@ -106,6 +129,7 @@ const paquetesModule = (() => {
     if (loading) loading.classList.add('hidden');
 
     if (visibilidad === 'publicar' && paquetes && paquetes.length > 0) {
+      // Muestra sección pública + selector en formulario
       if (grid) {
         grid.innerHTML = '';
         paquetes.forEach((paq, i) => grid.appendChild(renderCardSeccion(paq, i)));
@@ -114,22 +138,19 @@ const paquetesModule = (() => {
       mostrarPaquetesEnFormulario(paquetes);
 
     } else if (visibilidad === 'pendiente') {
+      // Muestra aviso pendiente en sección pública + aviso en formulario
       if (pendiente) pendiente.classList.remove('hidden');
       mostrarPendienteEnFormulario();
 
     } else {
-      // no_publicar → ocultar sección de precios pública
+      // no_publicar → ocultar sección pública de precios
       if (section) section.style.display = 'none';
       if (divider) divider.style.display = 'none';
 
-      // Pero si hay paquetes definidos, igual los carga en el formulario
-      if (paquetes && paquetes.length > 0) {
-        mostrarPaquetesEnFormulario(paquetes);
-      } else {
-        mostrarPendienteEnFormulario();
-      }
-    }                  // ← cierra el if/else if/else principal
-  }                    // ← cierra render()
+      // Preseleccionar paquete en hidden fields, sin mostrarlo al usuario
+      preseleccionarPaqueteSilencioso(paquetes);
+    }
+  }
 
   return { render };
 })();
