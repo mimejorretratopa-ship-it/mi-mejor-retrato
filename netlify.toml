@@ -1,11 +1,7 @@
 [build]
   publish = "."
-  functions = "netlify/functions"
+  functions = "propuesta/netlify/functions"
 
-[[redirects]]
-  from = "/propuesta/*"
-  to = "/:splat"
-  status = 200
 
 # Esto permite que si alguien entra a /propuesta/ebrv-26.html 
 # cargue el archivo ebrv-26.html que está en la raíz.
