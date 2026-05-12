@@ -29,7 +29,7 @@ const formModule = (() => {
     
     // Crear contenedor
     const wrapper = document.createElement('div');
-    wrapper.className = 'form-field';
+    wrapper.className = 'campo';
     wrapper.id = `campo-${id}`;
 
     // Label
@@ -84,8 +84,8 @@ const formModule = (() => {
     wrapper.appendChild(inputEl);
 
     // Error container
-    const errorEl = document.createElement('div');
-    errorEl.className = 'form-error hidden';
+    const errorEl = document.createElement('p');
+    errorEl.className = 'campo-error-msg hidden';
     errorEl.id = `error-${id}`;
     wrapper.appendChild(errorEl);
 
@@ -97,7 +97,7 @@ const formModule = (() => {
    */
   function renderPhoneField(codigoDef, celularDef) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'form-field';
+    wrapper.className = 'campo';
     wrapper.id = 'campo-celular';
 
     // Label
@@ -140,8 +140,8 @@ const formModule = (() => {
     wrapper.appendChild(phoneContainer);
 
     // Error container
-    const errorEl = document.createElement('div');
-    errorEl.className = 'form-error hidden';
+    const errorEl = document.createElement('p');
+    errorEl.className = 'campo-error-msg hidden';
     errorEl.id = 'error-celular';
     wrapper.appendChild(errorEl);
 
@@ -210,10 +210,10 @@ const formModule = (() => {
     
     if (!campo || !errorEl || !inputEl) return;
 
-    campo.classList.add('error');
+    campo.classList.add('has-error');
     errorEl.textContent = message;
-    errorEl.classList.remove('hidden');
-    inputEl.classList.add('input-error');
+    errorEl.classList.remove('hidden'); // por si acaso
+    // El CSS ya hace display: block si tiene .has-error
   }
 
   /**
@@ -226,9 +226,8 @@ const formModule = (() => {
     
     if (!campo || !errorEl || !inputEl) return;
 
-    campo.classList.remove('error');
+    campo.classList.remove('has-error');
     errorEl.classList.add('hidden');
-    inputEl.classList.remove('input-error');
   }
 
   /**
