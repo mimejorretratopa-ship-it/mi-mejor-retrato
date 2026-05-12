@@ -27,9 +27,7 @@ const storage = (() => {
   const config = {
     // En desarrollo: archivos locales
     // En producción: puedes cambiar esto a tu CDN o API
-    baseURL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? '.' 
-  : 'https://tu-cdn.netlify.app',
+    baseURL: '.',
     
     // Tiempo de vida del cache (5 minutos)
     cacheTTL: 5 * 60 * 1000,
