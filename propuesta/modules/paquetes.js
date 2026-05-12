@@ -32,9 +32,9 @@ const paquetesModule = (() => {
   }
 
   function mostrarPaquetesEnFormulario(paquetes) {
-    const elSelector  = document.getElementById('paquete-selector');
-    const elCampoPaq  = document.getElementById('campo-paquete');
-    const elSubmit    = document.getElementById('form-submit-area');
+    const elSelector = document.getElementById('paquete-selector');
+    const elCampoPaq = document.getElementById('campo-paquete');
+    const elSubmit   = document.getElementById('form-submit-area');
 
     if (!elSelector) return;
 
@@ -58,7 +58,7 @@ const paquetesModule = (() => {
         const inputPaquete = document.getElementById('paquete');
         inputPaquete.value = pkg.id;
         inputPaquete.dispatchEvent(new Event('change'));
-        
+
         document.getElementById('paqueteLabel').value = pkg.nombre + ' ' + pkg.descripcion;
         document.getElementById('precio').value       = String(pkg.precio);
         if (elCampoPaq) elCampoPaq.classList.remove('has-error');
@@ -96,8 +96,8 @@ const paquetesModule = (() => {
     const pricing = state.helpers.getCurrentPricing();
 
     if (!pricing) {
-      if (section)  section.style.display  = 'none';
-      if (divider)  divider.style.display  = 'none';
+      if (section) section.style.display = 'none';
+      if (divider) divider.style.display = 'none';
       return;
     }
 
@@ -112,9 +112,11 @@ const paquetesModule = (() => {
         grid.classList.remove('hidden');
       }
       mostrarPaquetesEnFormulario(paquetes);
+
     } else if (visibilidad === 'pendiente') {
       if (pendiente) pendiente.classList.remove('hidden');
       mostrarPendienteEnFormulario();
+
     } else {
       // no_publicar → ocultar sección de precios pública
       if (section) section.style.display = 'none';
@@ -122,11 +124,12 @@ const paquetesModule = (() => {
 
       // Pero si hay paquetes definidos, igual los carga en el formulario
       if (paquetes && paquetes.length > 0) {
-      mostrarPaquetesEnFormulario(paquetes);  // ← ESTA línea faltaba
+        mostrarPaquetesEnFormulario(paquetes);
       } else {
-      mostrarPendienteEnFormulario();
-  }
-}
+        mostrarPendienteEnFormulario();
+      }
+    }                  // ← cierra el if/else if/else principal
+  }                    // ← cierra render()
 
   return { render };
 })();
