@@ -55,7 +55,10 @@ const paquetesModule = (() => {
       option.addEventListener('click', () => {
         document.querySelectorAll('.paquete-option').forEach(o => o.classList.remove('selected'));
         option.classList.add('selected');
-        document.getElementById('paquete').value      = pkg.id;
+        const inputPaquete = document.getElementById('paquete');
+        inputPaquete.value = pkg.id;
+        inputPaquete.dispatchEvent(new Event('change'));
+        
         document.getElementById('paqueteLabel').value = pkg.nombre + ' ' + pkg.descripcion;
         document.getElementById('precio').value       = String(pkg.precio);
         if (elCampoPaq) elCampoPaq.classList.remove('has-error');
