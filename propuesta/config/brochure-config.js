@@ -10,44 +10,32 @@
  */
 
 const config = (() => {
-  
-  // ── AMBIENTE ──────────────────────────────────────────────────
-  const isDev = window.location.hostname === 'localhost' || 
-                window.location.hostname === '127.0.0.1';
-  const isProd = !isDev;
 
-  // ── URLs BASE ─────────────────────────────────────────────────
-  const baseURL = isDev 
-    ? '.' 
-    : 'https://tu-sitio.netlify.app';
+  // ── AMBIENTE ──────────────────────────────────────────────────
+  const isDev = window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+  const isProd = !isDev;
 
   // ── ENDPOINTS ─────────────────────────────────────────────────
   const endpoints = {
-    // Netlify Functions
-    submitForm: '/.netlify/functions/submit-form',
-    createContact: '/.netlify/functions/create-contact',
-    notifyDiscord: '/.netlify/functions/notify-discord',
-    
-    // JSON estáticos (pueden ser CDN en producción)
-    jsonBase: baseURL
+    submitForm: '/api/submit-form',
+    createContact: '/api/create-contact',
+    notifyDiscord: '/api/notify-discord'
   };
 
   // ── WHATSAPP ──────────────────────────────────────────────────
   const whatsapp = {
     // Número del fotógrafo
     photographerNumber: '50767438951',
-    
+
     // Template de mensaje inicial
-    messageTemplate: (nombre, schoolName) => 
+    messageTemplate: (nombre, schoolName) =>
       `Hola ${nombre}, gracias por reservar tu espacio para la sesión de fotos de ${schoolName}. Mike te escribe para coordinar.`
   };
 
   // ── GOOGLE ANALYTICS ──────────────────────────────────────────
   const analytics = {
-    // Se sobrescribe desde registro.json si existe
-    defaultGAId: "G-6H4H52RL0T",
-    
-    // Eventos custom
+    // El GA ID viene de registro.json en initAnalytics()
     events: {
       formSubmit: 'form_submit',
       packageSelect: 'package_select',
@@ -60,13 +48,13 @@ const config = (() => {
   const ui = {
     // Duración de animaciones
     animationDuration: 600,
-    
+
     // Delay para loading states (evitar flashes)
     minLoadingDelay: 300,
-    
+
     // Intersection Observer threshold
     revealThreshold: 0.1,
-    
+
     // Tamaños de imágenes
     imageSizes: {
       thumbnail: 400,
@@ -94,25 +82,25 @@ const config = (() => {
   const cache = {
     // TTL para JSONs estáticos (5 minutos)
     jsonTTL: 5 * 60 * 1000,
-    
+
     // TTL para imágenes (1 hora)
     imageTTL: 60 * 60 * 1000
   };
 
   // ── FEATURES FLAGS ────────────────────────────────────────────
   const features = {
-    // Habilitar descarga local de JSON (desarrollo)
+    // Descarga local de JSON como fallback (solo desarrollo)
     localDownload: isDev,
-    
-    // Habilitar Google Contacts integration
-    googleContacts: false, // TODO: implementar
-    
-    // Habilitar Discord notifications
-    discordNotifications: false, // TODO: implementar
-    
-    // Habilitar analytics
+
+    // Notificaciones Discord (activo en producción vía Netlify Function)
+    discordNotifications: isProd,
+
+    // Google Contacts (activo en producción vía Netlify Function)
+    googleContacts: isProd,
+
+    // Google Analytics (activo en producción)
     analytics: isProd,
-    
+
     // Debugging avanzado
     debug: isDev
   };
@@ -141,8 +129,7 @@ const config = (() => {
     // Ambiente
     isDev,
     isProd,
-    baseURL,
-    
+
     // Módulos
     endpoints,
     whatsapp,
@@ -166,7 +153,6 @@ const config = (() => {
     debug() {
       console.group('[CONFIG]');
       console.log('Ambiente:', isDev ? 'Development' : 'Production');
-      console.log('Base URL:', baseURL);
       console.log('Features:', features);
       console.groupEnd();
     }

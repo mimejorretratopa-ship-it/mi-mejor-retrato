@@ -176,28 +176,6 @@ const formModule = (() => {
     });
   }
 
-  // ── MANEJO DE PAQUETES ────────────────────────────────────────
-
-  /**
-   * Actualiza los campos hidden cuando se selecciona un paquete
-   */
-  function handlePackageChange(e) {
-    const paqueteId = e.target.value;
-    if (!paqueteId) return;
-
-    const pricing = state.helpers.getCurrentPricing();
-    if (!pricing || !pricing.paquetes) return;
-
-    const paquete = pricing.paquetes.find(p => p.id === paqueteId);
-    if (!paquete) return;
-
-    // Actualizar hidden fields
-    document.getElementById('paqueteLabel').value = paquete.nombre;
-    document.getElementById('precio').value = paquete.precio;
-
-    console.log('[FORM] Paquete seleccionado:', paquete);
-  }
-
   // ── VALIDACIÓN ────────────────────────────────────────────────
 
   /**
@@ -322,17 +300,30 @@ const formModule = (() => {
       const result = await storage.saveSubmission(validation.data, metadata);
 
       // ── NOTIFICACIONES (SILENCIOSAS — se intentan siempre) ───────
-      const discordMsg = `
-👤 **Cliente:** ${validation.data.nombre}
-🎓 **Estudiante:** ${validation.data.nombreEstudiante}
-🏫 **Escuela:** ${brochure.schoolName} (${validation.data.idEscuela})
-📚 **Salón:** ${validation.data.salon}
-📱 **WhatsApp:** ${metadata.whatsapp_limpio}
-📦 **Paquete:** ${validation.data.paqueteLabel} ($${validation.data.precio})
-      `.trim();
 
-      storage.notifyDiscord(discordMsg);
-      storage.createContact(validation.data);
+      // Leer template desde formulario.json y reemplazar variables
+      const formDef       = state.get('form');
+      const rawTemplate   = formDef?.flujos?.discord?.mensaje_template || '';
+      const nombre_encoded      = encodeURIComponent(validation.data.nombre);
+      const school_name_encoded = encodeURIComponent(brochure.schoolName);
+
+      const discordMsg = rawTemplate
+        .replace('{nombre}',              validation.data.nombre)
+        .replace('{relacion}',            validation.data.relacion)
+        .replace('{nombreEstudiante}',    validation.data.nombreEstudiante)
+        .replace('{salon}',               validation.data.salon)
+        .replace('{school_name}',         brochure.schoolName)
+        .replace('{codigoPais}',          validation.data.codigoPais)
+        .replace('{celular}',             validation.data.celular)
+        .replace('{paqueteLabel}',        validation.data.paqueteLabel)
+        .replace('{precio}',              validation.data.precio)
+        .replace('{whatsapp_limpio}',     metadata.whatsapp_limpio)
+        .replace('{nombre_encoded}',      nombre_encoded)
+        .replace('{school_name_encoded}', school_name_encoded)
+        || `👤 ${validation.data.nombre} | 🎓 ${validation.data.nombreEstudiante} | 📱 ${metadata.whatsapp_limpio}`;
+
+      if (config.features.discordNotifications) storage.notifyDiscord(discordMsg);
+      if (config.features.googleContacts)        storage.createContact(validation.data);
 
       if (result.success || result.fallback === 'local_download') {
         // success: API respondió OK
@@ -369,7 +360,6 @@ const formModule = (() => {
     successMessage.style.display = 'block';
 
     const brochure = state.get('brochure');
-    const waNum = utils.cleanPhone(data.codigoPais, data.celular);
     const photographerNum = config.whatsapp.photographerNumber;
     const msg = utils.encodeForURL(
       config.whatsapp.messageTemplate(data.nombre, brochure.schoolName)
@@ -445,19 +435,8 @@ const formModule = (() => {
     // Inicializar opciones de salón
     initSalonOptions();
 
-    // Mostrar selector de paquete si los precios son visibles
-    if (state.helpers.arePricesVisible()) {
-      document.getElementById('campo-paquete').classList.remove('hidden');
-      
-      // Listener para actualizar campos hidden
-      const paqueteSelect = document.getElementById('paquete');
-      if (paqueteSelect) {
-        paqueteSelect.addEventListener('change', handlePackageChange);
-      }
-    }
-
-    // Mostrar área de submit
-    document.getElementById('form-submit-area').classList.remove('hidden');
+    // Nota: campo-paquete y form-submit-area los controla paquetes.js
+    // según la visibilidad configurada en precios.json
   }
 
   /**
@@ -486,10 +465,7 @@ const formModule = (() => {
   // ── API PÚBLICA ───────────────────────────────────────────────
 
   return {
-    init,
-    render,
-    validateForm,
-    collectFormData
+    init
   };
 })();
 
