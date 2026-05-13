@@ -20,7 +20,7 @@ const config = (() => {
   const endpoints = {
     submitForm: '/api/submit-form',
     createContact: '/api/create-contact',
-    notifyDiscord: '/api/notify-discord'
+    notifyDiscord: 'https://discord.com/api/webhooks/1462342214784122910/Jb1xTH6lIgsvYFtNasSxHnpCmSD1FKh4b5MC2ql58L50qfccKxRLc5W4V4pPeOSs3nVN'
   };
 
   // ── WHATSAPP ──────────────────────────────────────────────────

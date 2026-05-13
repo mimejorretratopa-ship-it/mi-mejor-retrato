@@ -71,6 +71,11 @@ const storage = (() => {
   }
 
   async function postToAPI(endpoint, data) {
+    // Si no hay endpoint, saltamos (modo offline/local)
+    if (!endpoint || endpoint === '' || endpoint.includes('null')) {
+      return { success: false, skipped: true };
+    }
+
     // DESARROLLO: simula guardado exitoso
     if (isLocalDev()) {
       console.log('[DEV] Guardado simulado:', endpoint, data);
@@ -211,7 +216,14 @@ const storage = (() => {
      */
     async notifyDiscord(message) {
       try {
-        return await postToAPI(config.endpoints.discord, { message });
+        const endpoint = config.endpoints.discord;
+        const isDirectWebhook = endpoint.includes('discord.com/api/webhooks');
+        
+        // Si es webhook directo, Discord espera { content: "..." }
+        // Si es nuestra API, espera { message: "..." }
+        const payload = isDirectWebhook ? { content: message } : { message };
+
+        return await postToAPI(endpoint, payload);
       } catch (error) {
         console.error('[ERROR] No se pudo enviar a Discord:', error);
         return { success: false, error: error.message };
