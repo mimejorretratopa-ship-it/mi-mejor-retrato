@@ -169,7 +169,7 @@
       "activo": true,
       "descripcion": "Envía snapshot al canal de Discord con link de WhatsApp pre-llenado para iniciar conversación",
       "webhook_env": "DISCORD_WEBHOOK_URL",
-      "mensaje_template": "📸 *Nueva reserva* — {school_name}\n👤 {nombre} ({relacion})\n🎓 Estudiante: {nombreEstudiante} · Salón: {salon}\n📱 {codigoPais} {celular}\n📦 {paqueteLabel} · ${precio}\n\n👉 https://wa.me/{whatsapp_limpio}?text=Hola+{nombre_encoded}%2C+gracias+por+tu+inter%C3%A9s+en+la+sesi%C3%B3n+de+fotos+de+{school_name_encoded}."
+      "mensaje_template": "📸 *Nueva reserva* — {school_name}\n👤 {nombre} ({relacion})\n🎓 Estudiante: {nombreEstudiante} · Salón: {salon}\n📱 {codigoPais} {celular}\n📦 {paqueteLabel} · ${precio}\n\n👉 <https://wa.me/{whatsapp_limpio}?text=Hola+{nombre_encoded}%2C+gracias+por+tu+inter%C3%A9s+en+la+sesi%C3%B3n+de+fotos+de+{school_name_encoded}>"
     },
     "captura_datos": {
       "activo": true,
