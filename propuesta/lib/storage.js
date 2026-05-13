@@ -98,13 +98,18 @@ const storage = (() => {
         method: 'POST',
         headers: { 'Content-Type': contentType },
         body: JSON.stringify(data),
-        signal: controller.signal
+        signal: controller.signal,
+        mode: isGoogleScript ? 'no-cors' : 'cors'
       });
 
       clearTimeout(timeoutId);
 
-      // Si es Google Script, la respuesta suele ser una redirección (302). 
-      // Fetch la sigue automáticamente.
+      // Si es Google Script con no-cors, el status será 0 (opaco). 
+      // Si llegamos aquí sin que fetch lance un error, es que se envió.
+      if (isGoogleScript) {
+        return { success: true, message: 'Enviado en modo no-cors' };
+      }
+
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
