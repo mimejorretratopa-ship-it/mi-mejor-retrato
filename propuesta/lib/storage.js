@@ -88,20 +88,35 @@ const storage = (() => {
     const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 segundos de espera
 
     try {
+      const isGoogleScript = endpoint.includes('script.google.com');
+      
+      // Google Scripts: Usamos text/plain para evitar el "preflight request" (CORS)
+      // Esto hace que sea una "Simple Request" y no necesita validación OPTIONS previa.
+      const contentType = isGoogleScript ? 'text/plain' : 'application/json';
+
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': contentType },
         body: JSON.stringify(data),
         signal: controller.signal
       });
 
       clearTimeout(timeoutId);
 
+      // Si es Google Script, la respuesta suele ser una redirección (302). 
+      // Fetch la sigue automáticamente.
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
 
-      return await response.json();
+      // Manejo de respuestas vacías (como Discord que devuelve 204 No Content)
+      const text = await response.text();
+      try {
+        return text ? JSON.parse(text) : { success: true };
+      } catch (e) {
+        // Si no es JSON pero el status es OK, lo damos por bueno (ej. Discord)
+        return { success: true, raw: text };
+      }
     } catch (error) {
       clearTimeout(timeoutId);
       if (error.name === 'AbortError') {
