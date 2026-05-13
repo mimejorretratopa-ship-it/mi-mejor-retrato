@@ -32,10 +32,12 @@ const storage = (() => {
 
     // Endpoints — fuente única de verdad en brochure-config.js (window.config.endpoints)
     get endpoints() {
+      const cfg = window.config || {};
+      const end = cfg.endpoints || {};
       return {
-        submit:  window.config.endpoints.submitForm,
-        contact: window.config.endpoints.createContact,
-        discord: window.config.endpoints.notifyDiscord
+        submit:  end.submitForm || '/api/submit-form',
+        contact: end.createContact || '/api/create-contact',
+        discord: end.notifyDiscord || '/api/notify-discord'
       };
     }
   };

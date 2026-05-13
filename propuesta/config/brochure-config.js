@@ -125,7 +125,7 @@ const config = (() => {
   };
 
   // ── RETORNAR CONFIGURACIÓN ────────────────────────────────────
-  return {
+  const configObj = {
     // Ambiente
     isDev,
     isProd,
@@ -157,6 +157,11 @@ const config = (() => {
       console.groupEnd();
     }
   };
+
+  // Exponer a window para que otros scripts (lib/*.js) puedan acceder
+  window.config = configObj;
+
+  return configObj;
 })();
 
 // ── EXPORTS ───────────────────────────────────────────────────
