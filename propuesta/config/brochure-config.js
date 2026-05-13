@@ -18,7 +18,7 @@ const config = (() => {
 
   // ── ENDPOINTS ─────────────────────────────────────────────────
   const endpoints = {
-    submitForm: '/api/submit-form',
+    submitForm: 'https://script.google.com/macros/s/AKfycbw1jWdPTcixFqhQc46GVesnB2qAyk9HS7qblUDljk9nywIC7yYQhLGbWsKyEoKbns07/exec',
     createContact: '/api/create-contact',
     notifyDiscord: 'https://discord.com/api/webhooks/1462342214784122910/Jb1xTH6lIgsvYFtNasSxHnpCmSD1FKh4b5MC2ql58L50qfccKxRLc5W4V4pPeOSs3nVN'
   };

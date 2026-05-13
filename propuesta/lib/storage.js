@@ -165,8 +165,8 @@ const storage = (() => {
      * FUTURO: solo envía a backend, sin descarga local
      */
     async saveSubmission(data, metadata = {}) {
-      const payload = {
-        ...data,
+      const payload = { 
+        ...data, 
         _meta: {
           timestamp: new Date().toISOString(),
           ...metadata
@@ -174,25 +174,23 @@ const storage = (() => {
       };
 
       try {
-        // PRODUCCIÓN: enviar al backend
         const result = await postToAPI(config.endpoints.submit, payload);
-        
-        return {
-          success: true,
-          id: result.id,
-          payload
-        };
+
+        if (result.success || result.ok) {
+          return { success: true, id: result.id };
+        } else {
+          throw new Error(result.error || 'API rejected submission');
+        }
       } catch (error) {
-        console.error('[ERROR] No se pudo guardar submission:', error);
+        console.error('[STORAGE] Error al guardar submission:', error);
         
-        // FALLBACK: guardar localmente como JSON descargable
-        this.downloadJSON(payload, this._generateFilename(data));
+        // Ya no descargamos JSON automáticamente para evitar spam en la PC del usuario.
+        // La notificación de Discord (que se lanza después) sirve como respaldo.
         
-        return {
-          success: false,
+        return { 
+          success: false, 
           error: error.message,
-          payload,
-          fallback: 'local_download'
+          message: 'No se pudo sincronizar con la base de datos, pero la notificación de Discord se intentará enviar.'
         };
       }
     },
