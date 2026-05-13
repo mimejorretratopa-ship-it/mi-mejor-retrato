@@ -25,18 +25,18 @@ const storage = (() => {
   
   // ── CONFIGURACIÓN ─────────────────────────────────────────────
   const config = {
-    // En desarrollo: archivos locales
-    // En producción: puedes cambiar esto a tu CDN o API
     baseURL: '.',
-    
+
     // Tiempo de vida del cache (5 minutos)
     cacheTTL: 5 * 60 * 1000,
-    
-    // Endpoints para backend futuro
-    endpoints: {
-      submit: '/.netlify/functions/submit-form',
-      contact: '/.netlify/functions/create-contact',
-      discord: '/.netlify/functions/notify-discord'
+
+    // Endpoints — fuente única de verdad en brochure-config.js (window.config.endpoints)
+    get endpoints() {
+      return {
+        submit:  window.config.endpoints.submitForm,
+        contact: window.config.endpoints.createContact,
+        discord: window.config.endpoints.notifyDiscord
+      };
     }
   };
 

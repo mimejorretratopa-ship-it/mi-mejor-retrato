@@ -1,18 +1,15 @@
-// Usando fetch global de Node 18+
-
-exports.handler = async (event, context) => {
-  // Solo permitir POST
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method Not Allowed');
   }
 
   try {
-    const { message } = JSON.parse(event.body);
+    const { message } = req.body;
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
 
     if (!webhookUrl) {
       console.error('DISCORD_WEBHOOK_URL no configurada');
-      return { statusCode: 500, body: 'Config Error' };
+      return res.status(500).send('Config Error');
     }
 
     const response = await fetch(webhookUrl, {
@@ -27,15 +24,9 @@ exports.handler = async (event, context) => {
       throw new Error(`Discord API error: ${response.status}`);
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true })
-    };
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error en notify-discord:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ success: false, error: error.message })
-    };
+    return res.status(500).json({ success: false, error: error.message });
   }
-};
+}

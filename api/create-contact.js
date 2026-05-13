@@ -1,26 +1,17 @@
-// Usando fetch global de Node 18+
-
-exports.handler = async (event, context) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method Not Allowed');
   }
 
   try {
-    const data = JSON.parse(event.body);
-    
-    // Estos valores deben venir de tus Variables de Entorno en Netlify
-    // Para Google Contacts necesitas configurar OAuth2 o una Service Account
+    const data = req.body;
     const GOOGLE_ACCESS_TOKEN = process.env.GOOGLE_ACCESS_TOKEN;
 
     if (!GOOGLE_ACCESS_TOKEN) {
       console.warn('GOOGLE_ACCESS_TOKEN no configurada. Saltando creación de contacto.');
-      return { 
-        statusCode: 200, 
-        body: JSON.stringify({ success: false, message: 'Google Auth not configured' }) 
-      };
+      return res.status(200).json({ success: false, message: 'Google Auth not configured' });
     }
 
-    // Estructura básica para Google People API
     const contactPayload = {
       names: [{ givenName: data.nombreEstudiante, familyName: `(${data.nombre})` }],
       phoneNumbers: [{ value: `${data.codigoPais}${data.celular}`, type: 'mobile' }],
@@ -43,15 +34,9 @@ exports.handler = async (event, context) => {
       throw new Error(result.error?.message || 'Error en Google API');
     }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ success: true, id: result.resourceName })
-    };
+    return res.status(200).json({ success: true, id: result.resourceName });
   } catch (error) {
     console.error('Error en create-contact:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ success: false, error: error.message })
-    };
+    return res.status(500).json({ success: false, error: error.message });
   }
-};
+}
