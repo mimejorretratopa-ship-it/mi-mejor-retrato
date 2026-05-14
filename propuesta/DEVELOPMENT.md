@@ -9,9 +9,9 @@
 code "mmr_schools_proposals 1.5 - antigravity"
 ```
 
-1. Click derecho en cualquier `.html` en VS Code
+1. Click derecho en `index.html` en VS Code
 2. Seleccionar **"Open with Live Server"**
-3. Navegar a `http://127.0.0.1:5500/ebrv-26.html`
+3. Navegar a `http://127.0.0.1:5500/index.html?brochure=ebrv-26`
 
 > **Importante:** abrir como `file://` NO funciona — `fetch()` requiere un servidor HTTP.
 
@@ -20,17 +20,14 @@ code "mmr_schools_proposals 1.5 - antigravity"
 ## Crear un nuevo brochure
 
 ```bash
-# 1. Copiar el HTML — no necesita edición
-cp ebrv-26.html sabi-26.html
-
-# 2. Verificar/agregar código en data/escuelas.json
-# 3. Crear data/sabi_secciones.json (copiar de ebrv_secciones.json y ajustar)
-# 4. Configurar precios en data/precios.json
-# 5. Registrar en data/registro.json
-# 6. Abrir en Live Server y verificar consola
+# 1. Agregar el código de la escuela y año en data/escuelas.json
+# 2. Crear data/{code}_secciones.json (copiar de ebrv_secciones.json y ajustar)
+# 3. Configurar precios en data/precios.json (visibilidad: "publicar")
+# 4. Abrir en Live Server con el parámetro ?brochure={code}-{yy}
+# 5. En producción, la URL será: /propuesta/{code}-{yy}
 ```
 
-El HTML se autoconfigura desde su nombre de archivo. No editar el HTML.
+El sistema es ahora **URL-driven**. Ya no necesitas copiar archivos HTML.
 
 ---
 
@@ -59,7 +56,7 @@ config.debug()                  // configuración activa
 
 | Síntoma | Causa probable |
 |---------|---------------|
-| "Escuela no encontrada" | Nombre del HTML no sigue patrón `{code}-{yy}.html` o código no está en `escuelas.json` |
+| "Escuela no encontrada" | Slug en la URL no existe en `escuelas.json` o año no está en la lista de `years` |
 | "No se pudieron cargar los datos" | Abriendo como `file://` en vez de con Live Server |
 | Precios no aparecen | `visibilidad` no es `"publicar"` en `precios.json` |
 | Sección no aparece | `activo: false` en `{code}_secciones.json` |
@@ -77,7 +74,7 @@ git push origin master
 
 **Configuración del site en Vercel:**
 - Framework Preset: **Other**
-- Build command: (vacío)
+- Rewrites: configurados en `vercel.json` para mapear slugs a `index.html`
 - Output directory: `.`
 
 ---
@@ -120,11 +117,9 @@ git push origin master
 
 ## Checklist antes de publicar
 
-- [ ] HTML copiado con nombre correcto (`{code}-{yy}.html`)
-- [ ] Código en `data/escuelas.json`
+- [ ] Código y año agregados en `data/escuelas.json`
 - [ ] `data/{code}_secciones.json` creado
 - [ ] Precios con `"visibilidad": "publicar"` en `data/precios.json`
-- [ ] Entrada en `data/registro.json` con estado `"publicado"`
 - [ ] Sin errores en consola del navegador
 - [ ] Formulario de prueba completado exitosamente
 - [ ] **Verificar fila nueva en Google Sheets**

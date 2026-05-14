@@ -2,35 +2,59 @@
   "schools": [
     {
       "code": "clia",
-      "name": "Chiara Lubich International Academy"
+      "name": "Chiara Lubich International Academy",
+      "years": [26],
+      "ga_id": "",
+      "estado": "borrador"
     },
     {
       "code": "dolo",
-      "name": "Nuestra Señora De Los Dolores"
+      "name": "Nuestra Señora De Los Dolores",
+      "years": [26],
+      "ga_id": "",
+      "estado": "publicado"
     },
     {
       "code": "ebrv",
-      "name": "Escuela Bilingüe Residencial Vacamonte"
+      "name": "Escuela Bilingüe Residencial Vacamonte",
+      "years": [26],
+      "ga_id": "",
+      "estado": "publicado"
     },
     {
       "code": "lasa",
-      "name": "Colegio La Salle"
+      "name": "Colegio La Salle",
+      "years": [26],
+      "ga_id": "",
+      "estado": "publicado"
     },
     {
       "code": "lion",
-      "name": "Lions School"
+      "name": "Lions School",
+      "years": [26],
+      "ga_id": "",
+      "estado": "publicado"
     },
     {
       "code": "ofxd",
-      "name": "Oxford International School"
+      "name": "Oxford International School",
+      "years": [26],
+      "ga_id": "",
+      "estado": "publicado"
     },
     {
       "code": "sabi",
-      "name": "Sabis International School"
+      "name": "Sabis International School",
+      "years": [26],
+      "ga_id": "",
+      "estado": "publicado"
     },
     {
       "code": "sagu",
-      "name": "Colegio San Agustín"
+      "name": "Colegio San Agustín",
+      "years": [26],
+      "ga_id": "",
+      "estado": "publicado"
     }
   ],
   "metadata": {

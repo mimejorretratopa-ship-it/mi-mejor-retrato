@@ -16,7 +16,7 @@
 
 | Capa | Responsabilidad | NO debe |
 |------|----------------|---------|
-| HTML | Estructura y placeholders | Tener lógica |
+| HTML | Estructura y placeholders (index.html único) | Tener lógica de negocio |
 | `/modules/*.js` | Renderizar UI, manejar eventos | Acceder a storage directamente |
 | `lib/state.js` | Centralizar el estado en runtime | Hacer fetch |
 | `lib/storage.js` | Toda lectura/escritura externa | Manipular el DOM |
@@ -84,7 +84,7 @@ async function render(d) { }
 | IDs en HTML | kebab-case | `paquetes-grid`, `btn-enviar` |
 | Clases CSS | kebab-case | `.paquete-card`, `.form-grid` |
 | Archivos JSON | snake_case | `ebrv_secciones.json` |
-| Archivos JS/HTML | kebab-case | `form-renderer.js`, `ebrv-26.html` |
+| Archivos JS/HTML | kebab-case | `form-renderer.js`, `index.html` |
 
 ---
 
@@ -143,62 +143,13 @@ const [form, pricing, sections] = await Promise.all([...]);
 const form = await storage.loadJSON('formulario.json');
 ```
 
-```js
-// ✅ Comentarios de navegación (útiles en archivos largos)
-// ── FUNCIONES PRIVADAS ──────────────────────────────
-// ── API PÚBLICA ─────────────────────────────────────
-```
-
-```js
-// ✅ TODO con contexto
-// TODO: cuando tengamos API real, reemplazar esta URL por config.endpoints.pricing
-const url = '/data/precios.json';
-
-// ❌ TODO sin contexto
-// TODO: fix this
-```
-
 ---
 
 ## Manejo de errores
 
-```js
-// ✅ Errores con contexto útil para debugging
-try {
-  const data = await storage.loadJSON('precios.json');
-} catch (error) {
-  console.error('[PAQUETES] No se pudieron cargar precios:', error);
-  // Mostrar estado de error al usuario
-  document.getElementById('paquetes-grid').innerHTML = '<p>Error al cargar precios.</p>';
-}
-
-// ❌ Errores silenciosos o sin contexto
-try {
-  const data = await storage.loadJSON('precios.json');
-} catch (e) {
-  console.log('error');
-}
-```
-
 **Regla:** todo `catch` debe:
 1. Loggear con prefijo del módulo
 2. Hacer algo útil (mostrar error, usar fallback, etc.)
-
----
-
-## Prefijos de log por módulo
-
-Usar siempre el prefijo para poder filtrar en la consola:
-
-```js
-console.log('[APP] ...')       // orquestación principal
-console.log('[FORM] ...')      // form-renderer.js
-console.log('[PAQUETES] ...')  // paquetes.js
-console.log('[GALERIAS] ...')  // galerias.js
-console.log('[STORAGE] ...')   // storage.js
-console.log('[STATE] ...')     // state.js
-console.log('[ANALYTICS] ...')  // analytics.js
-```
 
 ---
 
@@ -209,67 +160,16 @@ console.log('[ANALYTICS] ...')  // analytics.js
 const el = document.getElementById('paquetes-grid');
 if (el) el.innerHTML = renderCards(data);
 
-// ❌ Asumir que el elemento existe
-document.getElementById('paquetes-grid').innerHTML = renderCards(data);
-```
-
-```js
 // ✅ Usar clases para mostrar/ocultar (ya definidas en brochure.css)
 el.classList.add('hidden');
 el.classList.remove('hidden');
-
-// ❌ Manipular display directamente (excepto en HTML inicial)
-el.style.display = 'none';
 ```
-
----
-
-## JSONs de datos
-
-- Usar `snake_case` para las claves: `school_code`, `fecha_creacion`
-- Incluir siempre un bloque `metadata` con descripción y fecha de última actualización
-- Los arrays de escuelas siempre usan `"code"` (4 letras minúsculas) como identificador único
-- El campo `"visibilidad"` en precios solo acepta: `"publicar"` | `"pendiente"` | `"ocultar"`
 
 ---
 
 ## Qué NO hacer nunca
 
-```js
-// ❌ Variables globales sueltas
-let FORM_DATA = null;           // usar state.get('form')
-let currentSchool = {};         // usar state.get('brochure')
-
-// ❌ localStorage directo fuera de storage.js
-localStorage.setItem('data', JSON.stringify(data));
-
-// ❌ fetch directo fuera de storage.js
-const res = await fetch('/data/precios.json');
-
-// ❌ Hardcodear strings que pueden cambiar
-const number = '50767438951';   // usar config.whatsapp.photographerNumber
-const gaId = 'G-XXXXXXXX';     // usar el de registro.json
-
-// ❌ Funciones de más de ~30 líneas sin dividir
-function initApp() {
-  // 200 líneas...
-}
-```
-
----
-
-## Agregar un nuevo JSON de datos
-
-1. Crearlo en `/data/` con `snake_case` y extensión `.json`
-2. Agregar la clave correspondiente en `lib/state.js` → `const store`
-3. Cargarlo en `loadAppData()` dentro del `Promise.all`
-4. Documentar en `ARCHITECTURE.md` qué contiene y cuándo editarlo
-
----
-
-## Agregar un nuevo módulo
-
-1. Crear `/modules/nuevo-modulo.js` siguiendo el patrón IIFE
-2. Agregar `<script src="modules/nuevo-modulo.js">` en el HTML **antes** del script de inicialización
-3. Llamarlo en el `Promise.all` de `initApp()` si es renderizado paralelo
-4. Documentar sus dependencias en el comentario de cabecera del archivo
+- No usar variables globales sueltas.
+- No usar `localStorage` o `fetch` directo fuera de `storage.js`.
+- No hardcodear strings que pueden cambiar (usar `config`).
+- No crear funciones de más de ~30 líneas sin dividir.

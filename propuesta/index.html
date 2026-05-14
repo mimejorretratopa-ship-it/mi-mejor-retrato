@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<base href="/propuesta/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Mi Mejor Retrato — Fotografía escolar en Panamá">
 <title id="page-title">Mi Mejor Retrato — Fotografía Escolar · Panamá</title>
@@ -452,6 +453,19 @@
 </section>
 </div>
 
+<!-- ERROR — slug no encontrado (oculto por defecto) -->
+<div class="error-page hidden" id="error-page">
+  <div class="error-content">
+    <div class="error-icon">📸</div>
+    <h1>Este link no ha sido configurado</h1>
+    <p>La página que buscas no tiene la información que necesitas todavía.</p>
+    <p>Escríbele directo a Mike para que te dé una respuesta rápida:</p>
+    <a href="https://wa.me/50767438951" class="btn-primary" target="_blank">
+      Escribir a Mike por WhatsApp →
+    </a>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
@@ -490,43 +504,60 @@
   // ── 1. CONFIGURAR BROCHURE ──────────────────────────────────
 
   /**
-   * Extrae la configuración del brochure desde el nombre del archivo HTML.
-   * ej: ebrv-26.html → { code: 'ebrv', year: 26, id: 'ebrv-26' }
+   * Extrae la configuración del brochure desde la URL.
+   * URL-driven: /propuesta/ebrv-26 → { code: 'ebrv', year: 26, id: 'ebrv-26' }
    */
   function extractBrochureConfig() {
-    const filename = window.location.pathname.split('/').pop();
-    const match = filename.match(/([a-z]{4})-(\d{2})\.html/i);
+    const path = window.location.pathname;
+    const match = path.match(/([a-z]{4})-(\d{2})\/?$/i);
 
-    if (!match) {
-      console.error('[APP] Formato de archivo HTML inválido:', filename);
-      return null;
+    if (match) {
+      const code = match[1].toLowerCase();
+      const year = parseInt(match[2], 10);
+      const id   = `${code}-${year}`;
+      return { code, year, id };
     }
 
-    const code = match[1].toLowerCase();
-    const year = parseInt(match[2], 10);
-    const id   = `${code}-${year}`;
+    // Fallback para dev local sin rewrites: ?brochure=ebrv-26
+    const param = new URLSearchParams(window.location.search).get('brochure');
+    if (param) {
+      const pMatch = param.match(/^([a-z]{4})-(\d{2})$/i);
+      if (pMatch) {
+        return {
+          code: pMatch[1].toLowerCase(),
+          year: parseInt(pMatch[2], 10),
+          id: param.toLowerCase()
+        };
+      }
+    }
 
-    return { code, year, id };
+    return null;
   }
 
   async function initBrochure() {
     const brochureConfig = extractBrochureConfig();
     if (!brochureConfig) {
-      alert('Error: Configuración del brochure inválida');
+      showErrorPage();
       return false;
     }
 
     const schools = await storage.loadJSON('escuelas.json');
     const school  = schools.schools.find(s =>
-      s.code.toLowerCase() === brochureConfig.code
+      s.code.toLowerCase() === brochureConfig.code && 
+      (s.years || []).includes(brochureConfig.year)
     );
 
     if (!school) {
-      console.error(`[APP] Escuela no encontrada: ${brochureConfig.code}`);
+      console.error(`[APP] Escuela no encontrada o año no válido: ${brochureConfig.code}-${brochureConfig.year}`);
+      showErrorPage();
       return false;
     }
 
-    state.set('brochure', { ...brochureConfig, schoolName: school.name });
+    state.set('brochure', { 
+      ...brochureConfig, 
+      schoolName: school.name,
+      gaId: school.ga_id 
+    });
     state.set('schools', schools);
 
     const name = school.name;
@@ -549,6 +580,19 @@
 
     console.log('[APP] Brochure configurado:', state.get('brochure'));
     return true;
+  }
+
+  function showErrorPage() {
+    document.body.innerHTML = '';
+    const errorPage = document.getElementById('error-page');
+    if (errorPage) {
+      errorPage.classList.remove('hidden');
+      document.body.appendChild(errorPage);
+      document.body.classList.add('error-active');
+    } else {
+      // Fallback si el DOM aún no tiene el div (no debería pasar si está al final)
+      document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:sans-serif;"><h1>Error de configuración</h1><p>Escribe a Mike al +507 6743-8951</p></div>';
+    }
   }
 
   // ── 2. CARGAR DATOS ──────────────────────────────────────────
@@ -597,15 +641,11 @@
 
   async function initAnalytics() {
     try {
-      const registro = await storage.loadJSON('registro.json');
       const brochure = state.get('brochure');
-
-      const entry = registro.brochures.find(b => b.id === brochure.id);
-      const gaId  = entry ? entry.ga_id : null;
+      const gaId = brochure.gaId;
 
       if (gaId) {
         analyticsModule.init(gaId);
-        state.set('brochure', { gaId });
       }
     } catch (error) {
       console.warn('[APP] No se pudo cargar analytics:', error);

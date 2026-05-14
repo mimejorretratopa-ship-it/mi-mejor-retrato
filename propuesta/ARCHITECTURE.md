@@ -2,9 +2,9 @@
 
 ## Principio central
 
-> El HTML no sabe a qué colegio sirve. Se autoconfigura leyendo su propio nombre de archivo.
+> El sistema no tiene archivos HTML por colegio. Un solo `index.html` lee la URL para saber qué datos mostrar.
 
-Un solo HTML funciona para cualquier escuela/año porque **todo el contenido viene de JSONs**. Agregar un nuevo brochure es copiar el archivo y cambiarle el nombre.
+Un solo HTML funciona para cualquier escuela/año porque **todo el contenido se define en los JSONs**. Agregar un nuevo brochure no requiere tocar código, solo agregar datos.
 
 ---
 
@@ -13,7 +13,8 @@ Un solo HTML funciona para cualquier escuela/año porque **todo el contenido vie
 ```
 ┌─────────────────────────────────────────────────────┐
 │                   HTML (View)                        │
-│  ebrv-26.html, clia-26.html, ...                    │
+│                   index.html                         │
+│  — Único punto de entrada                            │
 │  — Estructura semántica + placeholders               │
 │  — NO lógica de negocio, NO fetch directo            │
 └──────────────────────┬──────────────────────────────┘
@@ -70,26 +71,24 @@ Esta regla es lo que permite migrar de JSONs estáticos a una API real **sin ree
 
 ## Autoconfiguración del brochure
 
-```
-ebrv-26.html
+URL: /propuesta/ebrv-26
      │
      ▼
 extractBrochureConfig()
-     │ filename.match(/([a-z]{4})-(\d{2})\.html/)
+     │ location.pathname.match(/([a-z]{4})-(\d{2})/)
      ▼
 { code: 'ebrv', year: 26, id: 'ebrv-26' }
      │
      ▼
-escuelas.json → busca code === 'ebrv'
+escuelas.json → busca code === 'ebrv' && years.includes(26)
      │
      ▼
-state.set('brochure', { code, year, id, schoolName })
+state.set('brochure', { code, year, id, schoolName, gaId, estado })
      │
      ▼
 todos los módulos leen state.get('brochure')
-```
 
-**Implicación práctica:** copiar `ebrv-26.html` a `sabi-26.html` crea un brochure completamente distinto sin editar nada.
+**Implicación práctica:** no hay archivos HTML duplicados. El enrutamiento es dinámico basado en el slug de la URL.
 
 ---
 
@@ -120,7 +119,7 @@ Para migrar a una API real: **solo se reescriben estas dos funciones**. Los mód
 El state tiene claves fijas y predecibles:
 
 ```js
-state.get('brochure')  // { code, year, id, schoolName, gaId }
+state.get('brochure')  // { code, year, id, schoolName, gaId, estado }
 state.get('form')      // definición del formulario (formulario.json)
 state.get('pricing')   // precios por escuela (precios.json)
 state.get('sections')  // secciones activas (ebrv_secciones.json)
@@ -136,7 +135,7 @@ Regla: **si un módulo necesita datos, los pide a `state`, no los carga él mism
 
 ```
 initApp()
-  ├── 1. initBrochure()    → carga escuelas.json, setea state.brochure
+  ├── 1. initBrochure()    → carga escuelas.json, valida slug, setea state.brochure
   ├── 2. loadAppData()     → carga formulario + precios + secciones en paralelo
   ├── 3. seccionesModule.init()   → muestra/oculta secciones del DOM
   ├── 4. Promise.all([            → renderizado paralelo
@@ -146,7 +145,7 @@ initApp()
   │       formModule.init()
   │     ])
   ├── 5. initReveal()      → IntersectionObserver para animaciones
-  └── 6. initAnalytics()   → carga registro.json, inicializa GA
+  └── 6. initAnalytics()   → usa gaId de state.brochure, inicializa GA
 ```
 
 ---
@@ -174,11 +173,10 @@ Un único objeto `config` expone:
 
 | Archivo | Editado cuándo |
 |---------|---------------|
-| `escuelas.json` | Al agregar un colegio nuevo |
+| `escuelas.json` | Al agregar un colegio nuevo o año activo (incluye ga_id) |
 | `precios.json` | Al cambiar precios o paquetes |
 | `formulario.json` | Al agregar/quitar campos del formulario |
 | `{code}_secciones.json` | Al activar/desactivar secciones por escuela |
-| `registro.json` | Al crear un nuevo brochure (bitácora manual) |
 
 ---
 
