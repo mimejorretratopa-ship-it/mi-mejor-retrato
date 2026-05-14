@@ -12,11 +12,14 @@ const Api = (() => {
 
   /**
    * Helper genérico para POST
+   * NOTA: Usamos 'text/plain' para evitar el preflight de CORS (OPTIONS)
+   * que Google Apps Script no maneja bien. El Hub recibirá el JSON igual.
    */
   async function _post(url, data) {
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      mode: 'cors', // Necesario para seguir redirecciones de GAS
+      headers: { 'Content-Type': 'text/plain' }, 
       body: JSON.stringify(data)
     });
     
@@ -28,7 +31,9 @@ const Api = (() => {
     }
     
     try {
-      return await response.json();
+      // GAS a veces retorna texto o HTML de error, intentamos parsear JSON
+      const text = await response.text();
+      return JSON.parse(text);
     } catch {
       return { ok: true };
     }
