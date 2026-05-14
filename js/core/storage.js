@@ -85,11 +85,23 @@ const storage = (() => {
     
     async saveSubmission(data, metadata) {
       try {
-        const payload = { ...data, ...metadata, timestamp: new Date().toISOString() };
+        const payload = { 
+          ...data, 
+          _meta: metadata, // IMPORTANTE: El Hub espera los metadatos en _meta
+          timestamp: new Date().toISOString() 
+        };
+        
+        // 1. Respaldo local inmediato
         this.set(`submission_${metadata.propuesta}`, payload);
         
-        const result = await window.api.enviarReserva(payload);
-        return { success: result.ok, data: result.data };
+        // 2. Envío "dispara y olvida" (fire-and-forget) para máxima velocidad
+        // No usamos 'await' aquí para que la UI responda instantáneamente
+        window.api.enviarReserva(payload).then(result => {
+          log('Envío en segundo plano finalizado:', result.ok ? 'OK' : 'Error');
+        });
+
+        // Retornamos éxito inmediato confiando en el respaldo local
+        return { success: true };
       } catch (error) {
         console.error('[STORAGE] saveSubmission failed:', error);
         return { success: false, error: error.message };
