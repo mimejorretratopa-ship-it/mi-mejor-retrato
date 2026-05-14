@@ -74,11 +74,10 @@ function doPost(e) {
         if (!targetGroup) {
           targetGroup = People.ContactGroups.create({ contactGroup: { name: 'MMR Leads 2026' } });
         }
-        People.ContactGroups.batchModifyContactMembers({
-          resourceBundleKeys: [createdContact.resourceName],
-          operations: 'ADD'
+        People.ContactGroups.Members.modify({
+          resourceNamesToAdd: [createdContact.resourceName]
         }, targetGroup.resourceName);
-      } catch (gErr) { logSheet.appendRow([new Date(), 'Group Warning', gErr.toString()]); }
+      } catch (gErr) { logSheet.appendRow([new Date(), 'Label Warning', gErr.toString()]); }
 
       logSheet.appendRow([new Date(), 'Contacts OK (People API)', nombreContacto]);
     } catch (err) {

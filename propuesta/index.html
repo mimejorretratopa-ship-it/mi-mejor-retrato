@@ -58,11 +58,12 @@
       a posar.<br>
       Va a <em>brillar.</em>
     </h1>
-    <p class="hero-sub">
-      Sesiones de 15 minutos donde los estudiantes<br>
-      se olvidan de la cámara. Las fotos son el resultado.
-    </p>
-    <div class="hero-ctas">
+<p class="hero-sub">
+  Sesiones de 15 minutos donde los estudiantes<br>
+  se olvidan de la cámara. Las fotos son el resultado.
+</p>
+<p class="hero-sub" id="hero-proposal"></p>
+<div class="hero-ctas">
       <a href="#como-funciona" class="btn-primary">Cómo funciona</a>
       <a href="#reserva" class="btn-ghost">Reservar espacio →</a>
     </div>
@@ -567,6 +568,7 @@
       `Mi Mejor Retrato — ${name} ${yr}`;
     document.getElementById('hero-label').textContent =
       `Fotografía escolar · ${name} · ${yr}`;
+    document.getElementById('hero-proposal').textContent = `Propuesta preparada para: ${name} ${yr}`;
 
     const footerSub = document.getElementById('footer-sub');
     if (footerSub) footerSub.textContent =

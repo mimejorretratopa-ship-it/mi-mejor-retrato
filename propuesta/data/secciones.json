@@ -2,7 +2,7 @@
   "secciones": {
     "hero": {
       "activo": true,
-      "nota": "El título y subtítulo se generan automáticamente desde escuelas.json"
+      "nota": "Nombre de escuela y año se generan automáticamente desde la URL y escuelas.json"
     },
     "la_diferencia": {
       "activo": true
@@ -11,20 +11,23 @@
       "activo": true
     },
     "paquetes": {
-      "nota": "La visibilidad de esta sección se controla desde precios.json, no aquí."
+      "nota": "La visibilidad de esta sección se controla desde precios.json (visibilidad: publicar | pendiente)."
     },
     "ubicacion": {
       "activo": true,
       "estado": "pendiente",
       "nota_estados": "pendiente | texto | colegio | estudios",
-      "mensaje": "",
-      "ubicaciones": []
+      "mensaje": "La ubicación se confirmará próximamente.",
+      "ubicaciones": [],
+      "nota_ubicaciones": "Si el estado es 'estudios', colocar IDs de escuelas.json (ej: ['condado', 'viaargentina'])"
     },
     "portafolio_inicio": {
       "activo": true,
+      "nota_config": "Detecta archivos 01 a 99 con el prefijo en la carpeta indicada",
       "carpeta": "portafolio",
       "prefijo": "p1_",
-      "extension": "jpg"
+      "extension": "jpg",
+      "nota_extension": "jpg | png | webp"
     },
     "portafolio_medio": {
       "activo": false,
@@ -57,16 +60,17 @@
       "activo": true
     }
   },
-  "salones": [
-    {
-      "valor": "salon_ejemplo",
-      "label": "Salón Ejemplo",
-      "corto": "ex"
-    }
-  ],
+  "salones": {
+    "activo": true,
+    "obligatorio": true,
+    "nota_obligatorio": "true | false (si es obligatorio el campo en el formulario)",
+    "lista": [
+      "1A", "1B", "2A", "2B"
+    ]
+  },
   "metadata": {
-    "version": "2.2",
-    "nota": "Esta es la plantilla maestra para propuestas v1.5. No agregar campos que no sean interpretados por modules/*.js",
-    "actualizado": "2026-05-10"
+    "version": "3.0",
+    "nota": "Esta es la plantilla maestra para propuestas v3.0 (URL-driven).",
+    "actualizado": "2026-05-14"
   }
 }

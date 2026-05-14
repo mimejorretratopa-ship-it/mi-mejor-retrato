@@ -1,0 +1,78 @@
+{
+    "secciones": {
+        "hero": {
+            "activo": true,
+            "nota": "Nombre de escuela y año se generan automáticamente desde la URL y escuelas.json"
+        },
+        "la_diferencia": {
+            "activo": true
+        },
+        "como_funciona": {
+            "activo": true
+        },
+        "paquetes": {
+            "nota": "La visibilidad de esta sección se controla desde precios.json (visibilidad: publicar | pendiente)."
+        },
+        "ubicacion": {
+            "activo": true,
+            "estado": "estudios",
+            "nota_estados": "pendiente | texto | colegio | estudios",
+            "mensaje": "La ubicación se confirmará próximamente.",
+            "ubicaciones": [],
+            "nota_ubicaciones": "Si el estado es 'estudios', colocar IDs de escuelas.json (ej: ['condado', 'viaargentina'])"
+        },
+        "portafolio_inicio": {
+            "activo": true,
+            "nota_config": "Detecta archivos 01 a 99 con el prefijo en la carpeta indicada",
+            "carpeta": "portafolio",
+            "prefijo": "k_25_",
+            "extension": "jpg",
+            "nota_extension": "jpg | png | webp"
+        },
+        "portafolio_medio": {
+            "activo": false,
+            "carpeta": "portafolio_mixto",
+            "prefijo": "k_25_",
+            "extension": "jpg"
+        },
+        "sobre_mike": {
+            "activo": true
+        },
+        "faq": {
+            "activo": true
+        },
+        "portafolio_cierre": {
+            "activo": false,
+            "carpeta": "portafolio",
+            "prefijo": "p3_",
+            "extension": "jpg"
+        },
+        "mascotas": {
+            "activo": false
+        },
+        "fondos": {
+            "activo": false
+        },
+        "direccion_estudio": {
+            "activo": false
+        },
+        "reserva": {
+            "activo": true
+        }
+    },
+    "salones": {
+        "activo": true,
+        "obligatorio": true,
+        "nota_obligatorio": "true | false (si es obligatorio el campo en el formulario)",
+        "lista": [
+            "Kínder A",
+            "Kínder B",
+            "Kínder C"
+        ]
+    },
+    "metadata": {
+        "version": "3.0",
+        "nota": "Propuesta v3.0 (URL-driven).",
+        "actualizado": "2026-05-14"
+    }
+}
