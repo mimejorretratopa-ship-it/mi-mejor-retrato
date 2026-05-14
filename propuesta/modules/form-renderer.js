@@ -286,9 +286,13 @@ const formModule = (() => {
     try {
       // Preparar metadata
       const brochure = state.get('brochure');
+      const sections = state.get('sections');
+      const salonData = (sections?.salones || []).find(s => s.valor === validation.data.salon);
+      
       const metadata = {
         propuesta: brochure.id,
         schoolName: brochure.schoolName,
+        salon_corto: salonData?.corto || '',
         whatsapp_limpio: utils.cleanPhone(
           validation.data.codigoPais, 
           validation.data.celular

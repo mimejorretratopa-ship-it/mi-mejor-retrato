@@ -36,15 +36,15 @@ Un solo HTML funciona para cualquier escuela/año porque **todo el contenido vie
 ┌──────────────────────▼──────────────────────────────┐
 │              PERSISTENCIA (lib/storage.js)            │
 │  — ÚNICO punto de acceso a datos externos            │
-│  — Cache en memoria (Map)                            │
-│  — Adapter pattern: hoy fetch JSON / mañana API      │
+│  — Adapter pattern: POST a Google Sheets & Discord   │
+│  — Fallback: solo logs (descarga local desactivada)  │
 └──────────────────────┬──────────────────────────────┘
-                       │ lee
+                       │ lee / escribe
 ┌──────────────────────▼──────────────────────────────┐
-│                   DATOS (/data)                       │
-│  escuelas.json  precios.json  formulario.json        │
-│  {code}_secciones.json  registro.json                │
-│  — Archivos estáticos, editables sin tocar código    │
+│                   DATOS & BACKEND                    │
+│  DATOS (JSON): escuelas, precios, secciones          │
+│  BACKEND: Google Sheets (DB) + Discord (Alertas)     │
+│  — Sin servidor propio (Serverless)                  │
 └─────────────────────────────────────────────────────┘
 ```
 

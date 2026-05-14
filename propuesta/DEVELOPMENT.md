@@ -126,4 +126,6 @@ git push origin main
 - [ ] Entrada en `data/registro.json` con estado `"publicado"`
 - [ ] Sin errores en consola del navegador
 - [ ] Formulario de prueba completado exitosamente
+- [ ] **Verificar fila nueva en Google Sheets**
+- [ ] **Verificar notificación en Discord**
 - [ ] Imágenes cargando correctamente

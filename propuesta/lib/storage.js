@@ -22,7 +22,7 @@ const storage = (() => {
   // ── CACHE EN MEMORIA ──────────────────────────────────────────
   // Evita cargar el mismo JSON múltiples veces en una sesión
   const cache = new Map();
-  
+
   // ── CONFIGURACIÓN ─────────────────────────────────────────────
   const config = {
     baseURL: '.',
@@ -35,7 +35,7 @@ const storage = (() => {
       const cfg = window.config || {};
       const end = cfg.endpoints || {};
       return {
-        submit:  end.submitForm || '/api/submit-form',
+        submit: end.submitForm || '/api/submit-form',
         contact: end.createContact || '/api/create-contact',
         discord: end.notifyDiscord || '/api/notify-discord'
       };
@@ -52,11 +52,11 @@ const storage = (() => {
   async function fetchFromAPI(filename) {
     const url = `${config.baseURL}/data/${filename}`;
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${filename}`);
     }
-    
+
     return await response.json();
   }
 
@@ -89,7 +89,7 @@ const storage = (() => {
 
     try {
       const isGoogleScript = endpoint.includes('script.google.com');
-      
+
       // Google Scripts: Usamos text/plain para evitar el "preflight request" (CORS)
       // Esto hace que sea una "Simple Request" y no necesita validación OPTIONS previa.
       const contentType = isGoogleScript ? 'text/plain' : 'application/json';
@@ -142,12 +142,12 @@ const storage = (() => {
      */
     async loadJSON(filename, forceRefresh = false) {
       const cacheKey = `json:${filename}`;
-      
+
       // Verificar cache
       if (!forceRefresh && cache.has(cacheKey)) {
         const cached = cache.get(cacheKey);
         const age = Date.now() - cached.timestamp;
-        
+
         if (age < config.cacheTTL) {
           console.log(`[CACHE HIT] ${filename}`);
           return cached.data;
@@ -158,23 +158,23 @@ const storage = (() => {
       try {
         console.log(`[FETCH] ${filename}`);
         const data = await fetchFromAPI(filename);
-        
+
         // Guardar en cache
         cache.set(cacheKey, {
           data,
           timestamp: Date.now()
         });
-        
+
         return data;
       } catch (error) {
         console.error(`[ERROR] No se pudo cargar ${filename}:`, error);
-        
+
         // Fallback: retornar cache viejo si existe
         if (cache.has(cacheKey)) {
           console.warn(`[FALLBACK] Usando cache expirado de ${filename}`);
           return cache.get(cacheKey).data;
         }
-        
+
         throw error;
       }
     },
@@ -185,8 +185,8 @@ const storage = (() => {
      * FUTURO: solo envía a backend, sin descarga local
      */
     async saveSubmission(data, metadata = {}) {
-      const payload = { 
-        ...data, 
+      const payload = {
+        ...data,
         _meta: {
           timestamp: new Date().toISOString(),
           ...metadata
@@ -203,12 +203,12 @@ const storage = (() => {
         }
       } catch (error) {
         console.error('[STORAGE] Error al guardar submission:', error);
-        
+
         // Ya no descargamos JSON automáticamente para evitar spam en la PC del usuario.
         // La notificación de Discord (que se lanza después) sirve como respaldo.
-        
-        return { 
-          success: false, 
+
+        return {
+          success: false,
           error: error.message,
           message: 'No se pudo sincronizar con la base de datos, pero la notificación de Discord se intentará enviar.'
         };
@@ -236,7 +236,7 @@ const storage = (() => {
       try {
         const endpoint = config.endpoints.discord;
         const isDirectWebhook = endpoint.includes('discord.com/api/webhooks');
-        
+
         // Si es webhook directo, Discord espera { content: "..." }
         // Si es nuestra API, espera { message: "..." }
         const payload = isDirectWebhook ? { content: message } : { message };
@@ -252,8 +252,8 @@ const storage = (() => {
      * Descarga un objeto como JSON (fallback manual)
      */
     downloadJSON(data, filename) {
-      const blob = new Blob([JSON.stringify(data, null, 2)], { 
-        type: 'application/json' 
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json'
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -261,7 +261,7 @@ const storage = (() => {
       a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
-      
+
       console.log(`[DOWNLOAD] ${filename}`);
     },
 
@@ -284,7 +284,7 @@ const storage = (() => {
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-+|-+$/g, '');
-      
+
       return `${data.idEscuela}_${ts}_${slug}.json`;
     }
   };
