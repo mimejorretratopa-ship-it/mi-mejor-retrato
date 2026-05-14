@@ -78,6 +78,36 @@ const storage = (() => {
     clearCache() {
       cache.clear();
       log('Cache limpiado');
+    },
+
+    // ── MÉTODOS DE NEGOCIO (Onboarding Legacy) ──
+    // Se mantienen para compatibilidad con modules/form-renderer.js
+    
+    async saveSubmission(data, metadata) {
+      try {
+        const payload = { ...data, ...metadata, timestamp: new Date().toISOString() };
+        this.set(`submission_${metadata.propuesta}`, payload);
+        
+        const result = await window.api.enviarReserva(payload);
+        return { success: result.ok, data: result.data };
+      } catch (error) {
+        console.error('[STORAGE] saveSubmission failed:', error);
+        return { success: false, error: error.message };
+      }
+    },
+
+    async notifyDiscord(message) {
+      // El nuevo Api.notificarDiscord espera un objeto con fields o mensaje
+      // Para compatibilidad con el envío de string directo:
+      await window.api.notificarDiscord({ 
+        fields: [{ name: 'Notificación', value: message }] 
+      });
+    },
+
+    async createContact(data) {
+      // Este método antes llamaba a un endpoint específico. 
+      // El nuevo Hub ya maneja la creación de contactos, pero dejamos el log.
+      log('createContact (delegado al Hub):', data.nombre);
     }
   };
 })();

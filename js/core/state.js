@@ -14,18 +14,20 @@ const state = (() => {
       activeSection: null
     },
 
-    // ── Onboarding State (Brochures) ──
-    onboarding: {
-      brochure: null,   // { code, year, id, schoolName, gaId }
-      form: null,       // definición (formulario.json)
-      pricing: null,    // precios (precios.json)
-      sections: null,   // visibilidad ({code}_secciones.json)
-      schools: null,    // catálogo (escuelas.json)
-      ui: {
-        loading: false,
-        error: null
-      }
+    // ── Onboarding State (Brochures - Top Level for Compatibility) ──
+    brochure: null,   // { code, year, id, schoolName, gaId }
+    form: null,       // definición (formulario.json)
+    pricing: null,    // precios (precios.json)
+    sections: null,   // visibilidad ({code}_secciones.json)
+    schools: null,    // catálogo (escuelas.json)
+    ui: {
+      loading: false,
+      error: null
     },
+
+    // ── Post-Onboarding ──
+    student: null,
+    questionnaire: null,
 
     // ── Shared UI State ──
     ui: {
@@ -77,7 +79,24 @@ const state = (() => {
     };
   }
 
-  return { get, set, on };
+  // ── HELPERS (Lógica de negocio derivada del estado) ──
+  const helpers = {
+    /**
+     * Obtiene la configuración de precios para la escuela actual
+     */
+    getCurrentPricing() {
+      const pricing = get('pricing');
+      const brochure = get('brochure');
+      if (!pricing || !brochure) return null;
+
+      // Buscar por código de escuela
+      return pricing.escuelas.find(e => 
+        e.code.toLowerCase() === brochure.code.toLowerCase()
+      ) || null;
+    }
+  };
+
+  return { get, set, on, helpers };
 })();
 
 // Exponer globalmente
