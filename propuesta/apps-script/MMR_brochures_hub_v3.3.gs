@@ -56,7 +56,10 @@ function doPost(e) {
       var nombreContacto = data.nombre + ' : ' + data.nombreEstudiante + ' - ' + schoolCode + ' ' + salonCorto;
 
       var person = {
-        names: [{ givenName: data.nombre, familyName: data.nombreEstudiante }],
+        names: [{ 
+          givenName: data.nombre + ' : ' + data.nombreEstudiante, 
+          familyName: ' - ' + schoolCode + (salonCorto ? ' ' + salonCorto : '') 
+        }],
         phoneNumbers: [{ value: phone, type: 'mobile' }],
         biographies: [{ value: 'Estudiante: ' + data.nombreEstudiante + '\nRelación: ' + data.relacion + '\nColegio: ' + colegio + '\nFormato: ' + nombreContacto }]
       };
