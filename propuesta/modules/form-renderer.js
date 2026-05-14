@@ -291,7 +291,10 @@ const formModule = (() => {
       
       const metadata = {
         propuesta: brochure.id,
-        schoolName: brochure.id, // Usamos el ID corto (ej: clia-26) para el Excel
+        // DISEÑO INTENCIONAL: se envía el ID corto "clia-26", no el nombre largo.
+        // Esto hace que la columna Colegio en Sheets/Airtable sea filtrable y consistente.
+        // Ver MIGRATION-GUIDE.md § "Campo Colegio — diseño intencional"
+        schoolName: brochure.id,
         salon_corto: salonData?.corto || '',
         whatsapp_limpio: utils.cleanPhone(
           validation.data.codigoPais, 

@@ -83,32 +83,38 @@ const storage = (() => {
       return { ok: true, id: Date.now() };
     }
 
-    // PRODUCCIÓN: envía al endpoint real con TIMEOUT
+    // PRODUCCIÓN: envía al endpoint real
+    const isGoogleScript = endpoint.includes('script.google.com');
+
+    // Google Scripts con no-cors: FIRE AND FORGET.
+    // El script tarda 10-15s ejecutando Sheets + Contacts + Airtable en secuencia.
+    // No podemos leer la respuesta de todas formas (opaque response).
+    // Enviamos y asumimos éxito — el LOGS sheet del script es la fuente de verdad.
+    if (isGoogleScript) {
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' }, // text/plain evita preflight CORS
+        body: JSON.stringify(data),
+        mode: 'no-cors'
+      }).catch(err => console.warn('[STORAGE] Google Script fetch error (ignorado):', err));
+
+      return { success: true, message: 'Enviado a Google Script (fire-and-forget)' };
+    }
+
+    // Otros endpoints (Discord, API propia): timeout normal de 8 segundos
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 segundos de espera
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     try {
-      const isGoogleScript = endpoint.includes('script.google.com');
-
-      // Google Scripts: Usamos text/plain para evitar el "preflight request" (CORS)
-      // Esto hace que sea una "Simple Request" y no necesita validación OPTIONS previa.
-      const contentType = isGoogleScript ? 'text/plain' : 'application/json';
-
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': contentType },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
         signal: controller.signal,
-        mode: isGoogleScript ? 'no-cors' : 'cors'
+        mode: 'cors'
       });
 
       clearTimeout(timeoutId);
-
-      // Si es Google Script con no-cors, el status será 0 (opaco). 
-      // Si llegamos aquí sin que fetch lance un error, es que se envió.
-      if (isGoogleScript) {
-        return { success: true, message: 'Enviado en modo no-cors' };
-      }
 
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
@@ -119,7 +125,6 @@ const storage = (() => {
       try {
         return text ? JSON.parse(text) : { success: true };
       } catch (e) {
-        // Si no es JSON pero el status es OK, lo damos por bueno (ej. Discord)
         return { success: true, raw: text };
       }
     } catch (error) {
