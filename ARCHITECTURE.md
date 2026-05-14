@@ -49,6 +49,32 @@ Un solo HTML funciona para cualquier escuela/año porque **todo el contenido se 
 └─────────────────────────────────────────────────────┘
 ```
 
+## 🏗️ Estructura del Core Unificado (`js/core/`)
+
+Para evitar duplicidad y asegurar que un cambio en la configuración (ej: webhook de Discord o WhatsApp) se refleje en todo el sitio, hemos centralizado la lógica en la raíz del proyecto:
+
+- **`config.js`**: Única fuente de verdad para endpoints, feature flags y textos de marca. Usado por el website y los brochures.
+- **`state.js`**: Observable Store centralizado. 
+    - *Nota de compatibilidad*: Para permitir que los módulos de onboarding (legacy) funcionen sin cambios, los datos como `brochure`, `pricing`, `form` y `sections` residen en la raíz del estado. El estado del website está bajo el namespace `website`.
+- **`storage.js`**: Adaptador de persistencia y carga de JSONs con caché de memoria. Incluye métodos de negocio delegados (`saveSubmission`, `notifyDiscord`) para compatibilidad con los módulos existentes.
+- **`api.js`**: Hub de comunicaciones externas (Google Sheets Hub y Discord).
+    - *Optimización CORS*: Detecta si el destino es Google Apps Script para usar `text/plain` y evitar errores de preflight, mientras mantiene `application/json` para Discord.
+- **`validators.js`** / **`utils.js`**: Librerías de lógica pura compartidas y robustecidas.
+
+## 🔄 Flujo de Datos (Onboarding)
+
+```mermaid
+graph TD
+    URL["URL (/onboarding/clia-26)"] --> Init["initApp()"]
+    Init --> Storage["storage.loadJSON()"]
+    Storage --> State["state.set('brochure', data)"]
+    State --> Modules["Modules Render (paquetes, galerias, form)"]
+    Modules --> Submit["storage.saveSubmission()"]
+    Submit --> Hub["Google Apps Script Hub"]
+    Hub --> Sheets["Google Sheets"]
+    Hub --> Airtable["Airtable"]
+```
+
 ---
 
 ## La regla más importante
@@ -56,9 +82,9 @@ Un solo HTML funciona para cualquier escuela/año porque **todo el contenido se 
 **La UI nunca toca localStorage ni fetch directamente.**
 
 ```js
-// ✅ CORRECTO — todo pasa por storage
+// ✅ CORRECTO — todo pasa por storage y api
 const precios = await storage.loadJSON('precios.json');
-await storage.saveSubmission(formData);
+await storage.saveSubmission(formData, metadata);
 
 // ❌ PROHIBIDO — acoplamiento directo
 localStorage.setItem('data', JSON.stringify(data));
@@ -71,7 +97,7 @@ Esta regla es lo que permite migrar de JSONs estáticos a una API real **sin ree
 
 ## Autoconfiguración del brochure
 
-URL: /propuesta/ebrv-26
+URL: /onboarding/ebrv-26
      │
      ▼
 extractBrochureConfig()
@@ -95,28 +121,6 @@ Además de la configuración, el sistema inyecta strings dinámicos en el DOM du
 - **Hero Title**: `Fotografía escolar · [Escuela] · [Año]`
 - **Hero Proposal**: `Propuesta preparada para: [Escuela] [Año]` (debajo del subtítulo).
 - **Page Title**: `Mi Mejor Retrato — [Escuela] [Año]`
-
----
-
-## Adapter Pattern en storage.js
-
-`storage.js` tiene dos funciones privadas clave que abstraen el transporte:
-
-```js
-// Hoy: fetch de archivo JSON estático
-async function fetchFromAPI(filename) {
-  const url = `${config.baseURL}/data/${filename}`;
-  return await fetch(url).then(r => r.json());
-}
-
-// Hoy: simulado en dev, POST real en prod
-async function postToAPI(endpoint, data) {
-  if (isDev) return { ok: true, id: Date.now() }; // mock
-  return await fetch(endpoint, { method: 'POST', body: JSON.stringify(data) });
-}
-```
-
-Para migrar a una API real: **solo se reescriben estas dos funciones**. Los módulos de UI no cambian.
 
 ---
 
@@ -160,7 +164,7 @@ initApp()
 
 ---
 
-## Configuración centralizada (config/brochure-config.js)
+## Configuración centralizada (`js/core/config.js`)
 
 Un único objeto `config` expone:
 
@@ -209,7 +213,7 @@ Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja d
 
 ## Pipeline Post-Onboarding
 
-El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fases:
+El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fases, todas compartiendo el mismo `js/core/`:
 
 ```
 FASE 0 (✅ HECHO)              FASE 1 (🎯 PRÓXIMO)       FASE 2                    FASE 3
@@ -232,7 +236,7 @@ student_id = {whatsapp_limpio}_{nombreEstudiante_slug}_{salon_slug}
 Ejemplo:    5076XXXXXXX_maria-antonia_kinder
 ```
 
-Este ID se genera en el onboarding y se usa como clave para:
+Este ID se genera en el onboarding y se envía al Hub dentro del objeto `_meta` y también en la raíz del payload para asegurar su persistencia en Sheets y Airtable. Se usa como clave para:
 - Cuestionario pre-sesión (Fase 1) → URL personalizado con `?sid={student_id}`
 - PDF + QR (Fase 2) → QR codifica el student_id
 - Panel de horarios (Fase 3) → filtra slots por student_id
@@ -260,21 +264,6 @@ Renderiza cuestionario condicional:
      ▼
 Submit → Apps Script Hub → Sheets (pestaña "Cuestionarios") + Airtable (misma fila)
 ```
-
-**Principio:** un solo HTML, datos en JSON, sin archivos duplicados — idéntico al brochure.
-
-### PDF + QR (Fase 2 — fuera del website)
-
-- **PDF de sesión** (8.5"×11"): respuestas del cuestionario + datos del onboarding. Lo lleva el fotógrafo.
-- **Banner con QR** (4.25"×11"): se fotografía junto al niño. Scripts Python leen el QR para asignar fotos.
-- Generación: script Python o Google Apps Script, lee de Sheets/Airtable.
-
-### Panel de Horarios (Fase 3)
-
-- **Solo aplica** cuando la sesión es en estudio (no en escuela ni locación personalizada).
-- Página dinámica por salón: `/propuesta/horarios/{code}-{yy}`
-- Mike configura slots en Airtable; el panel los lee via Apps Script Hub.
-- El padre recibe un link y elige su horario.
 
 ---
 
