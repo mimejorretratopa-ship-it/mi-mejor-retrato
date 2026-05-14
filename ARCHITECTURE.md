@@ -131,6 +131,10 @@ state.get('pricing')   // precios por escuela (precios.json)
 state.get('sections')  // secciones activas (ebrv_secciones.json)
 state.get('schools')   // catálogo de colegios (escuelas.json)
 state.get('ui')        // { formLoading, pricingLoading, sectionsLoading }
+
+// ── Post-Onboarding (Fase 1: Cuestionario) ──
+state.get('student')       // datos del estudiante pre-cargados desde onboarding
+state.get('questionnaire') // definición del cuestionario activo (cuestionario_kinder.json, etc.)
 ```
 
 Regla: **si un módulo necesita datos, los pide a `state`, no los carga él mismo**.
@@ -183,6 +187,9 @@ Un único objeto `config` expone:
 | `precios.json` | Al cambiar precios o paquetes |
 | `formulario.json` | Al agregar/quitar campos del formulario |
 | `{code}_secciones.json` | Al activar/desactivar secciones (layout) por escuela |
+| `cuestionario_kinder.json` | Al cambiar preguntas del cuestionario pre-sesión (kinder/pre-k) |
+| `cuestionario_sexto.json` | Al cambiar preguntas del cuestionario pre-sesión (sexto grado) |
+| `cuestionario_config.json` | Al mapear qué salones usan qué tipo de cuestionario |
 
 ---
 
@@ -200,6 +207,75 @@ Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja d
 
 ---
 
+## Pipeline Post-Onboarding
+
+El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fases:
+
+```
+FASE 0 (✅ HECHO)              FASE 1 (🎯 PRÓXIMO)       FASE 2                    FASE 3
+Onboarding                     Cuestionario              Producción                Operaciones
+─────────────────              ──────────────            ──────────────            ──────────────
+Brochure URL-driven            Formulario pre-sesión     PDF referencia            Panel de horarios
+  → Formulario reserva           personalizado por niño    para el fotógrafo         por salón/escuela
+  → Google Sheets              → Links por WhatsApp      Banner + QR code
+  → Airtable                   → Mismo Sheets/Airtable     para ID de fotos
+  → Google Contacts            → Preguntas condicionales Python QR reader
+  → Discord
+```
+
+### student_id — La clave universal
+
+Todos los módulos post-onboarding se conectan a través de un identificador único por estudiante:
+
+```
+student_id = {whatsapp_limpio}_{nombreEstudiante_slug}_{salon_slug}
+Ejemplo:    5076XXXXXXX_maria-antonia_kinder
+```
+
+Este ID se genera en el onboarding y se usa como clave para:
+- Cuestionario pre-sesión (Fase 1) → URL personalizado con `?sid={student_id}`
+- PDF + QR (Fase 2) → QR codifica el student_id
+- Panel de horarios (Fase 3) → filtra slots por student_id
+
+### Cuestionario Pre-Sesión (Fase 1)
+
+```
+URL: /propuesta/cuestionario?sid={student_id}
+     │
+     ▼
+cuestionario.html (único, URL-driven como el brochure)
+     │ lee query param `sid`
+     ▼
+Apps Script Hub lookup → obtiene datos del onboarding (nombre, escuela, salón)
+     │
+     ▼
+state.set('student', { nombre, escuela, salon, grado, ... })
+     │
+     ▼
+Renderiza cuestionario condicional:
+  ├── Kinder / Pre-K  → cuestionario_kinder.json
+  ├── 6to grado       → cuestionario_sexto.json
+  └── Mapeo definido en cuestionario_config.json
+     │
+     ▼
+Submit → Apps Script Hub → Sheets (pestaña "Cuestionarios") + Airtable (misma fila)
+```
+
+**Principio:** un solo HTML, datos en JSON, sin archivos duplicados — idéntico al brochure.
+
+### PDF + QR (Fase 2 — fuera del website)
+
+- **PDF de sesión** (8.5"×11"): respuestas del cuestionario + datos del onboarding. Lo lleva el fotógrafo.
+- **Banner con QR** (4.25"×11"): se fotografía junto al niño. Scripts Python leen el QR para asignar fotos.
+- Generación: script Python o Google Apps Script, lee de Sheets/Airtable.
+
+### Panel de Horarios (Fase 3)
+
+- **Solo aplica** cuando la sesión es en estudio (no en escuela ni locación personalizada).
+- Página dinámica por salón: `/propuesta/horarios/{code}-{yy}`
+- Mike configura slots en Airtable; el panel los lee via Apps Script Hub.
+- El padre recibe un link y elige su horario.
+
 ---
 
 ## Qué NO existe aquí (a propósito)
@@ -211,5 +287,6 @@ Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja d
 | Framework (React/Vue) | El DOM manipulation manual es suficiente y más debuggeable |
 | Estado reactivo complejo | La inicialización secuencial es más predecible |
 | Testing automatizado | Complejidad no justificada para este escenario |
+| Base de datos SQL/NoSQL | Google Sheets + Airtable cubren el volumen actual y permiten gestión visual |
 
 La complejidad se agrega **cuando el problema lo exige**, no antes.

@@ -24,6 +24,13 @@ El 14 de Mayo de 2026 se migró de una arquitectura basada en archivos individua
 - **Datos centralizados**: Los metadatos de brochures viven en `escuelas.json`.
 - **Regla de Autoridad**: Se unificaron criterios; `*_secciones.json` manda sobre el layout y `precios.json` manda sobre la visibilidad de paquetes/precios.
 
+### Extensión Post-Onboarding (Fase 1+)
+
+La arquitectura URL-driven se extenderá para soportar flujos post-onboarding:
+- El formulario de reserva inicial generará un `student_id` único: `{whatsapp}_{nombre_slug}_{salon_slug}`
+- Airtable usará fórmulas para generar URLs dinámicas para un **Cuestionario Pre-Sesión**: `/propuesta/cuestionario?sid={student_id}`
+- Este nuevo cuestionario (`cuestionario.html`) seguirá el mismo patrón: único HTML, cargando preguntas desde JSON (`cuestionario_kinder.json`, etc.) y enviando datos al mismo Hub.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)

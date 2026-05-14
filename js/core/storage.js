@@ -1,0 +1,89 @@
+/**
+ * storage.js — Capa de persistencia (Storage Adapter)
+ * ──────────────────────────────────────────────────────────────
+ * Maneja localStorage y carga de JSONs estáticos.
+ */
+
+const storage = (() => {
+  const prefix = () => (window.config?.storage?.prefix ?? 'app_');
+  const key = (name) => `${prefix()}${name}`;
+
+  const log = (...args) => {
+    if (window.config?.features?.debug) console.log('[STORAGE]', ...args);
+  };
+
+  const cache = new Map();
+
+  return {
+    // ── LOCAL STORAGE (Key-Value) ──
+    set(name, value) {
+      try {
+        localStorage.setItem(key(name), JSON.stringify(value));
+        log('set', name, value);
+        return true;
+      } catch (err) {
+        console.warn('[STORAGE] set failed:', err);
+        return false;
+      }
+    },
+
+    get(name) {
+      try {
+        const raw = localStorage.getItem(key(name));
+        if (raw === null) return null;
+        const val = JSON.parse(raw);
+        log('get', name, '→', val);
+        return val;
+      } catch (err) {
+        console.warn('[STORAGE] get failed:', err);
+        return null;
+      }
+    },
+
+    remove(name) {
+      localStorage.removeItem(key(name));
+      log('remove', name);
+    },
+
+    // ── JSON LOADER (Static Data) ──
+    async loadJSON(filename, useCache = true) {
+      // 1. Verificar cache en memoria
+      if (useCache && cache.has(filename)) {
+        return cache.get(filename);
+      }
+
+      const path = filename.includes('/') ? filename : `data/${filename}`;
+      
+      try {
+        log(`Cargando JSON: ${path}`);
+        const response = await fetch(path);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        
+        if (useCache) {
+          cache.set(filename, data);
+        }
+        
+        return data;
+      } catch (error) {
+        console.error(`[STORAGE] Error cargando ${path}:`, error);
+        throw error;
+      }
+    },
+
+    clearCache() {
+      cache.clear();
+      log('Cache limpiado');
+    }
+  };
+})();
+
+// Exponer globalmente
+window.storage = storage;
+
+// Compatibilidad con código viejo (Website buscaba window.Storage con S mayúscula)
+window.Storage = storage;

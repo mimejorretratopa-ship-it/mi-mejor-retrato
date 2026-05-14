@@ -95,7 +95,7 @@
 
   // ── Estados de UI del formulario ──────────────────────────
   function _setEstado(estado) {
-    window.State.set('form.status', estado);
+    state.set('website.formStatus', estado);
 
     const estados = {
       idle: () => {
@@ -142,7 +142,7 @@
     _setEstado('sending');
 
     // La lógica de "¿hay endpoint o no?" vive en api.js, no aquí
-    const result = await window.Api.enviarContacto(data);
+    const result = await window.api.enviarContacto(data);
 
     if (result.ok) {
       _setEstado('sent');
@@ -151,7 +151,7 @@
       if (result.dev && window.APP_CONFIG?.DEBUG) {
         console.info(
           '[Form] Modo DEV: el formulario se "envió" a localStorage.\n' +
-          'Para envío real, configura FORM_ENDPOINT en config.js'
+          'Para envío real, configura endpoints.websiteContact en config.js'
         );
       }
     } else {
