@@ -90,6 +90,12 @@ todos los módulos leen state.get('brochure')
 
 **Implicación práctica:** no hay archivos HTML duplicados. El enrutamiento es dinámico basado en el slug de la URL.
 
+### Inyección Dinámica de Contenido
+Además de la configuración, el sistema inyecta strings dinámicos en el DOM durante `initBrochure()`:
+- **Hero Title**: `Fotografía escolar · [Escuela] · [Año]`
+- **Hero Proposal**: `Propuesta preparada para: [Escuela] [Año]` (debajo del subtítulo).
+- **Page Title**: `Mi Mejor Retrato — [Escuela] [Año]`
+
 ---
 
 ## Adapter Pattern en storage.js
@@ -176,7 +182,23 @@ Un único objeto `config` expone:
 | `escuelas.json` | Al agregar un colegio nuevo o año activo (incluye ga_id) |
 | `precios.json` | Al cambiar precios o paquetes |
 | `formulario.json` | Al agregar/quitar campos del formulario |
-| `{code}_secciones.json` | Al activar/desactivar secciones por escuela |
+| `{code}_secciones.json` | Al activar/desactivar secciones (layout) por escuela |
+
+---
+
+## 🏛️ La Regla de Oro de Visibilidad
+
+Para evitar conflictos entre el diseño y la lógica de negocio, se ha dividido la autoridad:
+
+1.  **Layout (ON/OFF)** → Se controla en `*_secciones.json`. Si una sección como `faq` o `sobre_mike` debe desaparecer, se usa `activo: false` allí.
+2.  **Lógica de Paquetes (Precios)** → Se controla ÚNICAMENTE en `precios.json` mediante el campo `visibilidad`.
+    *   `publicar`: Todo visible.
+    *   `pendiente`: Muestra aviso de "coordinando precios".
+    *   `no_publicar`: Oculta la sección pero permite enviar el formulario con el paquete #1 preseleccionado.
+
+Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja de ventas sin interferir con el `secciones.js` que solo apaga interruptores.
+
+---
 
 ---
 

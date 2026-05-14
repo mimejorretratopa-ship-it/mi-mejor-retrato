@@ -21,7 +21,8 @@ Frontend (Vercel)
 El 14 de Mayo de 2026 se migró de una arquitectura basada en archivos individuales a una **URL-driven architecture**.
 
 - **Rutas limpias**: Se usan rewrites en Vercel para servir `/propuesta/:slug` desde `index.html`.
-- **Datos centralizados**: `registro.json` fue eliminado. Los metadatos de brochures viven en `escuelas.json`.
+- **Datos centralizados**: Los metadatos de brochures viven en `escuelas.json`.
+- **Regla de Autoridad**: Se unificaron criterios; `*_secciones.json` manda sobre el layout y `precios.json` manda sobre la visibilidad de paquetes/precios.
 
 ---
 

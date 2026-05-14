@@ -1,20 +1,18 @@
-# Handoff de Sesión — 14 Mayo 2026
+# Handoff de Sesión — 14 Mayo 2026 (Tarde)
 
-## Cambios Recientes (Migración a URL-Driven Routing)
-- **Migración de Arquitectura**: El sistema ha pasado de tener múltiples archivos HTML (`ebrv-26.html`, `clia-26.html`) a un solo punto de entrada dinámico: `index.html`.
-- **Enrutamiento por URL**: Ahora el sistema identifica el brochure basándose en el slug de la URL (`/propuesta/ebrv-26`).
-- **Fusión de Datos**: Se eliminó `registro.json`. Los metadatos de los brochures (GA IDs, años activos, estados) ahora viven en `data/escuelas.json`.
-- **Página de Error**: Se implementó una página de error visualmente integrada para slugs inválidos, con link directo al WhatsApp de Mike.
-- **Vercel Config**: Se agregó `vercel.json` para manejar rewrites y redirects automáticos.
-- **Base Tag**: Se añadió `<base href="/propuesta/">` para garantizar la resolución correcta de rutas relativas.
+## Cambios Recientes (Estabilización y Unificación)
+- **Regla de Autoridad**: Se resolvió el conflicto de visibilidad. `*_secciones.json` controla el layout (ON/OFF) y `precios.json` controla la lógica de venta (`publicar`, `pendiente`, `no_publicar`).
+- **Inyección Dinámica**: El Hero ahora muestra automáticamente "Propuesta preparada para: [Escuela] [Año]".
+- **Documentación en Código**: Se agregaron notas descriptivas (`nota_estados`, `_nota`, etc.) directamente en los JSON de configuración para facilitar su edición sin manuales externos.
+- **Blindaje de Datos**: Se estabilizó el formato de `salones` como un Array de Objetos para mantener compatibilidad con el CRM y Google Contacts.
 
 ## Estado del Proyecto
-El sistema es ahora más escalable y fácil de mantener. El backend permanece intacto y sigue recibiendo los mismos payloads que antes.
+La arquitectura modular es ahora definitiva. Los documentos `ARCHITECTURE.md` y `MIGRATION-GUIDE.md` han sido actualizados con estas nuevas reglas.
 
 ## Pendientes / Siguientes Pasos
 1. **Verificar Redirects**: Confirmar en producción que los enlaces `.html` antiguos redirigen correctamente a los nuevos slugs sin extensión.
-2. **Pruebas de Analytics**: Asegurarse de que los `ga_id` migrados a `escuelas.json` se están cargando correctamente.
+2. **Nuevos Brochures**: Al crear nuevos brochures, usar `secciones.json` (v3.1) como plantilla maestra.
 
 ---
 # Historial de Sesiones
-... (historial previo)
+- **14 Mayo 2026 (Mañana)**: Migración exitosa a URL-Driven Routing. Implementación de `vercel.json` y consolidación de `escuelas.json`.
