@@ -137,6 +137,10 @@ const paquetesModule = (() => {
       }
       mostrarPaquetesEnFormulario(paquetes);
 
+      // Asegurar que el botón de envío sea visible
+      const elSubmit = document.getElementById('form-submit-area');
+      if (elSubmit) elSubmit.classList.remove('hidden');
+
     } else if (visibilidad === 'pendiente') {
       // Muestra aviso pendiente en sección pública + aviso en formulario
       if (pendiente) pendiente.classList.remove('hidden');
