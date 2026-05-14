@@ -291,7 +291,7 @@ const formModule = (() => {
       
       const metadata = {
         propuesta: brochure.id,
-        schoolName: brochure.schoolName,
+        schoolName: brochure.id, // Usamos el ID corto (ej: clia-26) para el Excel
         salon_corto: salonData?.corto || '',
         whatsapp_limpio: utils.cleanPhone(
           validation.data.codigoPais, 
