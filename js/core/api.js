@@ -12,14 +12,18 @@ const Api = (() => {
 
   /**
    * Helper genérico para POST
-   * NOTA: Usamos 'text/plain' para evitar el preflight de CORS (OPTIONS)
-   * que Google Apps Script no maneja bien. El Hub recibirá el JSON igual.
+   * NOTA: Usamos 'text/plain' para Google Apps Script (evita CORS preflight)
+   * pero 'application/json' para Discord (que es más estricto).
    */
   async function _post(url, data) {
+    const isGAS = url.includes('script.google.com');
+    
     const response = await fetch(url, {
       method: 'POST',
-      mode: 'cors', // Necesario para seguir redirecciones de GAS
-      headers: { 'Content-Type': 'text/plain' }, 
+      mode: 'cors',
+      headers: { 
+        'Content-Type': isGAS ? 'text/plain' : 'application/json' 
+      },
       body: JSON.stringify(data)
     });
     
@@ -31,9 +35,8 @@ const Api = (() => {
     }
     
     try {
-      // GAS a veces retorna texto o HTML de error, intentamos parsear JSON
       const text = await response.text();
-      return JSON.parse(text);
+      return text ? JSON.parse(text) : { ok: true };
     } catch {
       return { ok: true };
     }
