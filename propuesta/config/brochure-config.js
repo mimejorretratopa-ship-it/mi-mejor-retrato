@@ -92,10 +92,10 @@ const config = (() => {
     // Descarga local de JSON como fallback (solo desarrollo)
     localDownload: isDev,
 
-    // Notificaciones Discord (activo en producción vía Netlify Function)
+    // Notificaciones Discord (activo en producción, webhook directo)
     discordNotifications: isProd,
 
-    // Google Contacts (activo en producción vía Netlify Function)
+    // Google Contacts (activo en producción vía Google Apps Script Hub)
     googleContacts: isProd,
 
     // Google Analytics (activo en producción)

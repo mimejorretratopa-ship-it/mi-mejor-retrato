@@ -46,7 +46,7 @@ El HTML **no necesita edición**. Todo se autoconfigura desde el nombre del arch
 ## Stack
 
 - **HTML + CSS + Vanilla JS** — sin frameworks, sin build step
-- **Netlify** — static hosting + Functions para el backend
+- **Vercel** — static hosting (deploy automático desde GitHub)
 - **JSONs estáticos** — toda la configuración vive en `/data/`
 
 ## Estructura de archivos
@@ -83,8 +83,8 @@ El HTML **no necesita edición**. Todo se autoconfigura desde el nombre del arch
 │
 ├── ubicaciones/              ← fotos de estudios
 ├── portafolio/               ← fotos del portafolio
-└── netlify/
-    └── functions/            ← Netlify Functions (backend)
+└── apps-script/
+    └── MMR_brochures_hub_v3.3.gs  ← Google Apps Script Hub (backup, sin tokens)
 ```
 
 ## Desarrollo local
@@ -96,10 +96,10 @@ El HTML **no necesita edición**. Todo se autoconfigura desde el nombre del arch
 
 ## Deploy
 
-Push a `main` en GitHub → Netlify despliega automáticamente.
+Push a `master` en GitHub → Vercel despliega automáticamente.
 
 ```
-Branch: main → https://tu-sitio.netlify.app
+Branch: master → https://tu-sitio.vercel.app
 ```
 
 ---

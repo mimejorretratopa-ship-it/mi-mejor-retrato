@@ -66,18 +66,19 @@ config.debug()                  // configuración activa
 
 ---
 
-## Deploy en Netlify
+## Deploy en Vercel
 
 ```bash
 git add .
 git commit -m "feat: nuevo brochure sabi-26"
-git push origin main
-# Netlify despliega automáticamente
+git push origin master
+# Vercel despliega automáticamente
 ```
 
-**Configuración del site:**
+**Configuración del site en Vercel:**
+- Framework Preset: **Other**
 - Build command: (vacío)
-- Publish directory: `.`
+- Output directory: `.`
 
 ---
 
@@ -127,5 +128,6 @@ git push origin main
 - [ ] Sin errores en consola del navegador
 - [ ] Formulario de prueba completado exitosamente
 - [ ] **Verificar fila nueva en Google Sheets**
+- [ ] **Verificar pestaña LOGS en Google Sheets (Airtable OK)**
 - [ ] **Verificar notificación en Discord**
 - [ ] Imágenes cargando correctamente

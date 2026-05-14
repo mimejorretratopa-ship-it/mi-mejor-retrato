@@ -158,7 +158,7 @@ Un único objeto `config` expone:
 | Sección | Qué contiene |
 |---------|-------------|
 | `config.isDev / isProd` | detección de ambiente |
-| `config.endpoints` | URLs de Netlify Functions |
+| `config.endpoints` | URLs del Google Apps Script Hub |
 | `config.whatsapp` | número y template de mensaje |
 | `config.analytics` | GA ID por defecto y nombres de eventos |
 | `config.ui` | duración de animaciones, thresholds |

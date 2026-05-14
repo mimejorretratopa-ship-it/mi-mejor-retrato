@@ -4,7 +4,7 @@
  * Centraliza TODAS las operaciones de lectura/escritura.
  * 
  * VENTAJAS:
- * - Cambiar de localStorage → Netlify Functions requiere editar SOLO este archivo
+ * - Cambiar de localStorage → Google Apps Script requiere editar SOLO este archivo
  * - Tests unitarios más fáciles (puedes mockear storage completo)
  * - Cache automático para evitar fetch duplicados
  * - Manejo de errores consistente
@@ -63,7 +63,7 @@ const storage = (() => {
   /**
    * Envía datos al backend
    * ACTUAL: localStorage + download manual
-   * FUTURO: POST a Netlify Function o Supabase
+   * FUTURO: POST a API propia o Supabase
    */
   function isLocalDev() {
     const h = window.location.hostname;
@@ -222,7 +222,7 @@ const storage = (() => {
 
     /**
      * Crea/actualiza contacto en Google Contacts
-     * FUTURO: Netlify Function que llama a Google Contacts API
+     * FUTURO: Google Contacts API directa
      */
     async createContact(contactData) {
       try {
@@ -235,7 +235,7 @@ const storage = (() => {
 
     /**
      * Envía notificación a Discord
-     * FUTURO: Netlify Function con webhook de Discord
+     * FUTURO: webhook de Discord vía API propia
      */
     async notifyDiscord(message) {
       try {

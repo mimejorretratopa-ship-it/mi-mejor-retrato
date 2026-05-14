@@ -6,7 +6,7 @@ El sistema usa un **Google Apps Script Hub** como único receptor del formulario
 envía un solo POST y el Hub distribuye a todos los destinos.
 
 ```
-Frontend (Netlify/Vercel)
+Frontend (Vercel)
     └── storage.js → postToAPI()
             └── POST → Google Apps Script Hub
                         ├── Google Sheets   (base de datos principal)
@@ -158,7 +158,7 @@ Si necesitas cambiar el Google Sheet de destino o el token de Airtable:
 Si necesitas cambiar la **URL del endpoint** (nuevo script):
 1. Crea el script, impleméntalo y copia la URL
 2. Actualiza `config/brochure-config.js → endpoints.submitForm`
-3. Haz push a GitHub/Netlify
+3. Haz push a GitHub/Vercel
 
 ---
 
