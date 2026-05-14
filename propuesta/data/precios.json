@@ -1,11 +1,11 @@
 {
   "version": "2.0",
   "metadata": {
-    "nota": "Cada escuela define su propia visibilidad y paquetes. visibilidad puede ser: 'publicar', 'no_publicar', o 'pendiente'.",
+    "nota": "REGLA: Este archivo controla ÚNICAMENTE la visibilidad y precios de los paquetes. La visibilidad de las demás secciones se controla en *_secciones.json.",
     "visibilidad_opciones": {
-      "publicar": "Muestra la sección de precios con sus paquetes y precios",
-      "no_publicar": "Oculta la sección de precios completamente. Sin mensaje.",
-      "pendiente": "Muestra la sección pero con aviso 'Precio pendiente por definir'"
+      "publicar": "Muestra sección pública + selector en formulario",
+      "no_publicar": "Oculta sección pública + preselecciona primer paquete en formulario (silencioso)",
+      "pendiente": "Muestra aviso 'Precio pendiente' en sección y formulario"
     },
     "moneda": "USD"
   },
@@ -17,29 +17,6 @@
         {
           "id": "paquete_1",
           "nombre": "Paquete 1",
-          "precio": 19,
-          "descripcion": "4 Fotos únicamente en galería online",
-          "entregables": {
-            "impresos": [
-              {
-                "cantidad": 3,
-                "tamano": "digital",
-                "detalle": "del estudiante"
-              },
-              {
-                "cantidad": 1,
-                "tamano": "digital",
-                "detalle": "de grupo"
-              }
-            ],
-            "digitales": {
-              "plataforma": "Galería online"
-            }
-          }
-        },
-        {
-          "id": "paquete_2",
-          "nombre": "Paquete 2",
           "precio": 34,
           "descripcion": "6 Fotos impresas y en galería online",
           "entregables": {
@@ -51,34 +28,6 @@
               },
               {
                 "cantidad": 4,
-                "tamano": "4x6",
-                "detalle": "Chicas"
-              },
-              {
-                "cantidad": 1,
-                "tamano": "4x6",
-                "detalle": "Grupo del salón"
-              }
-            ],
-            "digitales": {
-              "plataforma": "Galería online"
-            }
-          }
-        },
-        {
-          "id": "paquete_3",
-          "nombre": "Paquete 3",
-          "precio": 57,
-          "descripcion": "12 Fotos impresas y en galería online",
-          "entregables": {
-            "impresos": [
-              {
-                "cantidad": 2,
-                "tamano": "8x12",
-                "detalle": "ENMARCADAS y listas para colgar"
-              },
-              {
-                "cantidad": 9,
                 "tamano": "4x6",
                 "detalle": "Chicas"
               },

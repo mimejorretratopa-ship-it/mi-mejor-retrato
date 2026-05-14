@@ -10,12 +10,9 @@
     "como_funciona": {
       "activo": true
     },
-    "paquetes": {
-      "nota": "La visibilidad de esta sección se controla desde precios.json (visibilidad: publicar | pendiente)."
-    },
     "ubicacion": {
       "activo": true,
-      "estado": "pendiente",
+      "estado": "estudios",
       "nota_estados": "pendiente | texto | colegio | estudios",
       "mensaje": "La ubicación se confirmará próximamente.",
       "ubicaciones": [],
@@ -25,14 +22,14 @@
       "activo": true,
       "nota_config": "Detecta archivos 01 a 99 con el prefijo en la carpeta indicada",
       "carpeta": "portafolio",
-      "prefijo": "p1_",
+      "prefijo": "k_25_",
       "extension": "jpg",
       "nota_extension": "jpg | png | webp"
     },
     "portafolio_medio": {
       "activo": false,
-      "carpeta": "portafolio",
-      "prefijo": "p2_",
+      "carpeta": "portafolio_mixto",
+      "prefijo": "k_25_",
       "extension": "jpg"
     },
     "sobre_mike": {
@@ -62,15 +59,24 @@
   },
   "salones": [
     {
-      "valor": "salon_ejemplo",
-      "label": "Salón Ejemplo",
-      "corto": "ej",
-      "_nota": "Contrato fijo con form-renderer.js: valor (ID), label (texto visible), corto (código backend)"
+      "valor": "kinder_a",
+      "label": "Kínder A",
+      "corto": "ka"
+    },
+    {
+      "valor": "kinder_b",
+      "label": "Kínder B",
+      "corto": "kb"
+    },
+    {
+      "valor": "kinder_c",
+      "label": "Kínder C",
+      "corto": "kc"
     }
   ],
   "metadata": {
-    "version": "3.0",
-    "nota": "Plantilla maestra v3.0 (URL-driven). salones: array de {valor, label, corto} — NO cambiar estructura, es el contrato con form-renderer.js",
+    "version": "3.1",
+    "nota": "Plantilla maestra v3.1 (URL-driven). REGLA: la visibilidad de la sección 'paquetes' se controla ÚNICAMENTE desde precios.json (publicar | pendiente | no_publicar).",
     "actualizado": "2026-05-14"
   }
 }

@@ -10,9 +10,6 @@
     "como_funciona": {
       "activo": true
     },
-    "paquetes": {
-      "nota": "La visibilidad de esta sección se controla desde precios.json, no aquí."
-    },
     "ubicacion": {
       "activo": true,
       "estado": "colegio",
