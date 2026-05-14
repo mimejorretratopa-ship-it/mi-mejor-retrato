@@ -1,27 +1,14 @@
 /**
- * MMR BACKEND v3.5 — HUB CON LOGS + openById
- * Archivo: MMR_brochures_260513
- * Destinos: Google Sheets + Google Contacts + Airtable
+ * MMR BACKEND v3.5 — HUB FINAL (People API + Logs)
+ * Archivo: MMR_brochures_260514
+ * Destinos: Google Sheets + Google Contacts (People API) + Airtable
  *
- * CAMPO schoolName / Colegio:
- *   Recibe el ID corto del brochure (ej: "clia-26"), NO el nombre largo.
- *   DISEÑO INTENCIONAL — permite filtrar/agrupar consistentemente.
- *   Ver: form-renderer.js → metadata.schoolName = brochure.id
- *
- * GOOGLE SHEET ID: ver Apps Script (no se sube al repo)
- * AIRTABLE Base ID: appVXT9GPLoKT15YJ  |  Tabla: Leads
- * AIRTABLE Token  : ver Apps Script (no se sube al repo — GitHub Secret Scanning)
- *
- * CAMBIOS v3.5:
- *   - openById() en lugar de getActiveSpreadsheet() (fix para script standalone)
- *   - Pestaña LOGS automática para diagnóstico de cada paso
- *   - Log de respuesta HTTP de Airtable (código + body)
+ * NOTA DE SEGURIDAD: Los tokens y IDs reales deben pegarse directamente
+ * en el editor de Apps Script. Este archivo en el repo usa placeholders.
  */
 
-// ⚠️  Los valores reales viven SOLO en Apps Script, no en este archivo.
-// GitHub Secret Scanning bloquea el push si detecta tokens en el código.
 var SHEET_ID   = 'VER_APPS_SCRIPT';   // Google Sheet ID
-var AT_BASE_ID = 'appVXT9GPLoKT15YJ'; // Airtable Base ID (no es secreto)
+var AT_BASE_ID = 'appVXT9GPLoKT15YJ'; // Airtable Base ID
 var AT_TABLE   = 'Leads';
 var AT_TOKEN   = 'VER_APPS_SCRIPT';   // Airtable Personal Access Token
 
@@ -30,7 +17,7 @@ function doPost(e) {
   var logSheet = ss.getSheetByName('LOGS') || ss.insertSheet('LOGS');
 
   try {
-    // ── LOG: confirmar que el POST llegó ──────────────────────
+    // ── LOG INICIAL ──────────────────────────────────────────
     var rawBody = e.postData ? e.postData.contents : 'SIN BODY';
     logSheet.appendRow([new Date(), 'POST recibido', rawBody]);
 
@@ -51,29 +38,46 @@ function doPost(e) {
       new Date(),
       colegio,
       data.nombre,
-      data.relacion        || 'N/A',
+      data.relacion || 'N/A',
       data.nombreEstudiante,
       data.salon,
       phone,
-      data.paqueteLabel    || data.paquete || 'N/A',
-      data.precio          || 0,
-      data.email           || '',
+      data.paqueteLabel || data.paquete || 'N/A',
+      data.precio || 0,
+      data.email || '',
       studentId
     ]);
     logSheet.appendRow([new Date(), 'Sheets OK', '']);
 
-    // ── 2. GOOGLE CONTACTS ────────────────────────────────────
+    // ── 2. GOOGLE CONTACTS (People API) ───────────────────────
     try {
-      var schoolCode     = (data.idEscuela || 'MMR').toUpperCase();
-      var salonCorto     = (meta.salon_corto || '').toUpperCase();
+      var schoolCode = (data.idEscuela || 'MMR').toUpperCase();
+      var salonCorto = (meta.salon_corto || '').toUpperCase();
       var nombreContacto = data.nombre + ' : ' + data.nombreEstudiante + ' - ' + schoolCode + ' ' + salonCorto;
-      var contact = ContactsApp.createContact(data.nombre, data.nombreEstudiante, data.email || '');
-      contact.setFullName(nombreContacto);
-      contact.addPhone(ContactsApp.Field.MAIN_PHONE, phone);
-      contact.setNotes('Estudiante: ' + data.nombreEstudiante + '\nRelación: ' + data.relacion + '\nColegio: ' + colegio);
-      var group = ContactsApp.getContactGroup('MMR Leads 2026') || ContactsApp.createContactGroup('MMR Leads 2026');
-      contact.addToGroup(group);
-      logSheet.appendRow([new Date(), 'Contacts OK', nombreContacto]);
+
+      var person = {
+        names: [{ givenName: data.nombre, familyName: data.nombreEstudiante }],
+        phoneNumbers: [{ value: phone, type: 'mobile' }],
+        biographies: [{ value: 'Estudiante: ' + data.nombreEstudiante + '\nRelación: ' + data.relacion + '\nColegio: ' + colegio + '\nFormato: ' + nombreContacto }]
+      };
+      if (data.email) { person.emailAddresses = [{ value: data.email }]; }
+
+      var createdContact = People.People.createContact(person);
+      
+      // Intentar agregar al grupo
+      try {
+        var groups = People.ContactGroups.list().contactGroups || [];
+        var targetGroup = groups.find(g => g.name === 'MMR Leads 2026');
+        if (!targetGroup) {
+          targetGroup = People.ContactGroups.create({ contactGroup: { name: 'MMR Leads 2026' } });
+        }
+        People.ContactGroups.batchModifyContactMembers({
+          resourceBundleKeys: [createdContact.resourceName],
+          operations: 'ADD'
+        }, targetGroup.resourceName);
+      } catch (gErr) { logSheet.appendRow([new Date(), 'Group Warning', gErr.toString()]); }
+
+      logSheet.appendRow([new Date(), 'Contacts OK (People API)', nombreContacto]);
     } catch (err) {
       logSheet.appendRow([new Date(), 'Contacts ERROR', err.toString()]);
     }
@@ -81,46 +85,40 @@ function doPost(e) {
     // ── 3. AIRTABLE ───────────────────────────────────────────
     try {
       var atUrl = 'https://api.airtable.com/v0/' + AT_BASE_ID + '/' + encodeURIComponent(AT_TABLE);
-      var atPayload = {
-        fields: {
-          'Fecha'     : timestamp,
-          'Colegio'   : colegio,
-          'Acudiente' : data.nombre,
-          'Relacion'  : data.relacion        || '',
-          'Estudiante': data.nombreEstudiante,
-          'Salon'     : data.salon,
-          'WhatsApp'  : phone,
-          'Paquete'   : data.paqueteLabel    || data.paquete || '',
-          'Precio'    : Number(data.precio)  || 0,
-          'Email'     : data.email           || '',
-          'ID'        : studentId
-        }
-      };
-
       var atResp = UrlFetchApp.fetch(atUrl, {
-        method            : 'post',
+        method: 'post',
         muteHttpExceptions: true,
-        headers: {
-          'Authorization': 'Bearer ' + AT_TOKEN,
-          'Content-Type' : 'application/json'
-        },
-        payload: JSON.stringify(atPayload)
+        headers: { 'Authorization': 'Bearer ' + AT_TOKEN, 'Content-Type': 'application/json' },
+        payload: JSON.stringify({
+          fields: {
+            'Fecha'     : timestamp,
+            'Colegio'   : colegio,
+            'Acudiente' : data.nombre,
+            'Relacion'  : data.relacion || '',
+            'Estudiante': data.nombreEstudiante,
+            'Salon'     : data.salon,
+            'WhatsApp'  : phone,
+            'Paquete'   : data.paqueteLabel || data.paquete || '',
+            'Precio'    : Number(data.precio) || 0,
+            'Email'     : data.email || '',
+            'ID'        : studentId
+          }
+        })
       });
-
       logSheet.appendRow([new Date(), 'Airtable HTTP ' + atResp.getResponseCode(), atResp.getContentText()]);
-
     } catch (err) {
       logSheet.appendRow([new Date(), 'Airtable ERROR', err.toString()]);
     }
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: true }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     logSheet.appendRow([new Date(), 'doPost FATAL', error.toString()]);
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: false, error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: error.toString() })).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+function pedirPermisos() {
+  UrlFetchApp.fetch("https://google.com");
+  People.ContactGroups.list();
 }
