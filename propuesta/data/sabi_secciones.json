@@ -1,0 +1,82 @@
+{
+    "secciones": {
+        "hero": {
+            "activo": true,
+            "nota": "El título y subtítulo se generan automáticamente desde escuelas.json"
+        },
+        "la_diferencia": {
+            "activo": true
+        },
+        "como_funciona": {
+            "activo": true
+        },
+        "paquetes": {
+            "nota": "La visibilidad de esta sección se controla desde precios.json, no aquí."
+        },
+        "ubicacion": {
+            "activo": true,
+            "estado": "colegio",
+            "nota_estados": "pendiente | texto | colegio | estudios",
+            "mensaje": "",
+            "ubicaciones": []
+        },
+        "portafolio_inicio": {
+            "activo": true,
+            "carpeta": "portafolio",
+            "prefijo": "k_25_",
+            "extension": "jpg"
+        },
+        "portafolio_medio": {
+            "activo": false,
+            "carpeta": "portafolio_mixto",
+            "prefijo": "k_25_",
+            "extension": "jpg"
+        },
+        "sobre_mike": {
+            "activo": true
+        },
+        "faq": {
+            "activo": true
+        },
+        "portafolio_cierre": {
+            "activo": false,
+            "carpeta": "portafolio",
+            "prefijo": "p3_",
+            "extension": "jpg"
+        },
+        "mascotas": {
+            "activo": false
+        },
+        "fondos": {
+            "activo": false
+        },
+        "direccion_estudio": {
+            "activo": false
+        },
+        "reserva": {
+            "activo": true
+        }
+    },
+    "salones": [
+        {
+            "valor": "prekinder",
+            "label": "Prekínder",
+            "corto": "pk"
+        },
+        {
+            "valor": "kinder",
+            "label": "Kínder",
+            "corto": "k"
+        },
+        {
+            "valor": "6to",
+            "label": "6to grado",
+            "corto": "6"
+        }
+    ],
+    "metadata": {
+        "version": "2.2",
+        "nota": "Esta es la plantilla maestra para propuestas v1.5. No agregar campos que no sean interpretados por modules/*.js",
+        "actualizado": "2026-05-10"
+    }
+}

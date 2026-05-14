@@ -11,7 +11,7 @@
   },
   "escuelas": [
     {
-"code": "clia",
+      "code": "clia",
       "visibilidad": "no_publicar",
       "paquetes": [
         {
@@ -96,7 +96,7 @@
       ]
     },
     {
-      "code": "dolo",
+      "code": "sabi",
       "visibilidad": "pendiente",
       "paquetes": []
     },
@@ -242,7 +242,7 @@
         {
           "id": "paquete_3",
           "nombre": "Paquete 3",
-          "precio": 57,
+          "precio": 67,
           "descripcion": "Impresas + Enmarcadas + Digital",
           "entregables": {
             "impresos": [
