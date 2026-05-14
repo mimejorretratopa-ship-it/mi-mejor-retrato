@@ -60,19 +60,14 @@
             "activo": true
         }
     },
-    "salones": {
-        "activo": true,
-        "obligatorio": true,
-        "nota_obligatorio": "true | false (si es obligatorio el campo en el formulario)",
-        "lista": [
-            "Kínder A",
-            "Kínder B",
-            "Kínder C"
-        ]
-    },
+    "salones": [
+        { "valor": "kinder_a", "label": "Kínder A", "corto": "ka" },
+        { "valor": "kinder_b", "label": "Kínder B", "corto": "kb" },
+        { "valor": "kinder_c", "label": "Kínder C", "corto": "kc" }
+    ],
     "metadata": {
         "version": "3.0",
-        "nota": "Propuesta v3.0 (URL-driven).",
+        "nota": "Propuesta v3.0 (URL-driven). salones: array de {valor, label, corto} — contrato con form-renderer.js",
         "actualizado": "2026-05-14"
     }
 }

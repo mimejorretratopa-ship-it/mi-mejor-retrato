@@ -60,17 +60,17 @@
       "activo": true
     }
   },
-  "salones": {
-    "activo": true,
-    "obligatorio": true,
-    "nota_obligatorio": "true | false (si es obligatorio el campo en el formulario)",
-    "lista": [
-      "1A", "1B", "2A", "2B"
-    ]
-  },
+  "salones": [
+    {
+      "valor": "salon_ejemplo",
+      "label": "Salón Ejemplo",
+      "corto": "ej",
+      "_nota": "Contrato fijo con form-renderer.js: valor (ID), label (texto visible), corto (código backend)"
+    }
+  ],
   "metadata": {
     "version": "3.0",
-    "nota": "Esta es la plantilla maestra para propuestas v3.0 (URL-driven).",
+    "nota": "Plantilla maestra v3.0 (URL-driven). salones: array de {valor, label, corto} — NO cambiar estructura, es el contrato con form-renderer.js",
     "actualizado": "2026-05-14"
   }
 }

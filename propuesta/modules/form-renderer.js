@@ -11,7 +11,7 @@
  */
 
 const formModule = (() => {
-  
+
   // ── REFERENCIAS DOM (se inicializan en init) ──────────────────
   let form = null;
   let contenedorCampos = null;
@@ -26,7 +26,7 @@ const formModule = (() => {
    */
   function renderField(fieldDef) {
     const { id, label, tipo, placeholder, opciones, requerido } = fieldDef;
-    
+
     // Crear contenedor
     const wrapper = document.createElement('div');
     wrapper.className = 'campo';
@@ -46,13 +46,13 @@ const formModule = (() => {
       case 'select':
         inputEl = document.createElement('select');
         inputEl.className = 'form-select';
-        
+
         // Opción placeholder
         const placeholderOption = document.createElement('option');
         placeholderOption.value = '';
         placeholderOption.textContent = '— Selecciona —';
         inputEl.appendChild(placeholderOption);
-        
+
         // Opciones
         if (opciones && Array.isArray(opciones)) {
           opciones.forEach(opt => {
@@ -115,7 +115,7 @@ const formModule = (() => {
     selectCodigo.id = 'codigoPais';
     selectCodigo.name = 'codigoPais';
     selectCodigo.className = 'form-select phone-code';
-    
+
     codigoDef.opciones.forEach(opt => {
       const option = document.createElement('option');
       option.value = opt.valor;
@@ -185,7 +185,7 @@ const formModule = (() => {
     const campo = document.getElementById(`campo-${fieldId}`);
     const errorEl = document.getElementById(`error-${fieldId}`);
     const inputEl = document.getElementById(fieldId);
-    
+
     if (!campo || !errorEl || !inputEl) return;
 
     campo.classList.add('has-error');
@@ -201,7 +201,7 @@ const formModule = (() => {
     const campo = document.getElementById(`campo-${fieldId}`);
     const errorEl = document.getElementById(`error-${fieldId}`);
     const inputEl = document.getElementById(fieldId);
-    
+
     if (!campo || !errorEl || !inputEl) return;
 
     campo.classList.remove('has-error');
@@ -236,7 +236,7 @@ const formModule = (() => {
   function validateForm() {
     const data = collectFormData();
     const formDef = state.get('form');
-    
+
     if (!formDef) {
       console.error('[FORM] Definición de formulario no cargada');
       return { valid: false, data: null };
@@ -244,10 +244,10 @@ const formModule = (() => {
 
     // Sanitizar
     const sanitized = validators.sanitizeFormData(data, formDef);
-    
+
     // Validar
     const validation = validators.validateFormData(sanitized, formDef);
-    
+
     // Limpiar errores previos
     formDef.formulario.campos.forEach(campo => {
       clearFieldError(campo.id);
@@ -288,7 +288,7 @@ const formModule = (() => {
       const brochure = state.get('brochure');
       const sections = state.get('sections');
       const salonData = (sections?.salones || []).find(s => s.valor === validation.data.salon);
-      
+
       const metadata = {
         propuesta: brochure.id,
         // DISEÑO INTENCIONAL: se envía el ID corto "clia-26", no el nombre largo.
@@ -297,7 +297,7 @@ const formModule = (() => {
         schoolName: brochure.id,
         salon_corto: salonData?.corto || '',
         whatsapp_limpio: utils.cleanPhone(
-          validation.data.codigoPais, 
+          validation.data.codigoPais,
           validation.data.celular
         ),
         student_id: generateStudentId(validation.data)
@@ -309,28 +309,28 @@ const formModule = (() => {
       // ── NOTIFICACIONES (SILENCIOSAS — se intentan siempre) ───────
 
       // Leer template desde formulario.json y reemplazar variables
-      const formDef       = state.get('form');
-      const rawTemplate   = formDef?.flujos?.discord?.mensaje_template || '';
-      const nombre_encoded      = encodeURIComponent(validation.data.nombre);
+      const formDef = state.get('form');
+      const rawTemplate = formDef?.flujos?.discord?.mensaje_template || '';
+      const nombre_encoded = encodeURIComponent(validation.data.nombre);
       const school_name_encoded = encodeURIComponent(brochure.schoolName);
 
       const discordMsg = rawTemplate
-        .replace('{nombre}',              validation.data.nombre)
-        .replace('{relacion}',            validation.data.relacion)
-        .replace('{nombreEstudiante}',    validation.data.nombreEstudiante)
-        .replace('{salon}',               validation.data.salon)
-        .replace('{school_name}',         brochure.schoolName)
-        .replace('{codigoPais}',          validation.data.codigoPais)
-        .replace('{celular}',             validation.data.celular)
-        .replace('{paqueteLabel}',        validation.data.paqueteLabel)
-        .replace('{precio}',              validation.data.precio)
-        .replace('{whatsapp_limpio}',     metadata.whatsapp_limpio)
-        .replace('{nombre_encoded}',      nombre_encoded)
+        .replace('{nombre}', validation.data.nombre)
+        .replace('{relacion}', validation.data.relacion)
+        .replace('{nombreEstudiante}', validation.data.nombreEstudiante)
+        .replace('{salon}', validation.data.salon)
+        .replace('{school_name}', brochure.schoolName)
+        .replace('{codigoPais}', validation.data.codigoPais)
+        .replace('{celular}', validation.data.celular)
+        .replace('{paqueteLabel}', validation.data.paqueteLabel)
+        .replace('{precio}', validation.data.precio)
+        .replace('{whatsapp_limpio}', metadata.whatsapp_limpio)
+        .replace('{nombre_encoded}', nombre_encoded)
         .replace('{school_name_encoded}', school_name_encoded)
         || `👤 ${validation.data.nombre} | 🎓 ${validation.data.nombreEstudiante} | 📱 ${metadata.whatsapp_limpio}`;
 
       if (config.features.discordNotifications) storage.notifyDiscord(discordMsg);
-      if (config.features.googleContacts)        storage.createContact(validation.data);
+      if (config.features.googleContacts) storage.createContact(validation.data);
 
       if (result.success || result.fallback === 'local_download') {
         // success: API respondió OK
@@ -419,7 +419,7 @@ const formModule = (() => {
     const omitir = new Set(['codigoPais', 'paquete', 'paqueteLabel', 'precio']);
     const codigoDef = formDef.formulario.campos.find(c => c.id === 'codigoPais');
     const celularDef = formDef.formulario.campos.find(c => c.id === 'celular');
-    
+
     let phoneRendered = false;
 
     formDef.formulario.campos.forEach(campo => {
