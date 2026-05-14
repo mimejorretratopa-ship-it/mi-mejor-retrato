@@ -97,11 +97,8 @@ const storage = (() => {
     },
 
     async notifyDiscord(message) {
-      // El nuevo Api.notificarDiscord espera un objeto con fields o mensaje
-      // Para compatibilidad con el envío de string directo:
-      await window.api.notificarDiscord({ 
-        fields: [{ name: 'Notificación', value: message }] 
-      });
+      // Enviamos el string directo para que api.js lo maneje como 'content'
+      await window.api.notificarDiscord(message);
     },
 
     async createContact(data) {

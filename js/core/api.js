@@ -43,7 +43,10 @@ const Api = (() => {
   }
 
   return {
-    // ── NOTIFICACIONES (Discord) ──
+    /**
+     * NOTIFICACIONES (Discord)
+     * Soporta tanto embeds estructurados como mensajes de texto plano.
+     */
     async notificarDiscord(payload, isWebsite = false) {
       const webhook = window.config.endpoints.discord;
       if (!webhook || !window.config.features.discordNotifications) return;
@@ -51,18 +54,44 @@ const Api = (() => {
       log('Enviando notificación a Discord...');
 
       try {
-        // Formatear para Discord Embed si viene del website o onboarding
-        const discordPayload = {
-          username: window.config.brand.name + ' · Bot',
-          avatar_url: window.config.brand.logo,
-          embeds: [{
-            color: 0xF07030, // naranja terra
-            title: isWebsite ? '📋 Nuevo contacto (Website)' : '🎉 Nueva reserva (Onboarding)',
-            fields: payload.fields || [],
-            footer: { text: window.config.brand.location },
-            timestamp: new Date().toISOString()
-          }]
-        };
+        let discordPayload = {};
+
+        // Si el payload es solo un string, lo enviamos como content
+        if (typeof payload === 'string') {
+          discordPayload = { content: payload };
+        } 
+        // Si tiene campos, enviamos un Embed
+        else if (payload.fields || payload.description) {
+          // Asegurar que los fields sean válidos (no vacíos)
+          const validFields = (payload.fields || [])
+            .filter(f => f.name && f.value)
+            .map(f => ({
+              name: String(f.name).substring(0, 256),
+              value: String(f.value).substring(0, 1024),
+              inline: !!f.inline
+            }));
+
+          discordPayload = {
+            username: window.config.brand.name + ' · Bot',
+            avatar_url: window.config.brand.logo,
+            embeds: [{
+              color: 0xF07030, // naranja terra
+              title: payload.title || (isWebsite ? '📋 Nuevo contacto (Website)' : '🎉 Nueva reserva (Onboarding)'),
+              description: payload.description || '',
+              fields: validFields,
+              footer: { text: window.config.brand.location },
+              timestamp: new Date().toISOString()
+            }]
+          };
+          
+          // Si no hay fields ni descripción, Discord da error 400. 
+          // En ese caso, usamos un fallback simple.
+          if (validFields.length === 0 && !discordPayload.embeds[0].description) {
+            discordPayload = { content: `🔔 Nueva notificación de ${window.config.brand.name}` };
+          }
+        } else {
+          discordPayload = { content: JSON.stringify(payload) };
+        }
 
         await _post(webhook, discordPayload);
         log('Discord OK');
