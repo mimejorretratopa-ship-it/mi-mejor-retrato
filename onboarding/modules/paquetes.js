@@ -80,6 +80,16 @@ const paquetesModule = (() => {
           Escríbenos y te informamos.
         </p>`;
     }
+
+    // Rellenar campos ocultos con 'pendiente' para pasar validación
+    const inputPaquete      = document.getElementById('paquete');
+    const inputPaqueteLabel = document.getElementById('paqueteLabel');
+    const inputPrecio       = document.getElementById('precio');
+
+    if (inputPaquete)      inputPaquete.value      = 'pendiente';
+    if (inputPaqueteLabel) inputPaqueteLabel.value  = 'Precio pendiente (consultar)';
+    if (inputPrecio)       inputPrecio.value        = '0';
+
     const elCampoPaq = document.getElementById('campo-paquete');
     const elSubmit   = document.getElementById('form-submit-area');
     if (elCampoPaq) elCampoPaq.classList.remove('hidden');
@@ -92,16 +102,20 @@ const paquetesModule = (() => {
    */
   function preseleccionarPaqueteSilencioso(paquetes) {
     const elSubmit = document.getElementById('form-submit-area');
+    const inputPaquete      = document.getElementById('paquete');
+    const inputPaqueteLabel = document.getElementById('paqueteLabel');
+    const inputPrecio       = document.getElementById('precio');
 
     if (paquetes && paquetes.length > 0) {
       const pkg = paquetes[0]; // primer paquete = el acordado con la escuela
-      const inputPaquete      = document.getElementById('paquete');
-      const inputPaqueteLabel = document.getElementById('paqueteLabel');
-      const inputPrecio       = document.getElementById('precio');
-
       if (inputPaquete)      inputPaquete.value      = pkg.id;
       if (inputPaqueteLabel) inputPaqueteLabel.value  = pkg.nombre + ' ' + pkg.descripcion;
       if (inputPrecio)       inputPrecio.value        = String(pkg.precio);
+    } else {
+      // Fallback si no hay paquetes pero se quiere permitir el envío
+      if (inputPaquete)      inputPaquete.value      = 'generico';
+      if (inputPaqueteLabel) inputPaqueteLabel.value  = 'Paquete por definir';
+      if (inputPrecio)       inputPrecio.value        = '0';
     }
 
     // campo-paquete permanece hidden (el usuario no ve nada)
