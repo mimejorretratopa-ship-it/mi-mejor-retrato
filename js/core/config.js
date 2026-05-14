@@ -33,7 +33,10 @@ const config = (() => {
 
   // ── WHATSAPP ──────────────────────────────────────────────────
   const whatsapp = {
-    number: '50767438951',
+    photographerNumber: '50767438951', // Era 'number'
+    number: '50767438951',             // Duplicado para compatibilidad website
+    messageTemplate: (nombre, schoolName) =>
+      `¡Hola ${nombre}! 👋 Soy Mike de Mi Mejor Retrato. Gracias por reservar tu espacio para la sesión de fotos de ${schoolName}. Te escribo para coordinar.`,
     templates: {
       onboarding: (nombre, schoolName) =>
         `¡Hola ${nombre}! 👋 Soy Mike de Mi Mejor Retrato. Gracias por reservar tu espacio para la sesión de fotos de ${schoolName}. Te escribo para coordinar.`,
