@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/propuesta/:slug", "destination": "/propuesta/index.html" }
+  ],
+  "redirects": [
+    { "source": "/propuesta/:slug.html", "destination": "/propuesta/:slug", "statusCode": 301 }
+  ]
+}

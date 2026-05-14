@@ -1,7 +1,0 @@
-[build]
-  publish = "."
-  functions = "propuesta/netlify/functions"
-
-
-# Esto permite que si alguien entra a /propuesta/ebrv-26.html 
-# cargue el archivo ebrv-26.html que está en la raíz.
