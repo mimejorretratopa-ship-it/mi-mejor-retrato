@@ -14,30 +14,21 @@ Frontend (Vercel)
 ---
 
 ## 1. Google Sheets (Base de Datos)
+Las submissions se envían a un **Google Apps Script** que actúa como receptor y repartidor (Hub).
 
-Las submissions del formulario se envían directamente a un **Google Apps Script** que actúa como receptor.
+## 2. Airtable (Gestión CRM)
+Integrado vía el Hub de Google. 
+- **Base ID:** `appVXT9GPLoKT15YJ`
+- **Tabla:** `Leads`
+- **Columnas:** Fecha, Colegio, Acudiente, Relacion, Estudiante, Salon, WhatsApp, Paquete, Precio, Email, ID.
 
-### Configuración del Script
-El script debe estar implementado como **Aplicación Web**, ejecutándose como **Yo** y con acceso para **Cualquier persona**.
+## 3. Google Contacts (Agenda)
+Integrado vía el Hub de Google.
+- **Formato:** `Nombre : Estudiante - COLEGIO AÑO SALON`
+- **Grupo:** `MMR Leads 2026`
 
-**URL de destino:** Definida en `config/brochure-config.js` -> `endpoints.submitForm`.
-
-**Campos capturados:**
-- Fecha y Hora
-- ID de Escuela/Brochure
-- Datos del Acudiente (Nombre, WhatsApp, Email, Relación)
-- Datos del Estudiante (Nombre, Salón)
-- Reserva (Paquete seleccionado y Precio)
-
----
-
-## 2. Discord (Notificaciones)
-
-El sistema envía un aviso inmediato a Discord cada vez que se recibe un lead.
-
-- **Endpoint:** Configurado en `config/brochure-config.js` -> `endpoints.notifyDiscord`.
-- **Formato:** Se envía como un mensaje directo al Webhook de Discord.
-- **WhatsApp Link:** El link de WhatsApp se envía envuelto en `<url>` para evitar que Discord genere un banner de vista previa (manteniendo el canal limpio).
+## 4. Discord (Notificaciones)
+Notificaciones inmediatas con link de WhatsApp limpio (`<url>`).
 
 ---
 
