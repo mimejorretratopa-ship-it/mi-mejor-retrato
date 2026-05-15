@@ -53,11 +53,12 @@ const validators = (() => {
 
     validateFormData(data, formDefinition) {
       const errors = {};
-      const campos = formDefinition.formulario.campos || [];
+      const campos = formDefinition.formulario?.campos || formDefinition;
+      if (!Array.isArray(campos)) return { valid: true, errors: {} };
 
       campos.forEach(campo => {
         if (campo.tipo === 'hidden') return;
-        if (['codigoPais', 'paqueteLabel', 'precio'].includes(campo.id)) return;
+        if (['paqueteLabel', 'precio'].includes(campo.id)) return;
 
         const value = data[campo.id];
         const result = this.validateField(value, campo);
@@ -87,7 +88,8 @@ const validators = (() => {
 
     sanitizeFormData(data, formDefinition) {
       const sanitized = {};
-      const campos = formDefinition.formulario.campos || [];
+      const campos = formDefinition.formulario?.campos || formDefinition;
+      if (!Array.isArray(campos)) return data;
 
       campos.forEach(campo => {
         if (data.hasOwnProperty(campo.id)) {

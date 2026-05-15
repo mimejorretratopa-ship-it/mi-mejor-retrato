@@ -32,6 +32,16 @@ const formModule = (() => {
     wrapper.className = 'campo';
     wrapper.id = `campo-${id}`;
 
+    // Header (tipo especial)
+    if (tipo === 'section_header') {
+      const header = document.createElement('h3');
+      header.className = 'form-section-header';
+      header.innerHTML = label;
+      wrapper.classList.add('campo-header');
+      wrapper.appendChild(header);
+      return wrapper;
+    }
+
     // Label
     const labelEl = document.createElement('label');
     labelEl.htmlFor = id;
@@ -70,6 +80,42 @@ const formModule = (() => {
         inputEl.rows = 4;
         break;
 
+      case 'checkbox':
+        const group = document.createElement('div');
+        group.className = 'checkbox-group';
+        const max = fieldDef.max_selecciones || 0;
+
+        opciones.forEach(opt => {
+          const optLabel = typeof opt === 'string' ? opt : opt.label;
+          const optVal = typeof opt === 'string' ? opt : opt.valor;
+
+          const item = document.createElement('label');
+          item.className = 'checkbox-item';
+          
+          const chk = document.createElement('input');
+          chk.type = 'checkbox';
+          chk.name = id;
+          chk.value = optVal;
+          chk.className = 'form-checkbox';
+          
+          if (max > 0) {
+            chk.dataset.max = max;
+            chk.addEventListener('change', () => {
+              const checked = group.querySelectorAll('input:checked');
+              if (checked.length > max) {
+                chk.checked = false;
+                alert(`Solo puedes seleccionar hasta ${max} opciones.`);
+              }
+            });
+          }
+
+          item.appendChild(chk);
+          item.appendChild(document.createTextNode(optLabel));
+          group.appendChild(item);
+        });
+        inputEl = group;
+        break;
+
       default:
         inputEl = document.createElement('input');
         inputEl.className = 'form-input';
@@ -92,62 +138,7 @@ const formModule = (() => {
     return wrapper;
   }
 
-  /**
-   * Renderiza el campo especial de teléfono (código + número)
-   */
-  function renderPhoneField(codigoDef, celularDef) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'campo';
-    wrapper.id = 'campo-celular';
-
-    // Label
-    const label = document.createElement('label');
-    label.className = 'form-label';
-    label.innerHTML = celularDef.label + ' <span class="required">*</span>';
-    wrapper.appendChild(label);
-
-    // Container para código + número
-    const phoneContainer = document.createElement('div');
-    phoneContainer.className = 'phone-input-group';
-
-    // Select de código de país
-    const selectCodigo = document.createElement('select');
-    selectCodigo.id = 'codigoPais';
-    selectCodigo.name = 'codigoPais';
-    selectCodigo.className = 'form-select phone-code';
-
-    codigoDef.opciones.forEach(opt => {
-      const option = document.createElement('option');
-      option.value = opt.valor;
-      option.textContent = opt.label;
-      if (opt.valor === codigoDef.default) {
-        option.selected = true;
-      }
-      selectCodigo.appendChild(option);
-    });
-
-    // Input de número
-    const inputCelular = document.createElement('input');
-    inputCelular.type = 'tel';
-    inputCelular.id = 'celular';
-    inputCelular.name = 'celular';
-    inputCelular.className = 'form-input phone-number';
-    inputCelular.placeholder = celularDef.placeholder || '6000-0000';
-    inputCelular.required = true;
-
-    phoneContainer.appendChild(selectCodigo);
-    phoneContainer.appendChild(inputCelular);
-    wrapper.appendChild(phoneContainer);
-
-    // Error container
-    const errorEl = document.createElement('p');
-    errorEl.className = 'campo-error-msg hidden';
-    errorEl.id = 'error-celular';
-    wrapper.appendChild(errorEl);
-
-    return wrapper;
-  }
-
+  // Special phone rendering removed as requested.
   /**
    * Inicializa las opciones del selector de salón
    * (carga desde SECCIONES_DATA que ya fue inicializado)
@@ -212,18 +203,34 @@ const formModule = (() => {
    * Recopila los datos del formulario
    */
   function collectFormData() {
-    const data = {
-      idEscuela: document.getElementById('idEscuela').value
-    };
+    const data = {};
+    const idEscuelaEl = document.getElementById('idEscuela');
+    if (idEscuelaEl) data.idEscuela = idEscuelaEl.value;
 
     const formDef = state.get('form');
     if (!formDef) return data;
 
-    // Recopilar todos los campos
-    formDef.formulario.campos.forEach(campo => {
-      const el = document.getElementById(campo.id);
-      if (el) {
-        data[campo.id] = el.value;
+    // Recopilar todos los campos (incluyendo hiddens)
+    const campos = formDef.formulario?.campos || formDef;
+    const allInputs = form.querySelectorAll('input, select, textarea');
+    
+    allInputs.forEach(input => {
+      if (input.name) {
+        if (input.type === 'checkbox') {
+          if (input.checked) {
+            if (!data[input.name]) data[input.name] = [];
+            data[input.name].push(input.value);
+          }
+        } else {
+          data[input.name] = input.value;
+        }
+      }
+    });
+
+    // Convertir arrays de checkboxes a string separado por comas para Sheets
+    Object.keys(data).forEach(key => {
+      if (Array.isArray(data[key])) {
+        data[key] = data[key].join(', ');
       }
     });
 
@@ -249,9 +256,12 @@ const formModule = (() => {
     const validation = validators.validateFormData(sanitized, formDef);
 
     // Limpiar errores previos
-    formDef.formulario.campos.forEach(campo => {
-      clearFieldError(campo.id);
-    });
+    const campos = formDef.formulario?.campos || formDef;
+    if (Array.isArray(campos)) {
+      campos.forEach(campo => {
+        clearFieldError(campo.id);
+      });
+    }
 
     // Mostrar errores
     if (!validation.valid) {
@@ -284,52 +294,65 @@ const formModule = (() => {
     submitButton.disabled = true;
 
     try {
-      // Preparar metadata
-      const brochure = state.get('brochure');
-      const sections = state.get('sections');
-      const salonData = (sections?.salones || []).find(s => s.valor === validation.data.salon);
+      const isCuestionario = form.id === 'form-cuestionario';
+      let result;
 
-      const metadata = {
-        propuesta: brochure.id,
-        // DISEÑO INTENCIONAL: se envía el ID corto "clia-26", no el nombre largo.
-        // Esto hace que la columna Colegio en Sheets/Airtable sea filtrable y consistente.
-        // Ver MIGRATION-GUIDE.md § "Campo Colegio — diseño intencional"
-        schoolName: brochure.id,
-        salon_corto: salonData?.corto || '',
-        whatsapp_limpio: utils.cleanPhone(
-          validation.data.codigoPais,
-          validation.data.celular
-        ),
-        student_id: generateStudentId(validation.data)
-      };
+      if (isCuestionario) {
+        // LÓGICA CUESTIONARIO
+        const metadata = {
+          student_id: validation.data.student_id,
+          nombre_estudiante: validation.data.nombre_estudiante,
+          escuela: validation.data.escuela,
+          salon: validation.data.salon
+        };
+        result = await storage.saveQuestionnaire(validation.data, metadata);
+        
+        // Notificación Discord simplificada para cuestionario
+        if (config.features.discordNotifications) {
+          storage.notifyDiscord(`📝 **Cuestionario Recibido**\nEstudiante: ${validation.data.nombre_estudiante}\nEscuela: ${validation.data.escuela}\nID: ${validation.data.student_id}`);
+        }
+      } else {
+        // LÓGICA RESERVA (EXISTENTE)
+        const brochure = state.get('brochure');
+        const sections = state.get('sections');
+        const salonData = (sections?.salones || []).find(s => s.valor === validation.data.salon);
 
-      // Guardar submission
-      const result = await storage.saveSubmission(validation.data, metadata);
+        const metadata = {
+          propuesta: brochure.id,
+          schoolName: brochure.id,
+          salon_corto: salonData?.corto || '',
+          whatsapp_limpio: utils.cleanPhone(
+            '507',
+            validation.data.celular
+          ),
+          student_id: generateStudentId(validation.data)
+        };
 
-      // ── NOTIFICACIONES (SILENCIOSAS — se intentan siempre) ───────
+        result = await storage.saveSubmission(validation.data, metadata);
 
-      // Leer template desde formulario.json y reemplazar variables
-      const formDef = state.get('form');
-      const rawTemplate = formDef?.flujos?.discord?.mensaje_template || '';
-      const nombre_encoded = encodeURIComponent(validation.data.nombre);
-      const school_name_encoded = encodeURIComponent(brochure.schoolName);
+        // Notificación Discord con template
+        const formDef = state.get('form');
+        const rawTemplate = formDef?.flujos?.discord?.mensaje_template || '';
+        const nombre_encoded = encodeURIComponent(validation.data.nombre);
+        const school_name_encoded = encodeURIComponent(brochure.schoolName);
 
-      const discordMsg = rawTemplate
-        .replace('{nombre}', validation.data.nombre)
-        .replace('{relacion}', validation.data.relacion)
-        .replace('{nombreEstudiante}', validation.data.nombreEstudiante)
-        .replace('{salon}', validation.data.salon)
-        .replace('{school_name}', brochure.schoolName)
-        .replace('{codigoPais}', validation.data.codigoPais)
-        .replace('{celular}', validation.data.celular)
-        .replace('{paqueteLabel}', validation.data.paqueteLabel)
-        .replace('{precio}', validation.data.precio)
-        .replace('{whatsapp_limpio}', metadata.whatsapp_limpio)
-        .replace('{nombre_encoded}', nombre_encoded)
-        .replace('{school_name_encoded}', school_name_encoded)
-        || `👤 ${validation.data.nombre} | 🎓 ${validation.data.nombreEstudiante} | 📱 ${metadata.whatsapp_limpio}`;
+        const discordMsg = rawTemplate
+          .replace('{nombre}', validation.data.nombre)
+          .replace('{relacion}', validation.data.relacion)
+          .replace('{nombreEstudiante}', validation.data.nombreEstudiante)
+          .replace('{salon}', validation.data.salon)
+          .replace('{school_name}', brochure.schoolName)
+          .replace('{codigoPais}', '507')
+          .replace('{celular}', validation.data.celular)
+          .replace('{paqueteLabel}', validation.data.paqueteLabel)
+          .replace('{precio}', validation.data.precio)
+          .replace('{whatsapp_limpio}', metadata.whatsapp_limpio)
+          .replace('{nombre_encoded}', nombre_encoded)
+          .replace('{school_name_encoded}', school_name_encoded)
+          || `👤 ${validation.data.nombre} | 🎓 ${validation.data.nombreEstudiante} | 📱 ${metadata.whatsapp_limpio}`;
 
-      if (config.features.discordNotifications) storage.notifyDiscord(discordMsg);
+        if (config.features.discordNotifications) storage.notifyDiscord(discordMsg);
+      }
 
       if (result.success) {
         showSuccess(validation.data);
@@ -346,7 +369,7 @@ const formModule = (() => {
    * Genera el student_id único
    */
   function generateStudentId(data) {
-    const whatsapp = utils.cleanPhone(data.codigoPais, data.celular);
+    const whatsapp = utils.cleanPhone('507', data.celular);
     const nombreSlug = utils.slugify(data.nombreEstudiante);
     const salonSlug = utils.slugify(data.salon);
     return `${whatsapp}_${nombreSlug}_${salonSlug}`;
@@ -410,31 +433,22 @@ const formModule = (() => {
     contenedorCampos.innerHTML = '';
 
     // Renderizar campos
-    const omitir = new Set(['codigoPais', 'paquete', 'paqueteLabel', 'precio']);
-    const codigoDef = formDef.formulario.campos.find(c => c.id === 'codigoPais');
-    const celularDef = formDef.formulario.campos.find(c => c.id === 'celular');
+    const campos = formDef.formulario?.campos || formDef;
+    if (!Array.isArray(campos)) return;
 
-    let phoneRendered = false;
+    const omitir = new Set(['paquete', 'paqueteLabel', 'precio']);
 
-    formDef.formulario.campos.forEach(campo => {
+    campos.forEach(campo => {
       if (campo.tipo === 'hidden' || omitir.has(campo.id)) return;
-
-      // Renderizar campo especial de teléfono
-      if (campo.id === 'celular' && !phoneRendered) {
-        const phoneField = renderPhoneField(codigoDef, celularDef);
-        contenedorCampos.appendChild(phoneField);
-        phoneRendered = true;
-        return;
-      }
-
-      if (campo.id === 'codigoPais') return; // Ya se renderizó con celular
 
       const fieldEl = renderField(campo);
       if (fieldEl) contenedorCampos.appendChild(fieldEl);
     });
 
-    // Inicializar opciones de salón
-    initSalonOptions();
+    // Inicializar opciones de salón (si existe el selector)
+    if (document.getElementById('salon')) {
+      initSalonOptions();
+    }
 
     // Nota: campo-paquete y form-submit-area los controla paquetes.js
     // según la visibilidad configurada en precios.json
@@ -443,16 +457,24 @@ const formModule = (() => {
   /**
    * Inicializa el módulo
    */
-  async function init() {
+  async function init(options = {}) {
+    const {
+      formId = 'form-reserva',
+      fieldsContainerId = 'form-campos-dinamicos',
+      submitBtnId = 'btn-enviar',
+      successId = 'msg-exito',
+      errorId = 'msg-error-form'
+    } = options;
+
     // Obtener referencias DOM
-    form = document.getElementById('form-reserva');
-    contenedorCampos = document.getElementById('form-campos-dinamicos');
-    submitButton = document.getElementById('btn-enviar');
-    successMessage = document.getElementById('msg-exito');
-    errorMessage = document.getElementById('msg-error-form');
+    form = document.getElementById(formId);
+    contenedorCampos = document.getElementById(fieldsContainerId);
+    submitButton = document.getElementById(submitBtnId);
+    successMessage = document.getElementById(successId);
+    errorMessage = document.getElementById(errorId);
 
     if (!form || !contenedorCampos) {
-      console.error('[FORM] Elementos del DOM no encontrados');
+      console.warn(`[FORM] Elementos no encontrados para el form "${formId}"`);
       return;
     }
 
@@ -461,6 +483,10 @@ const formModule = (() => {
 
     // Renderizar
     await render();
+
+    // Mostrar área de submit si estaba oculta
+    const submitArea = document.getElementById('form-submit-area');
+    if (submitArea) submitArea.classList.remove('hidden');
   }
 
   // ── API PÚBLICA ───────────────────────────────────────────────

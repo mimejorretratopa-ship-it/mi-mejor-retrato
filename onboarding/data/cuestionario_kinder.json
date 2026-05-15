@@ -1,0 +1,97 @@
+[
+  {
+    "id": "seccion_a",
+    "label": "A. ¿Qué cosas le hacen iluminarse?",
+    "tipo": "section_header"
+  },
+  {
+    "id": "iluminarse",
+    "label": "(Marque hasta 4)",
+    "tipo": "checkbox",
+    "opciones": [
+      "Dinosaurios",
+      "Animales",
+      "Princesas / hadas",
+      "Superhéroes",
+      "Carros / trenes / vehículos",
+      "Construir (bloques, legos)",
+      "Cocinar / jugar a cocinar",
+      "Música / cantar",
+      "Bailar",
+      "Dibujar / colorear",
+      "Espacio / planetas",
+      "Insectos / criaturas raras",
+      "Personajes favoritos (Bluey, Paw Patrol, etc.)"
+    ],
+    "max_selecciones": 4,
+    "requerido": true
+  },
+  {
+    "id": "personaje_emociona",
+    "label": "¿Cuál personaje o tema le emociona muchísimo?",
+    "tipo": "text",
+    "placeholder": "Ej: Bluey, Spiderman, Dinosaurios...",
+    "requerido": true
+  },
+  {
+    "id": "seccion_b",
+    "label": "B. Cosas favoritas (útiles para conversación)",
+    "tipo": "section_header"
+  },
+  { "id": "helado", "label": "Helado favorito:", "tipo": "text" },
+  { "id": "desayuno", "label": "Desayuno favorito:", "tipo": "text" },
+  { "id": "comida", "label": "Comida favorita:", "tipo": "text" },
+  { "id": "animal", "label": "Animal favorito:", "tipo": "text" },
+  { "id": "color", "label": "Color favorito:", "tipo": "text" },
+  { "id": "cancion", "label": "Canción que canta mucho:", "tipo": "text" },
+  {
+    "id": "seccion_c",
+    "label": "C. Juego e imaginación",
+    "tipo": "section_header"
+  },
+  {
+    "id": "juego_fingir",
+    "label": "¿Qué le gusta jugar a fingir?",
+    "tipo": "checkbox",
+    "opciones": ["Doctor/a", "Chef", "Superhéroe", "Maestro/a", "Astronauta", "Animales", "Otro"],
+    "requerido": false
+  },
+  { "id": "ser_grande", "label": "Cuando sea grande quiere ser:", "tipo": "text" },
+  {
+    "id": "seccion_d",
+    "label": "D. Humor / cosas que lo hacen reír",
+    "tipo": "section_header"
+  },
+  {
+    "id": "risa",
+    "label": "¿Qué le da risa?",
+    "tipo": "checkbox",
+    "opciones": ["Chistes bobos", "Sonidos graciosos", "Palabras absurdas", "Adivinanzas", "Caras tontas", "Cosas inesperadas"],
+    "requerido": false
+  },
+  { "id": "chiste_repite", "label": "Chiste o tontería que siempre repite:", "tipo": "text" },
+  {
+    "id": "seccion_e",
+    "label": "E. Personalidad",
+    "tipo": "section_header"
+  },
+  {
+    "id": "personalidad",
+    "label": "Mi hijo/a es más:",
+    "tipo": "checkbox",
+    "opciones": ["Súper sociable", "Observador al inicio", "Tímido con desconocidos", "Muy juguetón", "Muy sensible", "Payasito/a", "Se suelta con tiempo"],
+    "requerido": true
+  },
+  {
+    "id": "seccion_f",
+    "label": "F. Información para acompañarle mejor",
+    "tipo": "section_header"
+  },
+  {
+    "id": "info_adicional",
+    "label": "¿Hay algo que quisiera que sepamos para hacer la experiencia cómoda y positiva para su hijo/a?",
+    "tipo": "textarea",
+    "placeholder": "Por ejemplo: sensibilidades sensoriales, neurodivergencia, ansiedad, diferencias de comunicación, necesidades especiales, cualquier detalle que nos ayude a conectar mejor",
+    "requerido": false
+  }
+]

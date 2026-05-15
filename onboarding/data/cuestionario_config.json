@@ -1,0 +1,19 @@
+{
+  "mapeo_salones": {
+    "prekinder": "kinder",
+    "kinder": "kinder",
+    "primero": "kinder",
+    "segundo": "kinder",
+    "tercero": "kinder",
+    "cuarto": "kinder",
+    "quinto": "kinder",
+    "sexto": "sexto",
+    "septimo": "sexto",
+    "octavo": "sexto",
+    "noveno": "sexto",
+    "decimo": "sexto",
+    "undecimo": "sexto",
+    "duodecimo": "sexto"
+  },
+  "default": "kinder"
+}

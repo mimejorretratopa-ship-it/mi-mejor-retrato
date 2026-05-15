@@ -32,6 +32,18 @@
         "incluir_en_discord": true
       },
       {
+        "id": "genero",
+        "label": "¿Es niño o niña?",
+        "tipo": "select",
+        "opciones": [
+          { "valor": "m", "label": "Niño" },
+          { "valor": "f", "label": "Niña" }
+        ],
+        "requerido": true,
+        "incluir_en_contacto": false,
+        "incluir_en_discord": true
+      },
+      {
         "id": "relacion",
         "label": "Del estudiante soy",
         "tipo": "select",
@@ -74,26 +86,6 @@
         "incluir_en_discord": false
       },
       {
-        "id": "codigoPais",
-        "label": "Código de país",
-        "tipo": "select",
-        "opciones": [
-          {
-            "valor": "+507",
-            "label": "🇵🇦 +507 Panamá"
-          },
-          {
-            "valor": "+1",
-            "label": "🇺🇸 +1 EE.UU."
-          }
-        ],
-        "default": "+507",
-        "requerido": true,
-        "incluir_en_contacto": true,
-        "incluir_en_discord": false,
-        "nota": "Se combina con celular para armar el número de WhatsApp completo"
-      },
-      {
         "id": "celular",
         "label": "Número de WhatsApp",
         "tipo": "tel",
@@ -101,16 +93,7 @@
         "requerido": true,
         "incluir_en_contacto": true,
         "incluir_en_discord": true,
-        "nota": "Solo el número local sin código de país"
-      },
-      {
-        "id": "celularOtro",
-        "label": "Otro número (opcional)",
-        "tipo": "tel",
-        "placeholder": "6000-0000",
-        "requerido": false,
-        "incluir_en_contacto": true,
-        "incluir_en_discord": false
+        "nota": "Solo el número local. El código 507 se añade automáticamente."
       },
       {
         "id": "paquete",
@@ -146,10 +129,10 @@
     ]
   },
   "campos_computados": {
-    "whatsapp_completo": "{codigoPais}{celular}",
-    "whatsapp_limpio": "codigoPais + celular sin espacios ni guiones — usado para el link wa.me",
+    "whatsapp_completo": "507{celular}",
+    "whatsapp_limpio": "507 + celular sin espacios ni guiones — usado para el link wa.me",
     "school_name": "lookup en escuelas.json usando el prefijo de idEscuela",
-    "student_id": "{whatsapp_limpio}_{nombreEstudiante_slug}_{salon_slug} — identificador único del estudiante para cruzar módulos",
+    "student_id": "507{celular}_{nombreEstudiante_slug}_{salon_slug} — identificador único del estudiante para cruzar módulos",
     "salon_corto": "abreviación del salón — lookup en _secciones.json array 'salones', campo 'corto' donde valor == salon. Ej: kinder → k, prekinder → pk"
   },
   "flujos": {
@@ -159,17 +142,16 @@
       "condicion": "solo_si_contacto_nuevo",
       "campos_mapeados": {
         "nombre_contacto": "{nombre} : {nombreEstudiante} - {code} {yy} {salon_corto}",
-        "telefono": "{codigoPais}{celular}",
-        "telefono_otro": "{codigoPais}{celularOtro}",
+        "telefono": "507{celular}",
         "email": "{email}",
-        "nota": "Estudiante: {nombreEstudiante} · {relacion} · Salón: {salon} · Colegio: {school_name} · Paquete: {paqueteLabel}"
+        "nota": "Estudiante: {nombreEstudiante} ({genero}) · {relacion} · Salón: {salon} · Colegio: {school_name} · Paquete: {paqueteLabel}"
       }
     },
     "discord": {
       "activo": true,
       "descripcion": "Envía snapshot al canal de Discord con link de WhatsApp pre-llenado para iniciar conversación",
       "webhook_env": "DISCORD_WEBHOOK_URL",
-      "mensaje_template": "📸 *Nueva reserva* — {school_name}\n👤 {nombre} ({relacion})\n🎓 Estudiante: {nombreEstudiante} · Salón: {salon}\n📱 {codigoPais} {celular}\n📦 {paqueteLabel} · ${precio}\n\n👉 <https://wa.me/{whatsapp_limpio}?text=Hola+{nombre_encoded}%2C+gracias+por+tu+inter%C3%A9s+en+la+sesi%C3%B3n+de+fotos+de+{school_name_encoded}>"
+      "mensaje_template": "📸 *Nueva reserva* — {school_name}\n👤 {nombre} ({relacion})\n🎓 Estudiante: {nombreEstudiante} · Género: {genero} · Salón: {salon}\n📱 507 {celular}\n📦 {paqueteLabel} · ${precio}\n\n👉 <https://wa.me/507{whatsapp_limpio}?text=Hola+{nombre_encoded}%2C+gracias+por+tu+inter%C3%A9s+en+la+sesi%C3%B3n+de+fotos+de+{school_name_encoded}>"
     },
     "captura_datos": {
       "activo": true,

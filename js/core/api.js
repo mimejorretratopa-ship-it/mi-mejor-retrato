@@ -115,6 +115,61 @@ const Api = (() => {
       }
     },
 
+    // ── HANDSHAKE (Cuestionario) ──
+    async getStudent(sid) {
+      const url = `${window.config.endpoints.onboardingHub}?action=getStudent&sid=${sid}`;
+      log(`Buscando estudiante sid=${sid}...`);
+      
+      try {
+        const response = await fetch(url, { method: 'GET', mode: 'cors' });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        log('getStudent OK:', result);
+        return result;
+      } catch (err) {
+        console.warn('[API] getStudent falló o no implementado. Usando Mock en Dev.');
+        
+        // MOCK DATA PARA DESARROLLO
+        // Si estamos en localhost, simulamos respuesta exitosa basada en el SID
+        if (window.config.isDev && sid.includes('_')) {
+          const parts = sid.split('_');
+          const nameSlug = parts[1] || 'estudiante-prueba';
+          const salonSlug = parts[2] || 'kinder';
+          
+          return {
+            success: true,
+            data: {
+              nombre: nameSlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+              colegio: 'Colegio de Prueba (Mock)',
+              salon: salonSlug.charAt(0).toUpperCase() + salonSlug.slice(1),
+              genero: 'm' // Default mock genero
+            }
+          };
+        }
+
+        return { success: false, error: err.message };
+      }
+    },
+
+    // ── SUBMIT CUESTIONARIO ──
+    async enviarCuestionario(data) {
+      const url = window.config.endpoints.onboardingHub;
+      log('Enviando cuestionario al Hub...');
+      
+      try {
+        const result = await _post(url, { ...data, action: 'saveQuestionnaire' });
+        log('Hub OK (Cuestionario):', result);
+        return { ok: true, data: result };
+      } catch (err) {
+        console.error('[API] Hub falló (Cuestionario):', err);
+        return { ok: false, error: err.message };
+      }
+    },
+
     // ── SUBMIT CONTACTO (Website) ──
     async enviarContacto(data) {
       log('Procesando contacto del website...');

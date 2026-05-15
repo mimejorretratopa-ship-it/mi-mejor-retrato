@@ -109,6 +109,32 @@ const storage = (() => {
       }
     },
 
+    async saveQuestionnaire(data, metadata) {
+      try {
+        const payload = { 
+          ...data, 
+          student_id: metadata.student_id,
+          _meta: metadata, 
+          timestamp: new Date().toISOString() 
+        };
+        
+        console.log('[STORAGE] Payload cuestionario preparado:', payload);
+        
+        // 1. Respaldo local
+        this.set(`cuestionario_${metadata.student_id}`, payload);
+        
+        // 2. Envío
+        window.api.enviarCuestionario(payload).then(result => {
+          log('Envío cuestionario finalizado:', result.ok ? 'OK' : 'Error');
+        });
+
+        return { success: true };
+      } catch (error) {
+        console.error('[STORAGE] saveQuestionnaire failed:', error);
+        return { success: false, error: error.message };
+      }
+    },
+
     async notifyDiscord(message) {
       // Enviamos el string directo para que api.js lo maneje como 'content'
       await window.api.notificarDiscord(message);

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "seccion_a",
+    "label": "A. ¿Qué temas le hacen click?",
+    "tipo": "section_header"
+  },
+  {
+    "id": "hacen_click",
+    "label": "¿Qué temas le hacen click?",
+    "tipo": "checkbox",
+    "opciones": [
+      "Música",
+      "Besties / amigas",
+      "Arte / dibujar",
+      "Trends / memes",
+      "Libros / historias",
+      "Animales",
+      "Inventar cosas",
+      "Bailar / cantar"
+    ],
+    "requerido": false
+  },
+  {
+    "id": "seccion_b",
+    "label": "B. Afinidades",
+    "tipo": "section_header"
+  },
+  { "id": "cancion_pegada", "label": "Canción que tiene pegada:", "tipo": "text" },
+  { "id": "artista_favorito", "label": "Artista favorito:", "tipo": "text" },
+  { "id": "trend_meme", "label": "Trend o meme que le da risa:", "tipo": "text" },
+  { "id": "hacer_amigas", "label": "Qué le encanta hacer con sus amigas:", "tipo": "text" },
+  { "id": "personaje_pelicula", "label": "Si fuera personaje de película, ¿quién sería?", "tipo": "text" },
+  {
+    "id": "seccion_c",
+    "label": "C. Compinches",
+    "tipo": "section_header"
+  },
+  { "id": "amigas_inseparables", "label": "Sus amigas inseparables:", "tipo": "text" },
+  { "id": "inside_jokes", "label": "¿Tienen inside jokes? (Cuéntanos uno):", "tipo": "text" },
+  {
+    "id": "seccion_d",
+    "label": "D. Personalidad",
+    "tipo": "section_header"
+  },
+  {
+    "id": "personalidad",
+    "label": "Mi hija es más:",
+    "tipo": "checkbox",
+    "opciones": ["Divertida", "Soñadora", "Líder", "Observadora", "Creativa", "Tímida al inicio"],
+    "requerido": true
+  }
+]

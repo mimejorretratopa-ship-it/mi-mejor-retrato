@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<base href="/onboarding/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cuestionario Pre-Sesión — Mi Mejor Retrato">
+<title id="page-title">Cuestionario Pre-Sesión — Mi Mejor Retrato</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./brochure.css">
+
+<!-- Config -->
+<script src="../js/core/config.js"></script>
+
+<!-- Librerías base -->
+<script src="../js/core/storage.js"></script>
+<script src="../js/core/state.js"></script>
+<script src="../js/core/validators.js"></script>
+<script src="../js/core/utils.js"></script>
+<script src="../js/core/api.js"></script>
+
+<!-- Módulos de dominio (reutilizamos form-renderer) -->
+<script src="./modules/analytics.js"></script>
+<script src="./modules/form-renderer.js"></script>
+
+<style>
+  /* Ajustes específicos para el cuestionario */
+  .cuestionario-header {
+    padding: 120px 20px 40px;
+    text-align: center;
+    background: var(--sand-light);
+  }
+  .student-context {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--white);
+    border: 1px solid var(--sand);
+    border-radius: 100px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    color: var(--black-muted);
+  }
+  #loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+  }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--sand);
+    border-top-color: var(--black);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <p>Cargando información del estudiante...</p>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="javascript:void(0)" class="nav-logo">Mi Mejor <span>Retrato</span></a>
+</nav>
+
+<!-- HEADER -->
+<header class="cuestionario-header">
+  <div class="student-context hidden" id="student-info">
+    <span id="txt-escuela">Cargando escuela...</span> · <span id="txt-salon">Cargando salón...</span>
+  </div>
+  <h1 class="hero-h1" style="font-size: clamp(2.5rem, 8vw, 3.5rem);">
+    Vamos a preparar la sesión de <br>
+    <em id="txt-nombre-estudiante">...</em>
+  </h1>
+  <p class="hero-sub" style="max-width: 600px; margin: 20px auto 0;">
+    Cuéntanos un poco sobre tu hijo/a para que el día de la sesión se sienta como en casa y logremos fotos auténticas.
+  </p>
+</header>
+
+<!-- FORMULARIO -->
+<div class="form-bg" style="padding-top: 40px;">
+<section class="section" id="cuestionario-section">
+  <form class="form-grid" id="form-cuestionario" novalidate>
+    <input type="hidden" id="student_id" name="student_id">
+    <input type="hidden" id="nombre_estudiante" name="nombre_estudiante">
+    <input type="hidden" id="escuela" name="escuela">
+    <input type="hidden" id="salon" name="salon">
+    
+    <div id="form-campos-dinamicos">
+      <!-- Los campos se inyectan aquí -->
+    </div>
+
+    <div id="form-submit-area" class="hidden">
+      <button type="submit" class="btn-enviar" id="btn-enviar">
+        Enviar cuestionario
+      </button>
+      <p class="form-note">
+        Tus respuestas nos ayudan a conectar mejor con el estudiante.
+      </p>
+    </div>
+  </form>
+
+  <div class="msg-exito" id="msg-exito">
+    <div class="exito-icon">✨</div>
+    <h3>¡Cuestionario enviado!</h3>
+    <p>
+      Gracias por compartir esta información. Nos vemos pronto en la sesión.
+    </p>
+  </div>
+
+  <div class="msg-error-form" id="msg-error-form">
+    <p>
+      Hubo un error al enviar. Por favor intenta de nuevo o contacta a Mike.
+    </p>
+  </div>
+</section>
+</div>
+
+<!-- ERROR — SID no encontrado -->
+<div class="error-page hidden" id="error-sid">
+  <div class="error-content">
+    <div class="error-icon">⚠️</div>
+    <h1>Enlace no válido</h1>
+    <p>No encontramos información asociada a este enlace.</p>
+    <p>Por favor verifica que el link esté completo o contacta a Mike:</p>
+    <a href="https://wa.me/50767438951" class="btn-primary" target="_blank">
+      Consultar por WhatsApp →
+    </a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-logo">Mi Mejor <span>Retrato</span></p>
+    <p class="footer-copy">© 2026 Mi Mejor Retrato · Todos los derechos reservados</p>
+  </div>
+</footer>
+
+<script>
+(async function initCuestionario() {
+  
+  // 1. Obtener SID de la URL
+  function getSid() {
+    return new URLSearchParams(window.location.search).get('sid');
+  }
+
+  const sid = getSid();
+  if (!sid) {
+    showError('No se proporcionó un ID de estudiante.');
+    return;
+  }
+
+  // 2. Handshake con el Hub
+  try {
+    // Nota: api.getStudent se implementará a continuación
+    const studentData = await api.getStudent(sid);
+    
+    if (!studentData || !studentData.success) {
+      showError('Estudiante no encontrado.');
+      return;
+    }
+
+    const student = studentData.data;
+    state.set('student', student);
+    
+    // Inyectar contexto en UI
+    document.getElementById('txt-nombre-estudiante').textContent = student.nombre;
+    document.getElementById('txt-escuela').textContent = student.colegio;
+    document.getElementById('txt-salon').textContent = student.salon;
+    document.getElementById('student-info').classList.remove('hidden');
+    
+    // Poblar campos ocultos
+    document.getElementById('student_id').value = sid;
+    document.getElementById('nombre_estudiante').value = student.nombre;
+    document.getElementById('escuela').value = student.colegio;
+    document.getElementById('salon').value = student.salon;
+
+    // 3. Cargar configuración de cuestionarios
+    const configQuest = await storage.loadJSON('cuestionario_config.json');
+    const mapping = configQuest.mapeo_salones;
+    const salonLower = student.salon.toLowerCase();
+    
+    // Buscar el tipo base de cuestionario (ej: kinder, sexto)
+    const baseType = mapping[salonLower] || configQuest.default;
+    
+    // Armar nombre del archivo. Si hay género (ej: 6to), se intenta cargar el específico.
+    let filename = `cuestionario_${baseType}.json`;
+    if (student.genero && baseType === 'sexto') {
+      filename = `cuestionario_${baseType}_${student.genero}.json`;
+    }
+
+    let questions;
+    try {
+      questions = await storage.loadJSON(filename);
+    } catch (e) {
+      console.warn(`[CUESTIONARIO] No se encontró ${filename}, intentando fallback...`);
+      questions = await storage.loadJSON(`cuestionario_${baseType}.json`);
+    }
+    
+    // Procesar placeholders en las preguntas (ej: {nombreEstudiante})
+    const processedQuestions = questions.map(q => ({
+      ...q,
+      label: q.label.replace(/{nombreEstudiante}/g, student.nombre)
+    }));
+
+    // 4. Renderizar formulario
+    // Reutilizamos la lógica de form-renderer pero adaptada
+    state.set('form', processedQuestions);
+    await formModule.init({ 
+      formId: 'form-cuestionario',
+      customFields: processedQuestions 
+    });
+
+    // Quitar loading
+    document.getElementById('loading-overlay').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('loading-overlay').style.display = 'none';
+    }, 500);
+
+  } catch (error) {
+    console.error('[CUESTIONARIO] Error en inicialización:', error);
+    showError('Error de conexión con el servidor.');
+  }
+
+  function showError(msg) {
+    console.error('[CUESTIONARIO] ' + msg);
+    document.getElementById('loading-overlay').style.display = 'none';
+    document.getElementById('error-sid').classList.remove('hidden');
+    document.getElementById('cuestionario-section').classList.add('hidden');
+  }
+
+})();
+</script>
+
+</body>
+</html>

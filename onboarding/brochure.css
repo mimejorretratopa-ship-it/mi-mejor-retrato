@@ -1318,3 +1318,45 @@ details[open] .faq-icon {
   text-decoration: none;
   font-weight: 500;
 }
+
+/* ─── CUESTIONARIO ───────────────────────────────────────── */
+.form-section-header {
+  font-family: var(--ff-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--terra);
+  margin: 32px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--sand);
+}
+.campo-header {
+  margin-top: 10px;
+}
+.checkbox-group {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: var(--bark);
+  cursor: pointer;
+  padding: 8px 12px;
+  background: var(--cream);
+  border: 1.5px solid var(--sand);
+  border-radius: 8px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.checkbox-item:hover {
+  border-color: var(--sky);
+}
+.checkbox-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--terra);
+}

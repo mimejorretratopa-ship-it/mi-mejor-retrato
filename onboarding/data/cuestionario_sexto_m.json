@@ -1,0 +1,63 @@
+[
+  {
+    "id": "seccion_a",
+    "label": "A. ¿Qué temas le hacen click?",
+    "tipo": "section_header"
+  },
+  {
+    "id": "hacen_click",
+    "label": "Señala lo que más le hace click:",
+    "tipo": "checkbox",
+    "opciones": [
+      "Chistes malos",
+      "Adivinanzas",
+      "Videojuegos",
+      "Fútbol / deportes",
+      "Memes",
+      "Inventar cosas locas",
+      "Competencias o retos",
+      "Conversar con sus amigos"
+    ],
+    "requerido": false
+  },
+  {
+    "id": "seccion_b",
+    "label": "B. Competencia / pasión",
+    "tipo": "section_header"
+  },
+  { "id": "videojuego", "label": "Videojuego favorito:", "tipo": "text" },
+  { "id": "equipo_jugador", "label": "Equipo o jugador favorito:", "tipo": "text" },
+  { "id": "vivir_videojuego", "label": "Si pudiera vivir en un videojuego ¿cuál sería?", "tipo": "text" },
+  {
+    "id": "seccion_c",
+    "label": "C. Humor",
+    "tipo": "section_header"
+  },
+  { "id": "peor_chiste", "label": "Peor chiste que siempre repite:", "tipo": "text" },
+  {
+    "id": "tipo_humor",
+    "label": "Tipo de humor que le da risa:",
+    "tipo": "checkbox",
+    "opciones": ["Absurdo", "Bromas tontas", "Memes", "Retos entre amigos"],
+    "requerido": false
+  },
+  {
+    "id": "seccion_d",
+    "label": "D. Compinches",
+    "tipo": "section_header"
+  },
+  { "id": "amigos_cercanos", "label": "Sus amigos más cercanos:", "tipo": "text" },
+  { "id": "amigo_desorden", "label": "¿Quién del grupo hace más desorden?", "tipo": "text" },
+  {
+    "id": "seccion_e",
+    "label": "E. Personalidad",
+    "tipo": "section_header"
+  },
+  {
+    "id": "personalidad",
+    "label": "Mi hijo es más:",
+    "tipo": "checkbox",
+    "opciones": ["Competitivo", "Bromista", "Callado al principio", "Líder del grupo", "Creativo", "Observador"],
+    "requerido": true
+  }
+]

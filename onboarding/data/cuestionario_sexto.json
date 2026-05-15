@@ -1,0 +1,30 @@
+[
+  {
+    "id": "personalidad",
+    "label": "¿Cómo definirías la personalidad de {nombreEstudiante}?",
+    "tipo": "radio",
+    "opciones": ["Serio/a y formal", "Reservado/a pero amable", "Alegre y espontáneo/a", "El bromista del grupo"],
+    "requerido": true
+  },
+  {
+    "id": "musica_playlist",
+    "label": "¿Qué música o artistas no pueden faltar en su playlist?",
+    "tipo": "text",
+    "placeholder": "Ej: Bad Bunny, Taylor Swift, Rock, etc.",
+    "requerido": true
+  },
+  {
+    "id": "logro_orgullo",
+    "label": "¿De qué logro o actividad se siente más orgulloso/a este año?",
+    "tipo": "textarea",
+    "placeholder": "Deportes, notas, arte, un hobby...",
+    "requerido": true
+  },
+  {
+    "id": "planes_graduacion",
+    "label": "¿Qué planes o sueños tiene para después de esta etapa escolar?",
+    "tipo": "text",
+    "placeholder": "Ej: estudiar medicina, viajar, ser gamer...",
+    "requerido": false
+  }
+]
