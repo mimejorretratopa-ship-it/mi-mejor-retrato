@@ -29,7 +29,7 @@ El 14 de Mayo de 2026 se migró de una arquitectura basada en archivos individua
 La arquitectura URL-driven se extenderá para soportar flujos post-onboarding:
 - El formulario de reserva inicial generará un `student_id` único: `{whatsapp}_{nombre_slug}_{salon_slug}`
 - Airtable usará fórmulas para generar URLs dinámicas para un **Cuestionario Pre-Sesión**: `/onboarding/cuestionario?sid={student_id}`
-- **Fase 3: Agenda**: Se habilitó el dashboard `/agenda/` que centraliza la asignación de horarios, sincronizando con Sheets y Airtable vía Hub.
+- **Fase 2: Agenda**: Se habilitó el dashboard `/agenda/` (admin) y la vista pública `/agenda/:slug` (padres) que centraliza la asignación de horarios.
 
 ---
 

@@ -193,7 +193,7 @@ Los textos usan `{nombreEstudiante}` como placeholder que se reemplaza en runtim
 
 ---
 
-## Fase 3: Gestión de Agenda (✅ HECHO)
+## Fase 2: Gestión de Agenda (✅ HECHO)
 
 Dashboard interno para organizar los horarios de las sesiones fotográficas por salón.
 
@@ -216,3 +216,13 @@ Ubicado en `/agenda/index.html`. Permite seleccionar escuela y salón, generar s
 - [x] Solo permite asignar estudiantes cargados desde Airtable (Integridad de IDs).
 - [x] Botón 🔄 (Refrescar) trae nuevos leads sin recargar configuración.
 - [x] Sincronización con Hub funcional (Persistencia en Sheets + Airtable).
+
+### Vista Pública (Padres)
+Ubicada en `/agenda/view.html`. Es de solo lectura y utiliza un motor de cálculo local para renderizar el horario basado en la configuración del admin.
+
+**URL**: `https://mimejorretrato.com/agenda/clia_kinder` (mapeada vía Vercel).
+
+- [x] Renderizado de Solo Lectura (sin botones de edición).
+- [x] Nombres de niños visibles para confirmación de padres.
+- [x] Motor dinámico soporta Breaks y Extras guardados en el Hub.
+- [x] Optimizado para visualización móvil.

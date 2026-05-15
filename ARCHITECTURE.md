@@ -140,9 +140,12 @@ state.get('ui')        // { formLoading, pricingLoading, sectionsLoading }
 state.get('student')       // datos del estudiante pre-cargados desde onboarding (incluye genero)
 state.get('questionnaire') // definición del cuestionario activo (cuestionario_kinder.json, cuestionario_sexto_m.json, etc.)
 
-// ── Gestión Operativa (Fase 3: Agenda) ──
+// ── Gestión Operativa (Fase 2: Agenda) ──
 state.get('agendas')       // Mapa de configuraciones, breaks y asignaciones por salon_id
 state.get('currentContext') // ID del salón activo en la agenda (ej: clia_kinder)
+
+// ── Vistas Públicas ──
+// /agenda/:slug -> view.html (Consulta de horarios para padres)
 ```
 
 Regla: **si un módulo necesita datos, los pide a `state`, no los carga él mismo**.
@@ -221,13 +224,13 @@ Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja d
 El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fases, todas compartiendo el mismo `js/core/`:
 
 ```
-FASE 0 (✅ HECHO)              FASE 1 (✅ HECHO)         FASE 3 (✅ HECHO)         FASE 4
+FASE 0 (✅ HECHO)              FASE 1 (✅ HECHO)         FASE 2 (✅ HECHO)         FASE 3
 Onboarding                     Cuestionario              Agenda & Horarios         Producción
 ─────────────────              ──────────────            ──────────────            ──────────────
 Brochure URL-driven            Formulario pre-sesión     Dashboard local-first     PDF referencia
   → Formulario reserva           personalizado por niño    → Gestión por salón       para el fotógrafo
   → Google Sheets              → Links por WhatsApp      → Sincronización Hub      Banner + QR code
-  → Airtable                   → Handshake con Hub       → Persistencia en Sheets    para ID de fotos
+  → Airtable                   → Handshake con Hub       → Vista Pública Padres    para ID de fotos
   → Google Contacts            → Segmentado por Género   → Registro en Airtable    Python QR reader
   → Discord                    → Respuestas a Sheets     → Detección de choques
 ```
@@ -243,8 +246,8 @@ Ejemplo:    5076XXXXXXX_maria-antonia_kinder
 
 Este ID se genera en el onboarding y se envía al Hub dentro del objeto `_meta` y también en la raíz del payload para asegurar su persistencia en Sheets y Airtable. Se usa como clave para:
 - Cuestionario pre-sesión (Fase 1) → URL personalizado con `?sid={student_id}`
-- PDF + QR (Fase 2) → QR codifica el student_id
-- Panel de horarios (Fase 3) → filtra slots por student_id
+- Panel de horarios (Fase 2) → filtra slots por student_id
+- PDF + QR (Fase 3) → QR codifica el student_id
 
 ### Cuestionario Pre-Sesión (Fase 1)
 
