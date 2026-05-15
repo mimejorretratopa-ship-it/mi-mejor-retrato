@@ -66,8 +66,32 @@ function doPost(e) {
     var timestamp = new Date().toISOString();
     var phone     = data.celular ? '507' + data.celular : ''; // hardcoded 507
     var colegio   = meta.schoolName || data.idEscuela;
-    var studentId = meta.student_id || 'N/A';
+    var studentId = meta.student_id || data.sid || 'N/A';
     var genero    = data.genero || '';
+
+    // ── 0. HANDSHAKE (getStudent vía POST) ────────────────────
+    if (action === 'getStudent') {
+      var sid = data.sid;
+      var sheet = ss.getSheets()[0];
+      var rows = sheet.getDataRange().getValues();
+      var headers = rows[0];
+      var idIndex = headers.indexOf('ID');
+      
+      for (var i = 1; i < rows.length; i++) {
+        if (rows[i][idIndex] === sid) {
+          return ContentService.createTextOutput(JSON.stringify({
+            success: true,
+            data: {
+              nombre: rows[i][headers.indexOf('Estudiante')] || '',
+              colegio: rows[i][headers.indexOf('Colegio')] || '',
+              salon: rows[i][headers.indexOf('Salón')] || '',
+              genero: headers.indexOf('Género') !== -1 ? rows[i][headers.indexOf('Género')] : ''
+            }
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'No encontrado' })).setMimeType(ContentService.MimeType.JSON);
+    }
 
     // ── 0. CUESTIONARIOS ──────────────────────────────────────
     if (action === 'saveQuestionnaire') {

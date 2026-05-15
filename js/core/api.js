@@ -117,20 +117,15 @@ const Api = (() => {
 
     // ── HANDSHAKE (Cuestionario) ──
     async getStudent(sid) {
-      const url = `${window.config.endpoints.onboardingHub}?action=getStudent&sid=${sid}`;
-      log(`Buscando estudiante sid=${sid}...`);
+      const url = window.config.endpoints.onboardingHub;
+      log(`Buscando estudiante sid=${sid} (vía POST)...`);
       
       try {
-        const response = await fetch(url, { method: 'GET', mode: 'cors' });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const result = await response.json();
+        const result = await _post(url, { action: 'getStudent', sid: sid });
         log('getStudent OK:', result);
         return result;
       } catch (err) {
+        log(`getStudent Error: ${err.message}`);
         console.warn('[API] getStudent falló o no implementado. Usando Mock en Dev.');
         
         // MOCK DATA PARA DESARROLLO
