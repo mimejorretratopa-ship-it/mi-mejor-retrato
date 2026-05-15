@@ -330,14 +330,8 @@ const formModule = (() => {
         || `👤 ${validation.data.nombre} | 🎓 ${validation.data.nombreEstudiante} | 📱 ${metadata.whatsapp_limpio}`;
 
       if (config.features.discordNotifications) storage.notifyDiscord(discordMsg);
-      if (config.features.googleContacts) storage.createContact(validation.data);
 
-      if (result.success || result.fallback === 'local_download') {
-        // success: API respondió OK
-        // fallback: API falló pero el JSON se descargó localmente — igual mostramos éxito
-        if (!result.success) {
-          console.warn('[FORM] API no disponible; datos guardados como descarga local.');
-        }
+      if (result.success) {
         showSuccess(validation.data);
       } else {
         throw new Error(result.error || 'Error desconocido');

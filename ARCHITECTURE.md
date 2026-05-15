@@ -243,27 +243,28 @@ Este ID se genera en el onboarding y se envía al Hub dentro del objeto `_meta` 
 
 ### Cuestionario Pre-Sesión (Fase 1)
 
+El cuestionario utiliza un mecanismo de **"Handshake"** con el Hub para personalizar la experiencia del usuario y evitar errores de data-entry:
+
+```mermaid
+sequenceDiagram
+    participant User as Padre de Familia
+    participant Form as cuestionario.html
+    participant Hub as Apps Script Hub
+    participant DB as Google Sheet (Leads)
+
+    User->>Form: Abre link con ?sid=...
+    Form->>Hub: Petición GET ?action=getStudent&sid=...
+    Hub->>DB: Busca SID en columna 'ID'
+    DB-->>Hub: Retorna fila del estudiante
+    Hub-->>Form: JSON { nombre, colegio, salon, etc. }
+    Form->>Form: Inyecta datos en el UI y selecciona JSON de preguntas
+    Form-->>User: Muestra cuestionario personalizado
 ```
-URL: /propuesta/cuestionario?sid={student_id}
-     │
-     ▼
-cuestionario.html (único, URL-driven como el brochure)
-     │ lee query param `sid`
-     ▼
-Apps Script Hub lookup → obtiene datos del onboarding (nombre, escuela, salón)
-     │
-     ▼
-state.set('student', { nombre, escuela, salon, grado, ... })
-     │
-     ▼
-Renderiza cuestionario condicional:
-  ├── Kinder / Pre-K  → cuestionario_kinder.json
-  ├── 6to grado       → cuestionario_sexto.json
-  └── Mapeo definido en cuestionario_config.json
-     │
-     ▼
-Submit → Apps Script Hub → Sheets (pestaña "Cuestionarios") + Airtable (misma fila)
-```
+
+**Beneficios de este flujo:**
+1.  **Validación**: Si el `sid` no existe, el formulario puede redirigir a la reserva o mostrar un error amigable.
+2.  **Contexto**: El sistema sabe qué tipo de cuestionario mostrar (Kinder vs 6to) sin preguntar de nuevo al usuario.
+3.  **Integridad**: Las respuestas se guardan usando el mismo `sid`, permitiendo unificar la "Hoja de Vida" del estudiante en Airtable.
 
 ---
 

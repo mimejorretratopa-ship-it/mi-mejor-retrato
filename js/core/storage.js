@@ -112,12 +112,6 @@ const storage = (() => {
     async notifyDiscord(message) {
       // Enviamos el string directo para que api.js lo maneje como 'content'
       await window.api.notificarDiscord(message);
-    },
-
-    async createContact(data) {
-      // Este método antes llamaba a un endpoint específico. 
-      // El nuevo Hub ya maneja la creación de contactos, pero dejamos el log.
-      log('createContact (delegado al Hub):', data.nombre);
     }
   };
 })();
