@@ -391,10 +391,11 @@ const formModule = (() => {
     errorMessage.style.display = 'none';
     successMessage.style.display = 'block';
 
-    const brochure = state.get('brochure');
+    const brochure = state.get('brochure') || {};
+    const schoolName = brochure.schoolName || data.escuela || 'la sesión';
     const photographerNum = config.whatsapp.photographerNumber;
     const msg = utils.encodeForURL(
-      config.whatsapp.messageTemplate(data.nombre, brochure.schoolName)
+      config.whatsapp.messageTemplate(data.nombre || 'Hola', schoolName)
     );
 
     const successText = document.getElementById('msg-exito-texto');
