@@ -165,6 +165,44 @@ const Api = (() => {
       }
     },
 
+    // ── AGENDA (Hub) ──
+    async getAgenda(school, salon) {
+      const url = window.config.endpoints.onboardingHub;
+      log(`Buscando agenda para ${school}_${salon}...`);
+      
+      try {
+        const result = await _post(url, { 
+          action: 'getAgenda', 
+          id_salon: `${school}_${salon}`,
+          school: school,
+          salon: salon
+        });
+        log('getAgenda OK:', result);
+        return { ok: true, data: result };
+      } catch (err) {
+        console.error('[API] getAgenda falló:', err);
+        return { ok: false, error: err.message };
+      }
+    },
+
+    async saveAgenda(school, salon, agendaData) {
+      const url = window.config.endpoints.onboardingHub;
+      log(`Guardando agenda para ${school}_${salon}...`);
+      
+      try {
+        const result = await _post(url, { 
+          action: 'saveAgenda', 
+          id_salon: `${school}_${salon}`,
+          agenda_data: agendaData
+        });
+        log('saveAgenda OK:', result);
+        return { ok: true, data: result };
+      } catch (err) {
+        console.error('[API] saveAgenda falló:', err);
+        return { ok: false, error: err.message };
+      }
+    },
+
     // ── SUBMIT CONTACTO (Website) ──
     async enviarContacto(data) {
       log('Procesando contacto del website...');

@@ -4,7 +4,7 @@
  */
 
 // --- Global State ---
-let agendas = {}; // { "clia_kinder": { config, breaks, extraSlots, assignments }, ... }
+let agendas = {}; // { "clia_kinder": { config, breaks, extraSlots, assignments, unassignedStudents: [] }, ... }
 let currentContext = null; // "clia_kinder"
 
 // Default config for a new salon
@@ -80,13 +80,12 @@ async function handleEscuelaChange(e) {
     
     selSalon.disabled = false;
     
-    // Solo asignar el listener si no lo tiene
     if (!selSalon.dataset.listening) {
       selSalon.addEventListener('change', handleSalonChange);
       selSalon.dataset.listening = "true";
     }
     
-    switchContext(null); // Clear until salon is selected
+    switchContext(null);
   } catch (error) {
     console.error('Failed to load salones:', error);
     selSalon.innerHTML = '<option value="">Error cargando salones</option>';
@@ -103,15 +102,14 @@ function handleSalonChange(e) {
   }
   
   const ctx = `${codeEscuela}_${salon}`;
-  switchContext(ctx);
+  switchContext(ctx, codeEscuela, salon);
 }
 
 // --- Context Management ---
-function switchContext(ctxId) {
+async function switchContext(ctxId, codeEscuela, salon) {
   currentContext = ctxId;
   
   if (!ctxId) {
-    // Disable inputs
     toggleSidebarInputs(false);
     document.getElementById('schedule-list').innerHTML = `
       <div style="padding:40px; text-align:center; color:var(--text-muted);">
@@ -121,18 +119,49 @@ function switchContext(ctxId) {
     return;
   }
   
-  // Enable inputs
   toggleSidebarInputs(true);
+  document.getElementById('schedule-list').innerHTML = `
+    <div style="padding:40px; text-align:center; color:var(--text-muted);">
+      ⏳ Cargando datos desde el servidor...
+    </div>`;
 
-  // Initialize context in memory if not exists
+  // Fetch from Hub if not in memory
   if (!agendas[ctxId]) {
-    agendas[ctxId] = {
-      config: { ...defaultConfig },
-      breaks: [],
-      extraSlots: [],
-      assignments: {},
-      scheduleSlots: []
-    };
+    try {
+      const result = await window.api.getAgenda(codeEscuela, salon);
+      
+      let agendaData = {
+        config: { ...defaultConfig },
+        breaks: [],
+        extraSlots: [],
+        assignments: {},
+        scheduleSlots: [],
+        unassignedStudents: []
+      };
+
+      if (result.ok) {
+        if (result.data.agenda) {
+           agendaData = Object.assign(agendaData, result.data.agenda);
+        }
+        
+        // Filter students not assigned yet
+        const allStudents = result.data.students || [];
+        const assignedIds = Object.values(agendaData.assignments).map(a => a.id);
+        agendaData.unassignedStudents = allStudents.filter(s => !assignedIds.includes(s.id));
+      }
+
+      agendas[ctxId] = agendaData;
+    } catch (e) {
+      console.error("Error fetching context from hub:", e);
+      agendas[ctxId] = {
+        config: { ...defaultConfig },
+        breaks: [],
+        extraSlots: [],
+        assignments: {},
+        scheduleSlots: [],
+        unassignedStudents: []
+      };
+    }
   }
 
   // Load context config to UI
@@ -144,8 +173,7 @@ function switchContext(ctxId) {
 
   renderBreaksConfig();
   
-  // Generate or render existing
-  if (data.scheduleSlots.length === 0) {
+  if (!data.scheduleSlots || data.scheduleSlots.length === 0) {
     generateSchedule();
   } else {
     renderUI();
@@ -266,6 +294,38 @@ function handleGenerateClick() {
   generateSchedule();
 }
 
+async function handleSyncClick() {
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+  
+  const codeEscuela = document.getElementById('sel-escuela').value;
+  const salon = document.getElementById('sel-salon').value;
+  const btn = document.getElementById('btn-sync');
+  
+  btn.textContent = '⏳ Sincronizando...';
+  btn.disabled = true;
+
+  // We only send config, breaks, extraSlots, assignments
+  const dataToSave = {
+    config: agenda.config,
+    breaks: agenda.breaks,
+    extraSlots: agenda.extraSlots,
+    assignments: agenda.assignments
+  };
+
+  const res = await window.api.saveAgenda(codeEscuela, salon, dataToSave);
+  
+  btn.disabled = false;
+  if (res.ok) {
+    btn.textContent = '✅ Sincronizado';
+    setTimeout(() => btn.textContent = 'Guardar / Sincronizar', 3000);
+  } else {
+    btn.textContent = '❌ Error';
+    alert("Error al sincronizar con el servidor.");
+    setTimeout(() => btn.textContent = 'Guardar / Sincronizar', 3000);
+  }
+}
+
 // --- UI Actions ---
 
 function addBreak() {
@@ -317,11 +377,55 @@ function toggleAssignment(time) {
   if (!agenda) return;
 
   if (agenda.assignments[time]) {
+    // Liberar
+    const student = agenda.assignments[time];
+    agenda.unassignedStudents.push(student); // Devolver a pendientes
     delete agenda.assignments[time];
+    renderUI();
   } else {
-    const name = prompt("Nombre del estudiante:");
-    if (name) {
-      agenda.assignments[time] = name;
+    // Asignar
+    if (agenda.unassignedStudents.length === 0) {
+      // Fallback manual si no hay estudiantes cargados o quedan cero
+      const name = prompt("Nombre del estudiante (manual):");
+      if (name) {
+        agenda.assignments[time] = { id: `manual_${Date.now()}`, nombre: name };
+        renderUI();
+      }
+      return;
+    }
+
+    // Modal rudimentario para seleccionar estudiante
+    const selectHtml = agenda.unassignedStudents.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+    
+    // Inyectamos temporalmente un selector en la fila en lugar de un prompt
+    const rowId = `slot-actions-${time.replace(':','-')}`;
+    const actionsContainer = document.getElementById(rowId);
+    
+    actionsContainer.innerHTML = `
+      <select id="sel-student-${time.replace(':','-')}" style="max-width:120px;">
+        <option value="">Selecciona...</option>
+        ${selectHtml}
+      </select>
+      <button class="btn btn-primary" onclick="confirmAssignment('${time}')">OK</button>
+      <button class="btn" onclick="renderUI()">Cancelar</button>
+    `;
+  }
+}
+
+// Global confirm function for the inline selector
+window.confirmAssignment = function(time) {
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
+  const selectId = `sel-student-${time.replace(':','-')}`;
+  const selectEl = document.getElementById(selectId);
+  const studentId = selectEl.value;
+
+  if (studentId) {
+    const studentIdx = agenda.unassignedStudents.findIndex(s => s.id === studentId);
+    if (studentIdx > -1) {
+      agenda.assignments[time] = agenda.unassignedStudents[studentIdx];
+      agenda.unassignedStudents.splice(studentIdx, 1); // Quitar de pendientes
     }
   }
   renderUI();
@@ -377,8 +481,8 @@ function renderUI() {
       `;
     } else {
       totalCount++;
-      const student = agenda.assignments[slot.time];
-      const isOcupado = !!student;
+      const studentObj = agenda.assignments[slot.time];
+      const isOcupado = !!studentObj;
       
       if (isOcupado) {
         assignedCount++;
@@ -392,7 +496,7 @@ function renderUI() {
         : '<span class="status-libre">Libre</span>';
         
       const studentHtml = isOcupado 
-        ? student 
+        ? studentObj.nombre 
         : '<span style="opacity:0.3">—</span>';
         
       const extraBadge = slot.isExtra ? '<span class="badge-extra">Extra</span>' : '';
@@ -407,18 +511,31 @@ function renderUI() {
         <div class="slot-time">${slot.time} ${extraBadge}</div>
         <div class="slot-status">${statusHtml}</div>
         <div class="slot-student">${studentHtml}</div>
-        <div class="slot-actions">${actionsHtml}</div>
+        <div class="slot-actions" id="slot-actions-${slot.time.replace(':','-')}">${actionsHtml}</div>
       `;
     }
 
     container.appendChild(row);
   });
 
+  // Mostrar un resumen de estudiantes pendientes si hay
+  if (agenda.unassignedStudents.length > 0) {
+    const pendingDiv = document.createElement('div');
+    pendingDiv.style.padding = '12px 24px';
+    pendingDiv.style.background = 'var(--surface-alt)';
+    pendingDiv.style.borderTop = '1px solid var(--border)';
+    pendingDiv.style.fontSize = '0.85rem';
+    pendingDiv.style.color = 'var(--text-muted)';
+    pendingDiv.innerHTML = `🔔 Tienes <b>${agenda.unassignedStudents.length}</b> estudiantes pendientes por asignar de Airtable.`;
+    container.appendChild(pendingDiv);
+  }
+
   updateCounters(assignedCount, freeCount, totalCount);
 }
 
 // --- Initialization ---
 document.getElementById('btn-generate').addEventListener('click', handleGenerateClick);
+document.getElementById('btn-sync').addEventListener('click', handleSyncClick);
 document.getElementById('btn-add-break').addEventListener('click', addBreak);
 document.getElementById('btn-add-extra').addEventListener('click', addExtraSlot);
 

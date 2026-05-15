@@ -144,6 +144,105 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
     }
 
+    // ── 0. AGENDA (getAgenda / saveAgenda) ────────────────────
+    if (action === 'getAgenda') {
+      var idSalon = data.id_salon; // ej. clia_kinder
+      var school = data.school;
+      var salon = data.salon;
+      
+      var agendaData = null;
+      var students = [];
+
+      // 1. Leer configuración de la Agenda desde Sheets
+      var aSheet = ss.getSheetByName('Agendas');
+      if (aSheet) {
+        var aRows = aSheet.getDataRange().getValues();
+        for (var j = 1; j < aRows.length; j++) {
+          if (aRows[j][0] === idSalon) {
+            try { agendaData = JSON.parse(aRows[j][1]); } catch(e) {}
+            break;
+          }
+        }
+      }
+
+      // 2. Buscar estudiantes en Airtable
+      try {
+        var atSearchUrl = 'https://api.airtable.com/v0/' + AT_BASE_ID + '/' + encodeURIComponent(AT_TABLE) + 
+                          '?filterByFormula=' + encodeURIComponent('AND({Colegio}="' + school + '", {Salon}="' + salon + '")');
+        var searchResp = UrlFetchApp.fetch(atSearchUrl, { 
+          method: 'get', 
+          headers: { 'Authorization': 'Bearer ' + AT_TOKEN } 
+        });
+        var searchData = JSON.parse(searchResp.getContentText());
+        if (searchData.records) {
+          students = searchData.records.map(function(r) {
+            return {
+              id: r.fields.ID || r.id,
+              nombre: r.fields.Estudiante,
+              hora_sesion: r.fields.Hora_Sesion || null
+            };
+          });
+        }
+      } catch (atErr) {
+        logSheet.appendRow([new Date(), 'Airtable GetAgenda Error', atErr.toString()]);
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        agenda: agendaData,
+        students: students
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === 'saveAgenda') {
+      var idSalon = data.id_salon;
+      var agendaData = data.agenda_data;
+      var assignments = agendaData.assignments || {};
+
+      var aSheet = ss.getSheetByName('Agendas') || ss.insertSheet('Agendas');
+      if (aSheet.getLastRow() === 0) {
+        aSheet.appendRow(['ID_Salon', 'Config_JSON']);
+        aSheet.getRange(1, 1, 1, 2).setFontWeight('bold');
+      }
+
+      var aRows = aSheet.getDataRange().getValues();
+      var foundRow = -1;
+      for (var k = 1; k < aRows.length; k++) {
+        if (aRows[k][0] === idSalon) {
+          foundRow = k + 1;
+          break;
+        }
+      }
+
+      if (foundRow > -1) {
+        aSheet.getRange(foundRow, 2).setValue(JSON.stringify(agendaData));
+      } else {
+        aSheet.appendRow([idSalon, JSON.stringify(agendaData)]);
+      }
+
+      // Actualizar Airtable con las asignaciones (muy básico, por nombre de estudiante o ID)
+      // En este caso, el assignment key es la HORA, el value es el ID del estudiante (o nombre)
+      try {
+        var keys = Object.keys(assignments);
+        for(var m=0; m < keys.length; m++) {
+           var hora = keys[m];
+           var recordId = assignments[hora].id; // Asumiendo que guardamos el record ID de Airtable
+           if (recordId && recordId.indexOf('rec') === 0) {
+             var atUpdateUrl = 'https://api.airtable.com/v0/' + AT_BASE_ID + '/' + encodeURIComponent(AT_TABLE) + '/' + recordId;
+             UrlFetchApp.fetch(atUpdateUrl, {
+               method: 'patch',
+               headers: { 'Authorization': 'Bearer ' + AT_TOKEN, 'Content-Type': 'application/json' },
+               payload: JSON.stringify({ fields: { 'Hora_Sesion': hora } })
+             });
+           }
+        }
+      } catch(atErr2) {
+        logSheet.appendRow([new Date(), 'Airtable SaveAgenda Error', atErr2.toString()]);
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     // ── 1. GOOGLE SHEETS ──────────────────────────────────────
     var sheet = ss.getSheets()[0]; // Forzar uso de la primera hoja
     if (sheet.getLastRow() === 0) {
