@@ -28,9 +28,12 @@
       </div>
       <div class="form-group" style="margin-top:8px;">
         <label>Salón</label>
-        <select id="sel-salon" disabled>
-          <option value="">Selecciona escuela primero</option>
-        </select>
+        <div style="display:flex; gap:8px;">
+          <select id="sel-salon" disabled style="flex:1;">
+            <option value="">Selecciona escuela primero</option>
+          </select>
+          <button class="btn" id="btn-refresh-students" title="Refrescar estudiantes de Airtable" disabled>🔄</button>
+        </div>
       </div>
     </div>
 

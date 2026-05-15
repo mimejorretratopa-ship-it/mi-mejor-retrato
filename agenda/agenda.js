@@ -183,6 +183,10 @@ async function switchContext(ctxId, codeEscuela, salon) {
 function toggleSidebarInputs(enabled) {
   const els = document.querySelectorAll('.sidebar input, .sidebar button:not(#sel-escuela):not(#sel-salon)');
   els.forEach(el => el.disabled = !enabled);
+  
+  // Caso especial para el botón de refresco
+  document.getElementById('btn-refresh-students').disabled = !enabled;
+
   if (!enabled) {
     document.getElementById('breaks-list').innerHTML = '';
   }
@@ -385,12 +389,7 @@ function toggleAssignment(time) {
   } else {
     // Asignar
     if (agenda.unassignedStudents.length === 0) {
-      // Fallback manual si no hay estudiantes cargados o quedan cero
-      const name = prompt("Nombre del estudiante (manual):");
-      if (name) {
-        agenda.assignments[time] = { id: `manual_${Date.now()}`, nombre: name };
-        renderUI();
-      }
+      alert("No hay estudiantes pendientes por agendar para este salón en Airtable. Por favor, asegúrate de que los registros existan en Airtable y pertenezcan a este salón.");
       return;
     }
 
@@ -538,6 +537,16 @@ document.getElementById('btn-generate').addEventListener('click', handleGenerate
 document.getElementById('btn-sync').addEventListener('click', handleSyncClick);
 document.getElementById('btn-add-break').addEventListener('click', addBreak);
 document.getElementById('btn-add-extra').addEventListener('click', addExtraSlot);
+document.getElementById('btn-refresh-students').addEventListener('click', async () => {
+  const codeEscuela = document.getElementById('sel-escuela').value;
+  const salon = document.getElementById('sel-salon').value;
+  if (!codeEscuela || !salon) return;
+  
+  const ctxId = `${codeEscuela}_${salon}`;
+  // Forzar recarga borrando la memoria caché local de ese salón
+  delete agendas[ctxId]; 
+  switchContext(ctxId, codeEscuela, salon);
+});
 
 // Start app
 switchContext(null); // Initialize in disabled state
