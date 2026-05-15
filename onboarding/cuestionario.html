@@ -230,6 +230,9 @@
       formId: 'form-cuestionario',
       customFields: processedQuestions 
     });
+    
+    // Revelar botón de enviar
+    document.getElementById('form-submit-area').classList.remove('hidden');
 
     // Quitar loading
     document.getElementById('loading-overlay').style.opacity = '0';

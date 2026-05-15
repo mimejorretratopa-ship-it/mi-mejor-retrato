@@ -268,6 +268,12 @@ const formModule = (() => {
       Object.keys(validation.errors).forEach(fieldId => {
         showFieldError(fieldId, validation.errors[fieldId]);
       });
+      
+      // Auto-scroll al primer error
+      const firstError = form.querySelector('.form-field.error, .campo.has-error');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
 
     return {
