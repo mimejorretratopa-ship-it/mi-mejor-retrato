@@ -137,8 +137,8 @@ state.get('schools')   // catálogo de colegios (escuelas.json)
 state.get('ui')        // { formLoading, pricingLoading, sectionsLoading }
 
 // ── Post-Onboarding (Fase 1: Cuestionario) ──
-state.get('student')       // datos del estudiante pre-cargados desde onboarding
-state.get('questionnaire') // definición del cuestionario activo (cuestionario_kinder.json, etc.)
+state.get('student')       // datos del estudiante pre-cargados desde onboarding (incluye genero)
+state.get('questionnaire') // definición del cuestionario activo (cuestionario_kinder.json, cuestionario_sexto_m.json, etc.)
 ```
 
 Regla: **si un módulo necesita datos, los pide a `state`, no los carga él mismo**.
@@ -192,7 +192,8 @@ Un único objeto `config` expone:
 | `formulario.json` | Al agregar/quitar campos del formulario |
 | `{code}_secciones.json` | Al activar/desactivar secciones (layout) por escuela |
 | `cuestionario_kinder.json` | Al cambiar preguntas del cuestionario pre-sesión (kinder/pre-k) |
-| `cuestionario_sexto.json` | Al cambiar preguntas del cuestionario pre-sesión (sexto grado) |
+| `cuestionario_sexto_m.json` | Cuestionario pre-sesión enfocado a Varones de 6to grado |
+| `cuestionario_sexto_f.json` | Cuestionario pre-sesión enfocado a Niñas de 6to grado |
 | `cuestionario_config.json` | Al mapear qué salones usan qué tipo de cuestionario |
 
 ---
@@ -216,15 +217,15 @@ Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja d
 El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fases, todas compartiendo el mismo `js/core/`:
 
 ```
-FASE 0 (✅ HECHO)              FASE 1 (🎯 PRÓXIMO)       FASE 2                    FASE 3
+FASE 0 (✅ HECHO)              FASE 1 (✅ HECHO)         FASE 2                    FASE 3
 Onboarding                     Cuestionario              Producción                Operaciones
 ─────────────────              ──────────────            ──────────────            ──────────────
 Brochure URL-driven            Formulario pre-sesión     PDF referencia            Panel de horarios
   → Formulario reserva           personalizado por niño    para el fotógrafo         por salón/escuela
   → Google Sheets              → Links por WhatsApp      Banner + QR code
-  → Airtable                   → Mismo Sheets/Airtable     para ID de fotos
-  → Google Contacts            → Preguntas condicionales Python QR reader
-  → Discord
+  → Airtable                   → Handshake con Hub         para ID de fotos
+  → Google Contacts            → Segmentado por Género   Python QR reader
+  → Discord                    → Respuestas a Sheets
 ```
 
 ### student_id — La clave universal
@@ -262,9 +263,9 @@ sequenceDiagram
 ```
 
 **Beneficios de este flujo:**
-1.  **Validación**: Si el `sid` no existe, el formulario puede redirigir a la reserva o mostrar un error amigable.
-2.  **Contexto**: El sistema sabe qué tipo de cuestionario mostrar (Kinder vs 6to) sin preguntar de nuevo al usuario.
-3.  **Integridad**: Las respuestas se guardan usando el mismo `sid`, permitiendo unificar la "Hoja de Vida" del estudiante en Airtable.
+1.  **Validación**: Si el `sid` no existe, el formulario redirige o muestra un error amigable.
+2.  **Contexto**: El sistema sabe qué tipo de cuestionario mostrar (Kinder vs 6to) y puede segmentar por `genero` (Varones vs Niñas) sin preguntar de nuevo al usuario.
+3.  **Integridad**: Las respuestas puras se guardan en JSON en una nueva pestaña del Google Sheet para uso ágil del fotógrafo.
 
 ---
 

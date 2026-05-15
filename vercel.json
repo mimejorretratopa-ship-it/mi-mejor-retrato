@@ -1,8 +1,10 @@
 {
   "rewrites": [
+    { "source": "/onboarding/cuestionario", "destination": "/onboarding/cuestionario.html" },
     { "source": "/onboarding/:slug", "destination": "/onboarding/index.html" }
   ],
   "redirects": [
+    { "source": "/onboarding/cuestionario.html", "destination": "/onboarding/cuestionario", "statusCode": 301 },
     { "source": "/onboarding/:slug.html", "destination": "/onboarding/:slug", "statusCode": 301 }
   ]
 }

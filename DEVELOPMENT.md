@@ -129,23 +129,23 @@ git push origin master
 
 ---
 
-## Post-Onboarding: Cuestionario Pre-Sesión (Fase 1 — Próximo)
+## Post-Onboarding: Cuestionario Pre-Sesión (Fase 1 — ✅ HECHO)
 
 ### Cómo funciona
 
 El cuestionario es un segundo formulario que se envía **después** del onboarding. El padre recibe un link personalizado por WhatsApp con los datos de su hijo pre-cargados.
 
 ```
-https://mimejorretrato.com/propuesta/cuestionario?sid={student_id}
+https://mimejorretrato.com/onboarding/cuestionario.html?sid={student_id}
 ```
 
 ### Probar en desarrollo
 
 ```bash
-# 1. Abrir cuestionario.html con Live Server
-# 2. Navegar a: http://127.0.0.1:5500/cuestionario.html?sid=507XXXXXXXX_maria-antonia_kinder
-# 3. Verificar que se pre-carga el nombre del estudiante
-# 4. Verificar que las preguntas corresponden al tipo de salón (kinder vs sexto)
+# 1. Abrir index.html con Live Server
+# 2. Navegar a: http://127.0.0.1:5500/onboarding/cuestionario.html?sid=507XXXXXXXX_maria-antonia_kinder
+# 3. Verificar que el Hub realiza el "Handshake" y pre-carga el nombre y colegio
+# 4. Verificar que el formulario carga el JSON de preguntas adecuado (según salón y género)
 ```
 
 ### JSONs del cuestionario
@@ -165,27 +165,27 @@ https://mimejorretrato.com/propuesta/cuestionario?sid={student_id}
 }
 ```
 
-#### `data/cuestionario_kinder.json` / `data/cuestionario_sexto.json`
+#### `data/cuestionario_kinder.json` / `data/cuestionario_sexto_m.json` / `data/cuestionario_sexto_f.json`
 
 Misma estructura que `formulario.json`: array de campos con `id`, `label`, `tipo`, `opciones`.
+Soporta tipos adicionales como `section_header` y `checkbox` con `max_selecciones`.
 Los textos usan `{nombreEstudiante}` como placeholder que se reemplaza en runtime.
 
-### Checklist cuestionario antes de publicar
+### Checklist cuestionario (Completado)
 
-- [ ] `cuestionario.html` renderiza sin errores
-- [ ] `cuestionario_config.json` tiene mapeo para todos los salones activos
-- [ ] Preguntas del JSON se renderizan según tipo de salón
-- [ ] Pronombres se ajustan al género seleccionado
-- [ ] Submit llega a Google Sheets (pestaña "Cuestionarios")
-- [ ] Submit actualiza la fila en Airtable (misma fila del Lead)
-- [ ] Link copiado de Airtable abre el cuestionario con datos correctos
+- [x] `cuestionario.html` renderiza sin errores
+- [x] `cuestionario_config.json` tiene mapeo para todos los salones activos
+- [x] Preguntas del JSON se renderizan según tipo de salón y género
+- [x] Límites de selección en checkboxes funcionan
+- [x] Submit llega a Google Sheets (pestaña "Cuestionarios") en crudo (JSON)
+- [x] Handshake `getStudent` implementado en el backend
 
 ### Flujo operativo (cómo lo usa Mike)
 
 ```
-1. Papá llena formulario de reserva (onboarding) → llega a Sheets + Airtable
+1. Papá llena formulario de reserva (onboarding) → llega a Sheets + Airtable (ahora con Género)
 2. En Airtable, la fila tiene un campo "Link Cuestionario" (fórmula automática)
 3. Mike copia el link y lo pega en WhatsApp al padre
-4. El padre abre, ve "Vamos a preparar la sesión de María Antonia", llena las preguntas
-5. Las respuestas llegan a Sheets (pestaña Cuestionarios) + Airtable (misma fila)
+4. El padre abre el link, el sistema consulta el backend y carga el JSON correcto.
+5. Las respuestas llegan a Sheets (pestaña Cuestionarios) en crudo, listas para leer o exportar.
 ```
