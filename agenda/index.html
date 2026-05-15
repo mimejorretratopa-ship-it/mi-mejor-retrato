@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MMR Agenda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="agenda.css">
+</head>
+<body>
+
+  <!-- SIDEBAR (Configuración) -->
+  <aside class="sidebar">
+    <div class="brand">MMR <span>Agenda</span></div>
+
+    <!-- Ajustes Globales -->
+    <div class="config-section">
+      <h3>Configuración de Horario</h3>
+      <div class="row">
+        <div class="form-group">
+          <label>Hora Inicio</label>
+          <input type="time" id="cfg-start" value="08:00">
+        </div>
+        <div class="form-group">
+          <label>Hora Fin</label>
+          <input type="time" id="cfg-end" value="13:00">
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label>Duración (min)</label>
+          <input type="number" id="cfg-duration" value="15" min="5" step="5">
+        </div>
+        <div class="form-group">
+          <label>Espacio (min)</label>
+          <input type="number" id="cfg-gap" value="0" min="0" step="1">
+        </div>
+      </div>
+    </div>
+
+    <!-- Breaks -->
+    <div class="config-section">
+      <h3>Breaks</h3>
+      <div id="breaks-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;">
+        <!-- Dynamic breaks will appear here -->
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label>Hora</label>
+          <input type="time" id="add-break-time" value="10:00">
+        </div>
+        <div class="form-group">
+          <label>Duración (min)</label>
+          <input type="number" id="add-break-duration" value="20" min="5" step="5">
+        </div>
+      </div>
+      <button class="btn" id="btn-add-break">+ Agregar Break</button>
+    </div>
+
+    <!-- Slots Extra -->
+    <div class="config-section">
+      <h3>Slots Extra</h3>
+      <div class="form-group">
+        <label>Hora específica</label>
+        <div style="display:flex; gap:8px;">
+          <input type="time" id="add-extra-time" value="14:00" style="flex:1;">
+          <button class="btn" id="btn-add-extra">+ Añadir</button>
+        </div>
+      </div>
+      <p style="font-size:0.75rem; color:var(--text-muted);">Los extras fuera del horario se agregan sin chocar. Para eliminarlos, usa la ✕ en el slot.</p>
+    </div>
+
+    <!-- Acciones -->
+    <div class="config-section" style="margin-top:auto;">
+      <button class="btn btn-primary" id="btn-generate">Regenerar Horario</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <header class="header">
+      <h1>Panel de Agendamiento</h1>
+      
+      <!-- Contador en la vista principal -->
+      <div class="counters">
+        <span style="color: var(--green);">✅ <b id="count-assigned">0</b> asignados</span>
+        <span style="color: var(--text-muted);">🕐 <b id="count-free">0</b> libres</span>
+        <span><b id="count-total">0</b> total</span>
+      </div>
+    </header>
+
+    <div class="schedule-container">
+      <div class="schedule-list" id="schedule-list">
+        <!-- Slots will be rendered here -->
+      </div>
+    </div>
+  </main>
+
+  <script src="agenda.js"></script>
+</body>
+</html>
