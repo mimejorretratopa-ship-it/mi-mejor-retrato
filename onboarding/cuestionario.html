@@ -92,7 +92,7 @@
     Vamos a preparar la sesión de <br>
     <em id="txt-nombre-estudiante">...</em>
   </h1>
-  <p class="hero-sub" style="max-width: 600px; margin: 20px auto 0;">
+  <p class="hero-sub" id="txt-hero-sub" style="max-width: 600px; margin: 20px auto 0;">
     Cuéntanos un poco sobre tu hijo/a para que el día de la sesión se sienta como en casa y logremos fotos auténticas.
   </p>
 </header>
@@ -183,16 +183,29 @@
     const student = studentData.data;
     state.set('student', student);
     
+    // Mapear nombre del colegio
+    let schoolName = student.colegio;
+    try {
+      const schoolsData = await storage.loadJSON('escuelas.json');
+      const schoolCode = student.colegio.split('-')[0].toLowerCase();
+      const found = schoolsData.schools.find(s => s.code === schoolCode);
+      if (found) schoolName = found.name;
+    } catch (e) { console.warn('Error cargando escuelas.json', e); }
+
     // Inyectar contexto en UI
     document.getElementById('txt-nombre-estudiante').textContent = student.nombre;
-    document.getElementById('txt-escuela').textContent = student.colegio;
+    document.getElementById('txt-escuela').textContent = schoolName;
     document.getElementById('txt-salon').textContent = student.salon;
     document.getElementById('student-info').classList.remove('hidden');
+
+    // Género dinámico en subtítulo
+    const genderText = student.genero === 'f' ? 'hija' : (student.genero === 'm' ? 'hijo' : 'hijo/a');
+    document.getElementById('txt-hero-sub').innerHTML = `Cuéntanos un poco sobre tu ${genderText} para que el día de la sesión se sienta como en casa y logremos fotos auténticas.`;
     
     // Poblar campos ocultos
     document.getElementById('student_id').value = sid;
     document.getElementById('nombre_estudiante').value = student.nombre;
-    document.getElementById('escuela').value = student.colegio;
+    document.getElementById('escuela').value = schoolName;
     document.getElementById('salon').value = student.salon;
 
     // 3. Cargar configuración de cuestionarios
@@ -217,10 +230,13 @@
       questions = await storage.loadJSON(`cuestionario_${baseType}.json`);
     }
     
-    // Procesar placeholders en las preguntas (ej: {nombreEstudiante})
+    // Procesar placeholders en las preguntas (ej: {nombreEstudiante}, {hijoHija})
+    const sonDaughter = student.genero === 'f' ? 'hija' : (student.genero === 'm' ? 'hijo' : 'hijo/a');
     const processedQuestions = questions.map(q => ({
       ...q,
-      label: q.label.replace(/{nombreEstudiante}/g, student.nombre)
+      label: q.label
+        .replace(/{nombreEstudiante}/g, student.nombre)
+        .replace(/{hijoHija}/g, sonDaughter)
     }));
 
     // 4. Renderizar formulario

@@ -1340,7 +1340,7 @@ details[open] .faq-icon {
 .checkbox-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   font-size: 0.95rem;
   color: var(--bark);
   cursor: pointer;
