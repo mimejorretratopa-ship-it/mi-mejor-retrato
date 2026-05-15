@@ -335,12 +335,14 @@ const formModule = (() => {
         const rawTemplate = formDef?.flujos?.discord?.mensaje_template || '';
         const nombre_encoded = encodeURIComponent(validation.data.nombre);
         const school_name_encoded = encodeURIComponent(brochure.schoolName);
+        const generoLabel = validation.data.genero === 'm' ? 'Niño' : (validation.data.genero === 'f' ? 'Niña' : '');
 
         const discordMsg = rawTemplate
           .replace('{nombre}', validation.data.nombre)
           .replace('{relacion}', validation.data.relacion)
           .replace('{nombreEstudiante}', validation.data.nombreEstudiante)
           .replace('{salon}', validation.data.salon)
+          .replace('{genero}', generoLabel)
           .replace('{school_name}', brochure.schoolName)
           .replace('{codigoPais}', '507')
           .replace('{celular}', validation.data.celular)
