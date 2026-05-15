@@ -190,3 +190,29 @@ Los textos usan `{nombreEstudiante}` como placeholder que se reemplaza en runtim
 4. El padre abre el link, el sistema consulta el backend y carga el JSON correcto.
 5. Las respuestas llegan a Sheets (pestaña Cuestionarios) en crudo, listas para leer o exportar.
 ```
+
+---
+
+## Fase 3: Gestión de Agenda (✅ HECHO)
+
+Dashboard interno para organizar los horarios de las sesiones fotográficas por salón.
+
+### Cómo funciona
+Ubicado en `/agenda/index.html`. Permite seleccionar escuela y salón, generar slots dinámicos y asignar niños de Airtable.
+
+### Probar en desarrollo
+1.  Abrir `/agenda/index.html` con Live Server.
+2.  Seleccionar una Escuela y un Salón.
+3.  Verificar que el Hub descarga los estudiantes registrados de Airtable para ese salón.
+4.  Asignar un estudiante a un slot libre mediante el dropdown.
+5.  Presionar **"Guardar / Sincronizar"** y verificar:
+    *   Nueva fila o actualización en pestaña `Agendas` de Google Sheets.
+    *   Campo `Hora_Sesion` actualizado en el registro de Airtable del niño.
+
+### Checklist Agenda (Completado)
+- [x] Selectores de Escuela/Salón cargan dinámicamente desde JSONs.
+- [x] Generación de slots respeta Breaks y Duración.
+- [x] Los Slots Extra se agregan sin colisiones.
+- [x] Solo permite asignar estudiantes cargados desde Airtable (Integridad de IDs).
+- [x] Botón 🔄 (Refrescar) trae nuevos leads sin recargar configuración.
+- [x] Sincronización con Hub funcional (Persistencia en Sheets + Airtable).

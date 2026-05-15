@@ -28,22 +28,24 @@ El 14 de Mayo de 2026 se migró de una arquitectura basada en archivos individua
 
 La arquitectura URL-driven se extenderá para soportar flujos post-onboarding:
 - El formulario de reserva inicial generará un `student_id` único: `{whatsapp}_{nombre_slug}_{salon_slug}`
-- Airtable usará fórmulas para generar URLs dinámicas para un **Cuestionario Pre-Sesión**: `/propuesta/cuestionario?sid={student_id}`
-- Este nuevo cuestionario (`cuestionario.html`) seguirá el mismo patrón: único HTML, cargando preguntas desde JSON (`cuestionario_kinder.json`, etc.) y enviando datos al mismo Hub.
+- Airtable usará fórmulas para generar URLs dinámicas para un **Cuestionario Pre-Sesión**: `/onboarding/cuestionario?sid={student_id}`
+- **Fase 3: Agenda**: Se habilitó el dashboard `/agenda/` que centraliza la asignación de horarios, sincronizando con Sheets y Airtable vía Hub.
 
 ---
 
 ## 1. Google Sheets (Base de Datos)
-Las submissions se escriben en la primera pestaña de la hoja vinculada al Apps Script.
+Las submissions se escriben en la primera pestaña de la hoja vinculada al Apps Script. 
+**Pestañas Adicionales**:
+- `Cuestionarios`: Respuestas brutas del formulario pre-sesión.
+- `Agendas`: Configuración JSON de horarios por salón (`ID_Salon`, `Config_JSON`).
 
 ---
 
 ## 2. Airtable (Gestión CRM)
 - **Base ID:** `appVXT9GPLoKT15YJ`
 - **Tabla:** `Leads`
-
-### Campo "Colegio"
-Recibe el ID corto (ej: `clia-26`) para permitir filtrado consistente.
+- **Campos Clave**: `ID` (student_id), `Colegio`, `Salon`, `Hora_Sesion` (actualizado por Agenda).
+- Recibe el ID corto (ej: `clia-26`) para permitir filtrado consistente.
 
 ---
 

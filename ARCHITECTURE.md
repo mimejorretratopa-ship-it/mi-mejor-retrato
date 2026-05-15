@@ -139,6 +139,10 @@ state.get('ui')        // { formLoading, pricingLoading, sectionsLoading }
 // ── Post-Onboarding (Fase 1: Cuestionario) ──
 state.get('student')       // datos del estudiante pre-cargados desde onboarding (incluye genero)
 state.get('questionnaire') // definición del cuestionario activo (cuestionario_kinder.json, cuestionario_sexto_m.json, etc.)
+
+// ── Gestión Operativa (Fase 3: Agenda) ──
+state.get('agendas')       // Mapa de configuraciones, breaks y asignaciones por salon_id
+state.get('currentContext') // ID del salón activo en la agenda (ej: clia_kinder)
 ```
 
 Regla: **si un módulo necesita datos, los pide a `state`, no los carga él mismo**.
@@ -217,15 +221,15 @@ Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja d
 El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fases, todas compartiendo el mismo `js/core/`:
 
 ```
-FASE 0 (✅ HECHO)              FASE 1 (✅ HECHO)         FASE 2                    FASE 3
-Onboarding                     Cuestionario              Producción                Operaciones
+FASE 0 (✅ HECHO)              FASE 1 (✅ HECHO)         FASE 3 (✅ HECHO)         FASE 4
+Onboarding                     Cuestionario              Agenda & Horarios         Producción
 ─────────────────              ──────────────            ──────────────            ──────────────
-Brochure URL-driven            Formulario pre-sesión     PDF referencia            Panel de horarios
-  → Formulario reserva           personalizado por niño    para el fotógrafo         por salón/escuela
-  → Google Sheets              → Links por WhatsApp      Banner + QR code
-  → Airtable                   → Handshake con Hub         para ID de fotos
-  → Google Contacts            → Segmentado por Género   Python QR reader
-  → Discord                    → Respuestas a Sheets
+Brochure URL-driven            Formulario pre-sesión     Dashboard local-first     PDF referencia
+  → Formulario reserva           personalizado por niño    → Gestión por salón       para el fotógrafo
+  → Google Sheets              → Links por WhatsApp      → Sincronización Hub      Banner + QR code
+  → Airtable                   → Handshake con Hub       → Persistencia en Sheets    para ID de fotos
+  → Google Contacts            → Segmentado por Género   → Registro en Airtable    Python QR reader
+  → Discord                    → Respuestas a Sheets     → Detección de choques
 ```
 
 ### student_id — La clave universal
