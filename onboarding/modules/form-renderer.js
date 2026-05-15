@@ -447,8 +447,9 @@ const formModule = (() => {
       if (fieldEl) contenedorCampos.appendChild(fieldEl);
     });
 
-    // Inicializar opciones de salón (si existe el selector)
-    if (document.getElementById('salon')) {
+    // Inicializar opciones de salón (solo si existe el selector desplegable)
+    const salonEl = document.getElementById('salon');
+    if (salonEl && salonEl.tagName === 'SELECT') {
       initSalonOptions();
     }
 
