@@ -1359,4 +1359,6 @@ details[open] .faq-icon {
   flex-shrink: 0;
   cursor: pointer;
   accent-color: var(--terra);
+  appearance: checkbox !important;
+  -webkit-appearance: checkbox !important;
 }
