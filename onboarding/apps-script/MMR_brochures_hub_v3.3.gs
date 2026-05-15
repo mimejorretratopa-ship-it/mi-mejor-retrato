@@ -114,6 +114,33 @@ function doPost(e) {
       ]);
       
       logSheet.appendRow([new Date(), 'Cuestionario guardado', studentId]);
+
+      // ── ACTUALIZAR AIRTABLE (Opción A: Checkbox) ────────────
+      try {
+        var atSearchUrl = 'https://api.airtable.com/v0/' + AT_BASE_ID + '/' + encodeURIComponent(AT_TABLE) + 
+                          '?filterByFormula=' + encodeURIComponent('{ID}="' + studentId + '"');
+        var searchResp = UrlFetchApp.fetch(atSearchUrl, { 
+          method: 'get', 
+          headers: { 'Authorization': 'Bearer ' + AT_TOKEN } 
+        });
+        var searchData = JSON.parse(searchResp.getContentText());
+        
+        if (searchData.records && searchData.records.length > 0) {
+          var recordId = searchData.records[0].id;
+          var atUpdateUrl = 'https://api.airtable.com/v0/' + AT_BASE_ID + '/' + encodeURIComponent(AT_TABLE) + '/' + recordId;
+          UrlFetchApp.fetch(atUpdateUrl, {
+            method: 'patch',
+            headers: { 'Authorization': 'Bearer ' + AT_TOKEN, 'Content-Type': 'application/json' },
+            payload: JSON.stringify({
+              fields: { 'Q_onboarding': true }
+            })
+          });
+          logSheet.appendRow([new Date(), 'Airtable Checkbox OK', studentId]);
+        }
+      } catch (atErr) {
+        logSheet.appendRow([new Date(), 'Airtable Checkbox Error', atErr.toString()]);
+      }
+
       return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
     }
 

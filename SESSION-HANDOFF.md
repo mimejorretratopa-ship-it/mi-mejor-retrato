@@ -3,13 +3,16 @@
 ## 🎯 Estado Actual: SISTEMA DE CUESTIONARIOS Y HUB CONECTADOS
 Hemos completado la Fase 1 (Cuestionarios Dinámicos) y la Fase 2 (Hub Backend). El sistema de brochures ahora no solo captura reservas, sino que enruta y procesa cuestionarios de preparación de sesión basados en el grado y el género del estudiante, todo conectado con Google Sheets, Google Contacts, Airtable y Discord.
 
-### ✅ Logros de esta sesión
-1.  **Cuestionario Dinámico (`cuestionario.html`)**: Creado como URL-driven (ej: `?sid=...`). Dependiendo de `genero` y `salon` (recibidos desde el Hub), carga automáticamente el archivo JSON correspondiente (ej: `cuestionario_sexto_m.json` o `cuestionario_kinder.json`).
-2.  **Extensión del Form Renderer**: El motor de formularios (`form-renderer.js`) ahora soporta encabezados de sección y grupos de checkboxes con límite de selección (ej: "Selecciona hasta 4"). Se purgó la lógica redundante de `codigoPais`, forzando internamente el uso de `507` (Panamá).
-3.  **Actualización del Backend (Apps Script Hub)**: 
-    *   **Handshake (`doGet`)**: Responde a la web con los datos del estudiante (incluyendo género) usando su SID.
-    *   **Guardado de Reservas**: Incorpora y persiste la columna de "Género" tanto en Google Sheets como en Airtable.
-    *   **Guardado de Cuestionarios**: Intercepta la acción `saveQuestionnaire` y guarda las respuestas puras JSON en una nueva pestaña "Cuestionarios".
+### ✅ Logros Técnicos y Características (Finalizados)
+1.  **Enrutamiento Dinámico**: Implementación de `cuestionario.html`. Configuración de `vercel.json` para permitir URLs limpias (`/onboarding/cuestionario?sid=...`).
+2.  **Hub Backend (Apps Script v3.5)**:
+    *   **Handshake Seguro (POST)**: Se migró el handshake de `GET` a `POST` para evitar bloqueos de CORS en producción.
+    *   **Sincronización Airtable**: El sistema ahora busca el registro del estudiante y marca automáticamente el checkbox `Q_onboarding` al recibir respuestas.
+    *   **Guardado de Cuestionarios**: Persistencia en la pestaña "Cuestionarios" de Google Sheets (JSON crudo).
+3.  **Refactorización del Motor (`form-renderer.js`)**:
+    *   **UX Mejorada**: Auto-scroll al primer error de validación y soporte para encabezados de sección.
+    *   **Checkboxes Inteligentes**: Soporte para límites de selección (`max_selecciones`) y fix de visibilidad (CORS/Appearance).
+    *   **Discord Intelligence**: Integración del placeholder `{genero}` en los templates de notificación (Niño/Niña).
 4.  **Notificaciones Discord Mejoradas**: Soporte correcto para renderizado del `{genero}` ("Niño" o "Niña") en los embeds enviados por la reserva inicial.
 
 ### 📂 Estructura de Archivos

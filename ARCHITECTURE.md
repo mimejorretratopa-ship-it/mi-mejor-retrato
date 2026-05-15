@@ -254,18 +254,18 @@ sequenceDiagram
     participant DB as Google Sheet (Leads)
 
     User->>Form: Abre link con ?sid=...
-    Form->>Hub: Petición GET ?action=getStudent&sid=...
+    Form->>Hub: POST /exec?action=getStudent (Handshake vía POST para evitar CORS)
     Hub->>DB: Busca SID en columna 'ID'
     DB-->>Hub: Retorna fila del estudiante
-    Hub-->>Form: JSON { nombre, colegio, salon, etc. }
+    Hub-->>Form: Response: { success: true, data: { nombre, colegio, salon, genero } }
     Form->>Form: Inyecta datos en el UI y selecciona JSON de preguntas
     Form-->>User: Muestra cuestionario personalizado
 ```
 
 **Beneficios de este flujo:**
-1.  **Validación**: Si el `sid` no existe, el formulario redirige o muestra un error amigable.
-2.  **Contexto**: El sistema sabe qué tipo de cuestionario mostrar (Kinder vs 6to) y puede segmentar por `genero` (Varones vs Niñas) sin preguntar de nuevo al usuario.
-3.  **Integridad**: Las respuestas puras se guardan en JSON en una nueva pestaña del Google Sheet para uso ágil del fotógrafo.
+1.  **Seguridad CORS**: Al usar `POST` con `text/plain`, se evitan los errores de preflight de Google Apps Script.
+2.  **Contexto Automático**: El sistema sabe qué tipo de cuestionario mostrar (Kinder vs 6to) y puede segmentar por `genero` (Varones vs Niñas) sin preguntar de nuevo al usuario.
+3.  **Integridad y CRM**: Las respuestas se guardan en Sheets ("Cuestionarios") y se marca el campo `Q_onboarding` (Checkbox) en Airtable para seguimiento.
 
 ---
 

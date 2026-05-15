@@ -144,8 +144,8 @@ https://mimejorretrato.com/onboarding/cuestionario.html?sid={student_id}
 ```bash
 # 1. Abrir index.html con Live Server
 # 2. Navegar a: http://127.0.0.1:5500/onboarding/cuestionario.html?sid=507XXXXXXXX_maria-antonia_kinder
-# 3. Verificar que el Hub realiza el "Handshake" y pre-carga el nombre y colegio
-# 4. Verificar que el formulario carga el JSON de preguntas adecuado (según salón y género)
+# 3. Verificar que el Hub realiza el "Handshake" vía POST (evita CORS)
+# 4. Verificar que el formulario carga el JSON adecuado y marca 'Q_onboarding' en Airtable al enviar.
 ```
 
 ### JSONs del cuestionario
@@ -178,7 +178,8 @@ Los textos usan `{nombreEstudiante}` como placeholder que se reemplaza en runtim
 - [x] Preguntas del JSON se renderizan según tipo de salón y género
 - [x] Límites de selección en checkboxes funcionan
 - [x] Submit llega a Google Sheets (pestaña "Cuestionarios") en crudo (JSON)
-- [x] Handshake `getStudent` implementado en el backend
+- [x] Submit marca 'Q_onboarding' (Checkbox) en Airtable
+- [x] Handshake `getStudent` implementado vía POST (CORS fix)
 
 ### Flujo operativo (cómo lo usa Mike)
 
