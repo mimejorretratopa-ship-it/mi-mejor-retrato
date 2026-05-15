@@ -17,7 +17,17 @@ function minsToTime(mins) {
 
 async function initView() {
   const params = new URLSearchParams(window.location.search);
-  const sParam = params.get('s'); // ej: clia_kinder
+  let sParam = params.get('s'); // Intento 1: ?s=clia_kinder
+
+  // Intento 2: Si no hay ?s=, buscar en la ruta de la URL (ej: /agenda/clia_kinder)
+  if (!sParam) {
+    const pathParts = window.location.pathname.split('/');
+    sParam = pathParts[pathParts.length - 1];
+    if (sParam === 'view.html' || sParam === 'view') sParam = null;
+  }
+
+  // Normalizar: permitir guión o guión bajo
+  if (sParam && sParam.includes('-')) sParam = sParam.replace('-', '_');
 
   if (!sParam || !sParam.includes('_')) {
     renderError("Enlace no válido. Por favor verifica el link de tu salón.");
