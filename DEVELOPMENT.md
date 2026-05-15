@@ -129,7 +129,7 @@ git push origin master
 
 ---
 
-## Post-Onboarding: Cuestionario Pre-Sesión (Fase 1 — ✅ HECHO)
+## Post-Onboarding: Discovery Pre-Sesión (Fase 1 — ✅ HECHO)
 
 ### Cómo funciona
 
@@ -148,7 +148,7 @@ https://mimejorretrato.com/onboarding/cuestionario.html?sid={student_id}
 # 4. Verificar que el formulario carga el JSON adecuado y marca 'Q_onboarding' en Airtable al enviar.
 ```
 
-### JSONs del cuestionario
+### JSONs del discovery (cuestionario)
 
 #### `data/cuestionario_config.json`
 
@@ -171,7 +171,7 @@ Misma estructura que `formulario.json`: array de campos con `id`, `label`, `tipo
 Soporta tipos adicionales como `section_header` y `checkbox` con `max_selecciones`.
 Los textos usan `{nombreEstudiante}` como placeholder que se reemplaza en runtime.
 
-### Checklist cuestionario (Completado)
+### Checklist discovery (Completado)
 
 - [x] `cuestionario.html` renderiza sin errores
 - [x] `cuestionario_config.json` tiene mapeo para todos los salones activos

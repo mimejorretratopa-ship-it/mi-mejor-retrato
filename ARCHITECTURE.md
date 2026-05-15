@@ -136,7 +136,7 @@ state.get('sections')  // secciones activas (ebrv_secciones.json)
 state.get('schools')   // catálogo de colegios (escuelas.json)
 state.get('ui')        // { formLoading, pricingLoading, sectionsLoading }
 
-// ── Post-Onboarding (Fase 1: Cuestionario) ──
+// ── Post-Onboarding (Fase 1: Discovery) ──
 state.get('student')       // datos del estudiante pre-cargados desde onboarding (incluye genero)
 state.get('questionnaire') // definición del cuestionario activo (cuestionario_kinder.json, cuestionario_sexto_m.json, etc.)
 
@@ -225,7 +225,7 @@ El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fase
 
 ```
 FASE 0 (✅ HECHO)              FASE 1 (✅ HECHO)         FASE 2 (✅ HECHO)         FASE 3
-Onboarding                     Cuestionario              Agenda & Horarios         Producción
+Onboarding                     Discovery                 Agenda & Horarios         Producción
 ─────────────────              ──────────────            ──────────────            ──────────────
 Brochure URL-driven            Formulario pre-sesión     Dashboard local-first     PDF referencia
   → Formulario reserva           personalizado por niño    → Gestión por salón       para el fotógrafo
@@ -245,11 +245,11 @@ Ejemplo:    5076XXXXXXX_maria-antonia_kinder
 ```
 
 Este ID se genera en el onboarding y se envía al Hub dentro del objeto `_meta` y también en la raíz del payload para asegurar su persistencia en Sheets y Airtable. Se usa como clave para:
-- Cuestionario pre-sesión (Fase 1) → URL personalizado con `?sid={student_id}`
+- Discovery pre-sesión (Fase 1) → URL personalizado con `?sid={student_id}`
 - Panel de horarios (Fase 2) → filtra slots por student_id
 - PDF + QR (Fase 3) → QR codifica el student_id
 
-### Cuestionario Pre-Sesión (Fase 1)
+### Discovery Pre-Sesión (Fase 1)
 
 El cuestionario utiliza un mecanismo de **"Handshake"** con el Hub para personalizar la experiencia del usuario y evitar errores de data-entry:
 

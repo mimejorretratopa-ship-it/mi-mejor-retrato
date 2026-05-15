@@ -1,7 +1,7 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: DASHBOARD DE AGENDAMIENTO CONECTADO (Fase 2)
-Hemos completado el desarrollo del módulo de **Agenda**, permitiendo la gestión local-first de sesiones fotográficas con persistencia en la nube. El sistema ahora permite estructurar horarios por salón, asignar estudiantes reales de Airtable y sincronizar el estado visual en Google Sheets.
+## 🎯 Estado Actual: PIPELINE DE COMUNICACIÓN WHATSAPP (Post-Fase 2)
+Hemos completado las Fases 0 (Onboarding), 1 (Discovery) y 2 (Agenda). El foco actual es **automatizar la comunicación con los padres** mediante links de WhatsApp pre-generados y recordatorios programados, integrando el flujo con el Hub existente.
 
 ### ✅ Logros Técnicos y Características (Módulo Agenda)
 1.  **Dashboard `/agenda/`**: Interfaz premium con panel de configuración lateral y vista de slots principal.
@@ -24,7 +24,11 @@ Hemos completado el desarrollo del módulo de **Agenda**, permitiendo la gestió
 - **Botón "Guardar / Sincronizar"**: Envía el estado actual al Hub para persistencia permanente.
 - **Lista de Pendientes**: Indicador visual de cuántos niños faltan por asignar en el salón actual.
 
-### 🎯 Próximos Pasos (Fase 3: Herramientas de Sesión)
+### 🎯 Próximos Pasos Inmediatos (Pipeline de Comunicación)
+1.  **Link WhatsApp persistente (B1)**: El Hub genera `Link_WhatsApp_Q` (link de Discovery) al procesar onboarding y lo persiste en Airtable + Sheets. Mike lo usa cuando decide, después de la fase de cobros.
+2.  **Trigger de recordatorio (D2)**: Trigger diario en Apps Script. Al recibir onboarding, escribe `Fecha_Envio_Q = hoy + 3 días` en Sheets. El trigger revisa diariamente y envía recordatorio por Discord.
+
+### 🎯 Fase 3: Herramientas de Sesión (Posterior)
 1.  **Generador de PDF**: Crear la herramienta para generar las hojas de ruta de los fotógrafos con los datos de la agenda.
 2.  **Códigos QR**: Generar etiquetas/hojas individuales para los estudiantes agendados.
 
