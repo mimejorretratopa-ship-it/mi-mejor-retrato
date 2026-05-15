@@ -29,7 +29,6 @@ Hemos completado la Fase 1 (Cuestionarios Dinámicos) y la Fase 2 (Hub Backend).
 ### 🎯 Próximos Pasos (Fase 3: Refinamiento & Operación)
 1.  Monitorear el uso de los cuestionarios en el primer lote de reservas.
 2.  Desarrollar una interfaz/dashboard interno para pre-visualizar rápidamente las respuestas del JSON guardado en Google Sheets antes de la sesión de fotos.
-3.  Validar si los correos electrónicos se pueden sincronizar de igual forma a otras herramientas (ej: Mailchimp o Sendgrid) en el Hub de Apps Script.
 
 ---
 **Nota para el siguiente dev:** Todo cambio global de estructura de datos o flujo de información debe actualizarse primero en los JSON de `onboarding/data/` y luego reflejarse en `MMR_brochures_hub_v3.3.gs` y Airtable si involucra nuevas columnas.
