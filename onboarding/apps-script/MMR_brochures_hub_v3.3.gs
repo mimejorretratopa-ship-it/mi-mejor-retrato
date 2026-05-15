@@ -168,7 +168,7 @@ function doPost(e) {
       // 2. Buscar estudiantes en Airtable
       try {
         var atSearchUrl = 'https://api.airtable.com/v0/' + AT_BASE_ID + '/' + encodeURIComponent(AT_TABLE) + 
-                          '?filterByFormula=' + encodeURIComponent('AND({Colegio}="' + school + '", {Salon}="' + salon + '")');
+                          '?filterByFormula=' + encodeURIComponent('AND(SEARCH("' + school + '", {Colegio}), {Salon}="' + salon + '")');
         var searchResp = UrlFetchApp.fetch(atSearchUrl, { 
           method: 'get', 
           headers: { 'Authorization': 'Bearer ' + AT_TOKEN } 

@@ -1,34 +1,31 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: SISTEMA DE CUESTIONARIOS Y HUB CONECTADOS
-Hemos completado la Fase 1 (Cuestionarios Dinámicos) y la Fase 2 (Hub Backend). El sistema de brochures ahora no solo captura reservas, sino que enruta y procesa cuestionarios de preparación de sesión basados en el grado y el género del estudiante, todo conectado con Google Sheets, Google Contacts, Airtable y Discord.
+## 🎯 Estado Actual: DASHBOARD DE AGENDAMIENTO CONECTADO (Fase 3)
+Hemos completado el desarrollo del módulo de **Agenda**, permitiendo la gestión local-first de sesiones fotográficas con persistencia en la nube. El sistema ahora permite estructurar horarios por salón, asignar estudiantes reales de Airtable y sincronizar el estado visual en Google Sheets.
 
-### ✅ Logros Técnicos y Características (Finalizados)
-1.  **Enrutamiento Dinámico**: Implementación de `cuestionario.html`. Configuración de `vercel.json` para permitir URLs limpias (`/onboarding/cuestionario?sid=...`).
-2.  **Hub Backend (Apps Script v3.5)**:
-    *   **Handshake Seguro (POST)**: Se migró el handshake de `GET` a `POST` para evitar bloqueos de CORS en producción.
-    *   **Sincronización Airtable**: El sistema ahora busca el registro del estudiante y marca automáticamente el checkbox `Q_onboarding` al recibir respuestas.
-    *   **Guardado de Cuestionarios**: Persistencia en la pestaña "Cuestionarios" de Google Sheets (JSON crudo).
-3.  **Refactorización del Motor (`form-renderer.js`)**:
-    *   **UX Mejorada**: Auto-scroll al primer error de validación y soporte para encabezados de sección.
-    *   **Checkboxes Inteligentes**: Soporte para límites de selección (`max_selecciones`) y fix de visibilidad (CORS/Appearance).
-    *   **Discord Intelligence**: Integración del placeholder `{genero}` en los templates de notificación (Niño/Niña).
-4.  **Notificaciones Discord Mejoradas**: Soporte correcto para renderizado del `{genero}` ("Niño" o "Niña") en los embeds enviados por la reserva inicial.
+### ✅ Logros Técnicos y Características (Módulo Agenda)
+1.  **Dashboard `/agenda/`**: Interfaz premium con panel de configuración lateral y vista de slots principal.
+2.  **Multicontexto (Escuela/Salón)**: Soporta múltiples agendas independientes. Los datos se cargan dinámicamente desde los archivos JSON de configuración del proyecto.
+3.  **Integración con Hub (v3.4)**:
+    *   **Persistencia de Estado**: El diseño de la agenda (breaks, gaps, configuración) se guarda como JSON en una pestaña dedicada de Google Sheets (`Agendas`).
+    *   **Sincronización Airtable**: Lista automáticamente a los estudiantes registrados para cada salón. Al asignar un slot, actualiza el campo `Hora_Sesion` en Airtable.
+4.  **UX Inteligente**:
+    *   **Detección de Choques**: Evita solapamientos entre sesiones normales, breaks y slots extra.
+    *   **Filtros de Seguridad**: Solo permite agendar estudiantes registrados (Dropdown), garantizando integridad de IDs.
+    *   **Botón de Refresco (🔄)**: Permite traer nuevos leads de Airtable sin perder la configuración actual.
 
-### 📂 Estructura de Archivos
-- `/js/core/`: Lógica centralizada (`api.js` maneja modo Dev/Mock para el Hub).
-- `/onboarding/cuestionario.html`: Interfaz del cuestionario post-reserva.
-- `/onboarding/data/`: Formularios JSON (incluyendo las versiones segmentadas por género).
-- `/onboarding/apps-script/`: Código fuente de Google Apps Script (`MMR_brochures_hub_v3.3.gs`).
+### 📂 Estructura de Archivos Actualizada
+- `/agenda/`: Nuevo módulo de gestión de citas.
+- `/js/core/api.js`: Ampliado con métodos `getAgenda` y `saveAgenda`.
+- `/onboarding/apps-script/`: Hub actualizado (`v3.3` localmente reflejando lógica `v3.4+`) con soporte para Agendas.
 
-### 🛠️ Herramientas de Debugging (Consola F12)
-- `state.get('brochure')`: Ver configuración del brochure actual.
-- `state.get('student')`: Ver contexto del estudiante cargado en cuestionario.
-- `storage.clearCache()`: Limpiar memoria de JSONs cargados.
+### 🛠️ Herramientas de Gestión
+- **Botón "Guardar / Sincronizar"**: Envía el estado actual al Hub para persistencia permanente.
+- **Lista de Pendientes**: Indicador visual de cuántos niños faltan por asignar en el salón actual.
 
-### 🎯 Próximos Pasos (Fase 3: Refinamiento & Operación)
-1.  Monitorear el uso de los cuestionarios en el primer lote de reservas.
-2.  Desarrollar una interfaz/dashboard interno para pre-visualizar rápidamente las respuestas del JSON guardado en Google Sheets antes de la sesión de fotos.
+### 🎯 Próximos Pasos (Fase 4: Herramientas de Sesión)
+1.  **Generador de PDF**: Crear la herramienta para generar las hojas de ruta de los fotógrafos con los datos de la agenda.
+2.  **Códigos QR**: Generar etiquetas/hojas individuales para los estudiantes agendados.
 
 ---
-**Nota para el siguiente dev:** Todo cambio global de estructura de datos o flujo de información debe actualizarse primero en los JSON de `onboarding/data/` y luego reflejarse en `MMR_brochures_hub_v3.3.gs` y Airtable si involucra nuevas columnas.
+**Nota para el usuario:** Para que la Agenda funcione en vivo, recuerda siempre hacer el Deploy de la última versión del código en el editor de Google Apps Script.
