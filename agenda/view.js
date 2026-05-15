@@ -1,6 +1,6 @@
 /**
  * MMR Agenda Public View Logic
- * Read-only fetch and render of salon schedules.
+ * Read-only fetch, compute and render of salon schedules.
  */
 
 // --- Utilities ---
@@ -17,16 +17,14 @@ function minsToTime(mins) {
 
 async function initView() {
   const params = new URLSearchParams(window.location.search);
-  let sParam = params.get('s'); // Intento 1: ?s=clia_kinder
+  let sParam = params.get('s');
 
-  // Intento 2: Si no hay ?s=, buscar en la ruta de la URL (ej: /agenda/clia_kinder)
   if (!sParam) {
     const pathParts = window.location.pathname.split('/');
     sParam = pathParts[pathParts.length - 1];
     if (sParam === 'view.html' || sParam === 'view') sParam = null;
   }
 
-  // Normalizar: permitir guión o guión bajo
   if (sParam && sParam.includes('-')) sParam = sParam.replace('-', '_');
 
   if (!sParam || !sParam.includes('_')) {
@@ -37,7 +35,6 @@ async function initView() {
   const [schoolCode, salonValue] = sParam.split('_');
 
   try {
-    // 1. Cargar nombres reales desde los JSONs de configuración para el título
     const schoolsRes = await fetch('../onboarding/data/escuelas.json');
     const schoolsData = await schoolsRes.json();
     const school = schoolsData.schools.find(s => s.code === schoolCode);
@@ -51,7 +48,6 @@ async function initView() {
       document.getElementById('view-subtitle').textContent = `Agenda de Sesiones: ${salon.label}`;
     }
 
-    // 2. Cargar datos de la Agenda desde el Hub
     const result = await window.api.getAgenda(schoolCode, salonValue);
     
     if (!result.ok || !result.data.agenda) {
@@ -59,12 +55,81 @@ async function initView() {
       return;
     }
 
-    renderSchedule(result.data.agenda);
+    // --- Motor de Generación (Local) ---
+    const agenda = result.data.agenda;
+    const computedSlots = computeSchedule(agenda);
+    renderSchedule(computedSlots, agenda.assignments || {});
 
   } catch (error) {
     console.error("Error loading view:", error);
     renderError("Hubo un problema al conectar con el servidor.");
   }
+}
+
+function computeSchedule(agenda) {
+  const slots = [];
+  const config = agenda.config;
+  const breaks = agenda.breaks || [];
+  const extraSlots = agenda.extraSlots || [];
+
+  const startMins = timeToMins(config.startTime);
+  const endMins = timeToMins(config.endTime);
+  const dur = config.duration;
+  const gap = config.gap;
+  
+  let currentMins = startMins;
+
+  while (currentMins + dur <= endMins) {
+    // Buscar si choca con un break
+    const overlappingBreak = breaks.find(b => {
+        const bStart = timeToMins(b.time);
+        const bEnd = bStart + b.duration;
+        return currentMins < bEnd && (currentMins + dur) > bStart;
+    });
+    
+    if (overlappingBreak) {
+      const bTime = overlappingBreak.time;
+      if (!slots.some(s => s.time === bTime && s.type === 'break')) {
+        slots.push({
+          time: bTime,
+          type: 'break',
+          duration: overlappingBreak.duration,
+          mins: timeToMins(bTime)
+        });
+      }
+      currentMins = timeToMins(bTime) + overlappingBreak.duration;
+    } else {
+      slots.push({
+        time: minsToTime(currentMins),
+        type: 'slot',
+        isExtra: false,
+        duration: dur,
+        mins: currentMins
+      });
+      currentMins += dur + gap;
+    }
+  }
+
+  // Inyectar extras
+  extraSlots.forEach(eTime => {
+    const eMins = timeToMins(eTime);
+    const collision = slots.some(s => {
+      const sEnd = s.mins + (s.duration || dur);
+      return (eMins < sEnd && (eMins + dur) > s.mins);
+    });
+
+    if (!collision) {
+      slots.push({
+        time: eTime,
+        type: 'slot',
+        isExtra: true,
+        duration: dur,
+        mins: eMins
+      });
+    }
+  });
+
+  return slots.sort((a, b) => a.mins - b.mins);
 }
 
 function renderError(msg) {
@@ -74,16 +139,13 @@ function renderError(msg) {
   document.querySelector('.counters-grid').style.display = 'none';
 }
 
-function renderSchedule(agenda) {
+function renderSchedule(slots, assignments) {
   const container = document.getElementById('schedule-list');
   container.innerHTML = '';
 
   let assignedCount = 0;
   let freeCount = 0;
 
-  // Re-procesar slots (Lógica simplificada de agenda.js)
-  const slots = agenda.scheduleSlots || [];
-  
   slots.forEach(slot => {
     const row = document.createElement('div');
     row.className = 'slot-row';
@@ -95,7 +157,7 @@ function renderSchedule(agenda) {
         <div class="slot-student" style="color:var(--text-muted)">Descanso</div>
       `;
     } else {
-      const studentObj = agenda.assignments[slot.time];
+      const studentObj = assignments[slot.time];
       const isOcupado = !!studentObj;
       
       if (isOcupado) {
@@ -129,5 +191,4 @@ function renderSchedule(agenda) {
   document.getElementById('count-free').textContent = freeCount;
 }
 
-// Iniciar
 initView();
