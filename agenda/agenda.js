@@ -1,52 +1,179 @@
 /**
  * MMR Agenda Logic
- * Handles schedule generation, breaks, extra slots, and assignment state.
+ * Handles schedule generation, breaks, extra slots, and assignment state per salon.
  */
 
-// --- State ---
-let config = {
+// --- Global State ---
+let agendas = {}; // { "clia_kinder": { config, breaks, extraSlots, assignments }, ... }
+let currentContext = null; // "clia_kinder"
+
+// Default config for a new salon
+const defaultConfig = {
   startTime: '08:00',
   endTime: '13:00',
   duration: 15,
   gap: 0
 };
 
-let breaks = [
-  { time: '10:00', duration: 20 }
-];
-
-let extraSlots = []; // Array of time strings ['14:00']
-
-// State of the schedule. Key: time 'HH:MM', Value: { studentName: string | null, isExtra: boolean }
-let assignments = {}; 
-
-// Computed schedule
-let scheduleSlots = []; 
-
 // --- Utilities ---
-
-// Convert 'HH:MM' to minutes since 00:00
 function timeToMins(timeStr) {
   const [h, m] = timeStr.split(':').map(Number);
   return h * 60 + m;
 }
 
-// Convert minutes since 00:00 to 'HH:MM'
 function minsToTime(mins) {
   const h = Math.floor(mins / 60);
   const m = mins % 60;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
-// Check if a given slot overlaps with any break
-function getOverlappingBreak(slotStartMins, slotDuration) {
+// --- Data Fetching (Context Setup) ---
+async function loadContextData() {
+  try {
+    const res = await fetch('../onboarding/data/escuelas.json');
+    if (!res.ok) throw new Error('Error cargando escuelas.json');
+    const data = await res.json();
+    
+    const selEscuela = document.getElementById('sel-escuela');
+    selEscuela.innerHTML = '<option value="">Selecciona una escuela...</option>';
+    
+    data.schools.forEach(school => {
+      const option = document.createElement('option');
+      option.value = school.code;
+      option.textContent = school.name;
+      selEscuela.appendChild(option);
+    });
+
+    selEscuela.addEventListener('change', handleEscuelaChange);
+  } catch (error) {
+    console.error('Failed to load schools:', error);
+    document.getElementById('sel-escuela').innerHTML = '<option value="">Error cargando datos</option>';
+  }
+}
+
+async function handleEscuelaChange(e) {
+  const code = e.target.value;
+  const selSalon = document.getElementById('sel-salon');
+  
+  if (!code) {
+    selSalon.innerHTML = '<option value="">Selecciona escuela primero</option>';
+    selSalon.disabled = true;
+    switchContext(null);
+    return;
+  }
+
+  try {
+    selSalon.innerHTML = '<option value="">Cargando salones...</option>';
+    selSalon.disabled = true;
+    
+    const res = await fetch(`../onboarding/data/${code}_secciones.json`);
+    if (!res.ok) throw new Error(`Error cargando ${code}_secciones.json`);
+    const data = await res.json();
+    
+    selSalon.innerHTML = '<option value="">Selecciona un salón...</option>';
+    data.salones.forEach(salon => {
+      const option = document.createElement('option');
+      option.value = salon.valor;
+      option.textContent = salon.label;
+      selSalon.appendChild(option);
+    });
+    
+    selSalon.disabled = false;
+    
+    // Solo asignar el listener si no lo tiene
+    if (!selSalon.dataset.listening) {
+      selSalon.addEventListener('change', handleSalonChange);
+      selSalon.dataset.listening = "true";
+    }
+    
+    switchContext(null); // Clear until salon is selected
+  } catch (error) {
+    console.error('Failed to load salones:', error);
+    selSalon.innerHTML = '<option value="">Error cargando salones</option>';
+  }
+}
+
+function handleSalonChange(e) {
+  const codeEscuela = document.getElementById('sel-escuela').value;
+  const salon = e.target.value;
+  
+  if (!codeEscuela || !salon) {
+    switchContext(null);
+    return;
+  }
+  
+  const ctx = `${codeEscuela}_${salon}`;
+  switchContext(ctx);
+}
+
+// --- Context Management ---
+function switchContext(ctxId) {
+  currentContext = ctxId;
+  
+  if (!ctxId) {
+    // Disable inputs
+    toggleSidebarInputs(false);
+    document.getElementById('schedule-list').innerHTML = `
+      <div style="padding:40px; text-align:center; color:var(--text-muted);">
+        Selecciona una escuela y salón para ver la agenda.
+      </div>`;
+    updateCounters(0, 0, 0);
+    return;
+  }
+  
+  // Enable inputs
+  toggleSidebarInputs(true);
+
+  // Initialize context in memory if not exists
+  if (!agendas[ctxId]) {
+    agendas[ctxId] = {
+      config: { ...defaultConfig },
+      breaks: [],
+      extraSlots: [],
+      assignments: {},
+      scheduleSlots: []
+    };
+  }
+
+  // Load context config to UI
+  const data = agendas[ctxId];
+  document.getElementById('cfg-start').value = data.config.startTime;
+  document.getElementById('cfg-end').value = data.config.endTime;
+  document.getElementById('cfg-duration').value = data.config.duration;
+  document.getElementById('cfg-gap').value = data.config.gap;
+
+  renderBreaksConfig();
+  
+  // Generate or render existing
+  if (data.scheduleSlots.length === 0) {
+    generateSchedule();
+  } else {
+    renderUI();
+  }
+}
+
+function toggleSidebarInputs(enabled) {
+  const els = document.querySelectorAll('.sidebar input, .sidebar button:not(#sel-escuela):not(#sel-salon)');
+  els.forEach(el => el.disabled = !enabled);
+  if (!enabled) {
+    document.getElementById('breaks-list').innerHTML = '';
+  }
+}
+
+function getCurrentAgenda() {
+  if (!currentContext) return null;
+  return agendas[currentContext];
+}
+
+// --- Core Logic ---
+
+function getOverlappingBreak(slotStartMins, slotDuration, contextBreaks) {
   const slotEndMins = slotStartMins + slotDuration;
   
-  for (let b of breaks) {
+  for (let b of contextBreaks) {
     const breakStartMins = timeToMins(b.time);
     const breakEndMins = breakStartMins + b.duration;
     
-    // Overlap condition: start < end2 && end > start2
     if (slotStartMins < breakEndMins && slotEndMins > breakStartMins) {
       return b;
     }
@@ -54,39 +181,37 @@ function getOverlappingBreak(slotStartMins, slotDuration) {
   return null;
 }
 
-// --- Core Logic ---
-
 function generateSchedule() {
-  scheduleSlots = [];
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
+  agenda.scheduleSlots = [];
   
-  const startMins = timeToMins(config.startTime);
-  const endMins = timeToMins(config.endTime);
-  const dur = config.duration;
-  const gap = config.gap;
+  const startMins = timeToMins(agenda.config.startTime);
+  const endMins = timeToMins(agenda.config.endTime);
+  const dur = agenda.config.duration;
+  const gap = agenda.config.gap;
   
   let currentMins = startMins;
 
   // 1. Generate standard slots and interleave breaks
   while (currentMins + dur <= endMins) {
-    const overlappingBreak = getOverlappingBreak(currentMins, dur);
+    const overlappingBreak = getOverlappingBreak(currentMins, dur, agenda.breaks);
     
     if (overlappingBreak) {
-      // If there's an overlap, push the break (if not already added)
       const bTime = overlappingBreak.time;
-      if (!scheduleSlots.some(s => s.time === bTime && s.type === 'break')) {
-        scheduleSlots.push({
+      if (!agenda.scheduleSlots.some(s => s.time === bTime && s.type === 'break')) {
+        agenda.scheduleSlots.push({
           time: bTime,
           type: 'break',
           duration: overlappingBreak.duration,
           mins: timeToMins(bTime)
         });
       }
-      // Jump time to the end of the break
       currentMins = timeToMins(bTime) + overlappingBreak.duration;
     } else {
-      // Valid standard slot
       const t = minsToTime(currentMins);
-      scheduleSlots.push({
+      agenda.scheduleSlots.push({
         time: t,
         type: 'slot',
         isExtra: false,
@@ -98,16 +223,15 @@ function generateSchedule() {
   }
 
   // 2. Inject extra slots
-  for (let eTime of extraSlots) {
+  for (let eTime of agenda.extraSlots) {
     const eMins = timeToMins(eTime);
-    // Check collision with existing slots or breaks
-    const collision = scheduleSlots.some(s => {
+    const collision = agenda.scheduleSlots.some(s => {
       const sEnd = s.mins + s.duration;
       return (eMins < sEnd && (eMins + dur) > s.mins);
     });
 
     if (!collision) {
-      scheduleSlots.push({
+      agenda.scheduleSlots.push({
         time: eTime,
         type: 'slot',
         isExtra: true,
@@ -115,27 +239,29 @@ function generateSchedule() {
         mins: eMins
       });
     } else {
-      console.warn(`Slot extra en ${eTime} descartado por choque.`);
+      console.warn(`[${currentContext}] Slot extra en ${eTime} descartado por choque.`);
     }
   }
 
   // 3. Sort chronologically
-  scheduleSlots.sort((a, b) => a.mins - b.mins);
+  agenda.scheduleSlots.sort((a, b) => a.mins - b.mins);
   
   renderUI();
 }
 
 function handleGenerateClick() {
-  // Check if we have extras and ask for confirmation (Regenerar con confirmación)
-  if (extraSlots.length > 0) {
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
+  if (agenda.extraSlots.length > 0) {
     const confirm = window.confirm("¿Regenerar horario? Se mantendrán las asignaciones y slots extra válidos.");
     if (!confirm) return;
   }
   
-  config.startTime = document.getElementById('cfg-start').value;
-  config.endTime = document.getElementById('cfg-end').value;
-  config.duration = parseInt(document.getElementById('cfg-duration').value, 10);
-  config.gap = parseInt(document.getElementById('cfg-gap').value, 10);
+  agenda.config.startTime = document.getElementById('cfg-start').value;
+  agenda.config.endTime = document.getElementById('cfg-end').value;
+  agenda.config.duration = parseInt(document.getElementById('cfg-duration').value, 10);
+  agenda.config.gap = parseInt(document.getElementById('cfg-gap').value, 10);
 
   generateSchedule();
 }
@@ -143,58 +269,74 @@ function handleGenerateClick() {
 // --- UI Actions ---
 
 function addBreak() {
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
   const time = document.getElementById('add-break-time').value;
   const dur = parseInt(document.getElementById('add-break-duration').value, 10);
   if (!time || isNaN(dur)) return;
   
-  breaks.push({ time, duration: dur });
+  agenda.breaks.push({ time, duration: dur });
   renderBreaksConfig();
-  generateSchedule(); // Auto-update
+  generateSchedule();
 }
 
 function removeBreak(index) {
-  breaks.splice(index, 1);
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
+  agenda.breaks.splice(index, 1);
   renderBreaksConfig();
   generateSchedule();
 }
 
 function addExtraSlot() {
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
   const time = document.getElementById('add-extra-time').value;
   if (!time) return;
   
-  if (!extraSlots.includes(time)) {
-    extraSlots.push(time);
-    generateSchedule(); // Auto-update
+  if (!agenda.extraSlots.includes(time)) {
+    agenda.extraSlots.push(time);
+    generateSchedule();
   }
 }
 
 function removeExtraSlot(time) {
-  extraSlots = extraSlots.filter(t => t !== time);
-  // Also remove assignment if any
-  if (assignments[time]) delete assignments[time];
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
+  agenda.extraSlots = agenda.extraSlots.filter(t => t !== time);
+  if (agenda.assignments[time]) delete agenda.assignments[time];
   generateSchedule();
 }
 
 function toggleAssignment(time) {
-  if (assignments[time]) {
-    // Unassign
-    delete assignments[time];
+  const agenda = getCurrentAgenda();
+  if (!agenda) return;
+
+  if (agenda.assignments[time]) {
+    delete agenda.assignments[time];
   } else {
-    // Mock Assign
     const name = prompt("Nombre del estudiante:");
     if (name) {
-      assignments[time] = name;
+      agenda.assignments[time] = name;
     }
   }
-  renderUI(); // Update just UI, no need to regenerate full layout
+  renderUI();
 }
 
 // --- Renderers ---
 
 function renderBreaksConfig() {
+  const agenda = getCurrentAgenda();
   const list = document.getElementById('breaks-list');
   list.innerHTML = '';
-  breaks.forEach((b, i) => {
+  
+  if (!agenda) return;
+
+  agenda.breaks.forEach((b, i) => {
     const div = document.createElement('div');
     div.className = 'break-item';
     div.innerHTML = `
@@ -205,15 +347,24 @@ function renderBreaksConfig() {
   });
 }
 
+function updateCounters(assigned, free, total) {
+  document.getElementById('count-assigned').innerText = assigned;
+  document.getElementById('count-free').innerText = free;
+  document.getElementById('count-total').innerText = total;
+}
+
 function renderUI() {
+  const agenda = getCurrentAgenda();
   const container = document.getElementById('schedule-list');
   container.innerHTML = '';
+
+  if (!agenda) return;
 
   let assignedCount = 0;
   let freeCount = 0;
   let totalCount = 0;
 
-  scheduleSlots.forEach(slot => {
+  agenda.scheduleSlots.forEach(slot => {
     const row = document.createElement('div');
     row.className = 'slot-row';
 
@@ -226,7 +377,7 @@ function renderUI() {
       `;
     } else {
       totalCount++;
-      const student = assignments[slot.time];
+      const student = agenda.assignments[slot.time];
       const isOcupado = !!student;
       
       if (isOcupado) {
@@ -248,7 +399,6 @@ function renderUI() {
       
       let actionsHtml = `<button class="btn" onclick="toggleAssignment('${slot.time}')">${isOcupado ? 'Liberar' : 'Asignar'}</button>`;
       
-      // Botón ✕ en cada slot extra no asignado (Eliminar slots extra)
       if (slot.isExtra && !isOcupado) {
         actionsHtml += `<button class="btn btn-danger" style="padding:4px 8px;" onclick="removeExtraSlot('${slot.time}')">✕</button>`;
       }
@@ -264,10 +414,7 @@ function renderUI() {
     container.appendChild(row);
   });
 
-  // Update counters
-  document.getElementById('count-assigned').innerText = assignedCount;
-  document.getElementById('count-free').innerText = freeCount;
-  document.getElementById('count-total').innerText = totalCount;
+  updateCounters(assignedCount, freeCount, totalCount);
 }
 
 // --- Initialization ---
@@ -275,12 +422,6 @@ document.getElementById('btn-generate').addEventListener('click', handleGenerate
 document.getElementById('btn-add-break').addEventListener('click', addBreak);
 document.getElementById('btn-add-extra').addEventListener('click', addExtraSlot);
 
-// Sync initial config values to inputs
-document.getElementById('cfg-start').value = config.startTime;
-document.getElementById('cfg-end').value = config.endTime;
-document.getElementById('cfg-duration').value = config.duration;
-document.getElementById('cfg-gap').value = config.gap;
-
-// Initial render
-renderBreaksConfig();
-generateSchedule();
+// Start app
+switchContext(null); // Initialize in disabled state
+loadContextData(); // Fetch schools
