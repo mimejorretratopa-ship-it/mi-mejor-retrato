@@ -133,7 +133,7 @@ git push origin master
 
 ### Cómo funciona
 
-El cuestionario es un segundo formulario que se envía **después** del onboarding. El padre recibe un link personalizado por WhatsApp con los datos de su hijo pre-cargados.
+El cuestionario es un segundo formulario que se envía **después** del onboarding. El padre recibe un link personalizado por WhatsApp con los datos de su hijo pre-cargados. El Hub genera estos links automáticamente en la Fase 0.
 
 ```
 https://mimejorretrato.com/onboarding/cuestionario.html?sid={student_id}
@@ -148,36 +148,18 @@ https://mimejorretrato.com/onboarding/cuestionario.html?sid={student_id}
 # 4. Verificar que el formulario carga el JSON adecuado y marca 'Q_onboarding' en Airtable al enviar.
 ```
 
-### JSONs del discovery (cuestionario)
+### Pipeline de Comunicación (B1 + D2 — ✅ HECHO)
 
-#### `data/cuestionario_config.json`
-
-```json
-{
-  "mapeo_salones": {
-    "prekinder": "kinder",
-    "kinder": "kinder",
-    "primero": "kinder",
-    "sexto": "sexto",
-    "noveno": "sexto"
-  },
-  "default": "kinder"
-}
-```
-
-#### `data/cuestionario_kinder.json` / `data/cuestionario_sexto_m.json` / `data/cuestionario_sexto_f.json`
-
-Misma estructura que `formulario.json`: array de campos con `id`, `label`, `tipo`, `opciones`.
-Soporta tipos adicionales como `section_header` y `checkbox` con `max_selecciones`.
-Los textos usan `{nombreEstudiante}` como placeholder que se reemplaza en runtime.
+- **B1**: Generación de `Link_WhatsApp_Q` y `Link_WhatsApp_Agenda` durante el onboarding.
+- **D2**: Trigger diario a las 8 AM que envía recordatorios de Discovery a Discord después de 3 días.
 
 ### Checklist discovery (Completado)
 
 - [x] `cuestionario.html` renderiza sin errores
 - [x] `cuestionario_config.json` tiene mapeo para todos los salones activos
-- [x] Preguntas del JSON se renderizan según tipo de salón y género
-- [x] Límites de selección en checkboxes funcionan
-- [x] Submit llega a Google Sheets (pestaña "Cuestionarios") en crudo (JSON)
+- [x] Hub genera links persistentes en Sheets y Airtable (B1)
+- [x] Trigger diario configurado en Apps Script (D2)
+- [x] Submit llega a Google Sheets (pestaña "Cuestionarios") y Airtable (Checkbox)
 - [x] Submit marca 'Q_onboarding' (Checkbox) en Airtable
 - [x] Handshake `getStudent` implementado vía POST (CORS fix)
 

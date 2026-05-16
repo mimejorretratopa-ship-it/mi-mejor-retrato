@@ -229,10 +229,10 @@ Onboarding                     Discovery                 Agenda & Horarios      
 ─────────────────              ──────────────            ──────────────            ──────────────
 Brochure URL-driven            Formulario pre-sesión     Dashboard local-first     PDF referencia
   → Formulario reserva           personalizado por niño    → Gestión por salón       para el fotógrafo
-  → Google Sheets              → Links por WhatsApp      → Sincronización Hub      Banner + QR code
-  → Airtable                   → Handshake con Hub       → Vista Pública Padres    para ID de fotos
-  → Google Contacts            → Segmentado por Género   → Registro en Airtable    Python QR reader
-  → Discord                    → Respuestas a Sheets     → Detección de choques
+  → Links de WhatsApp          → **Links WA persistentes** → Sincronización Hub      Banner + QR code
+  → Persistencia en Hub        → Handshake con Hub       → Vista Pública Padres    para ID de fotos
+  → Recordatorio Discord       → Segmentado por Género   → Registro en Airtable    Python QR reader
+  → Google Contacts            → Respuestas a Sheets     → Detección de choques
 ```
 
 ### student_id — La clave universal

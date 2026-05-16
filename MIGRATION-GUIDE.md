@@ -39,13 +39,25 @@ Las submissions se escriben en la primera pestaña de la hoja vinculada al Apps 
 - `Cuestionarios`: Respuestas brutas del formulario pre-sesión.
 - `Agendas`: Configuración JSON de horarios por salón (`ID_Salon`, `Config_JSON`).
 
+**Columnas Requeridas en Leads**:
+13. `Link_WA_Discovery`: Link WhatsApp para el cuestionario.
+14. `Link_WA_Agenda`: Link WhatsApp para la agenda pública.
+15. `Fecha_Envio_Q`: Fecha sugerida (Hoy + 3 días).
+16. `Q_Enviado`: Marca de recordatorio enviado.
+
 ---
 
 ## 2. Airtable (Gestión CRM)
 - **Base ID:** `appVXT9GPLoKT15YJ`
 - **Tabla:** `Leads`
-- **Campos Clave**: `ID` (student_id), `Colegio`, `Salon`, `Hora_Sesion` (actualizado por Agenda).
-- Recibe el ID corto (ej: `clia-26`) para permitir filtrado consistente.
+- **Campos Clave**: 
+  - `ID`: student_id.
+  - `Colegio`: Código o nombre (usa `SEARCH` en Hub v3.9).
+  - `Salon`: Valor del salón (ej: `6to`).
+  - `Link_WhatsApp_Q`: Link generado por el Hub.
+  - `Link_WhatsApp_Agenda`: Link generado por el Hub.
+  - `Hora_Sesion`: Hora asignada.
+  - `Q_onboarding`: Checkbox de cuestionario recibido.
 
 ---
 
