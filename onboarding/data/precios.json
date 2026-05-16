@@ -22,14 +22,14 @@
           "entregables": {
             "impresos": [
               {
-                "cantidad": 3,
+                "cantidad": 4,
                 "tamano": "digital",
                 "detalle": "del estudiante"
               },
               {
                 "cantidad": 1,
                 "tamano": "digital",
-                "detalle": "de grupo"
+                "detalle": "con papá y mamá"
               }
             ],
             "digitales": {
