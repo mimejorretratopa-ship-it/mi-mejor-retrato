@@ -18,7 +18,7 @@
           "id": "paquete_1",
           "nombre": "Paquete 1",
           "precio": 0,
-          "descripcion": "4 Fotos únicamente en galería online",
+          "descripcion": "5 Fotos únicamente en galería online.  No incluye fotos impresas",
           "entregables": {
             "impresos": [
               {
