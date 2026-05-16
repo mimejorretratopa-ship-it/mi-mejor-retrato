@@ -1,0 +1,84 @@
+{
+    "secciones": {
+        "hero": {
+            "activo": true,
+            "nota": "Nombre de escuela y año se generan automáticamente desde la URL y escuelas.json"
+        },
+        "la_diferencia": {
+            "activo": true
+        },
+        "como_funciona": {
+            "activo": true
+        },
+        "ubicacion": {
+            "activo": true,
+            "estado": "estudios",
+            "nota_estados": "pendiente | texto | colegio | estudios",
+            "mensaje": "La ubicación se confirmará próximamente.",
+            "ubicaciones": [
+                "lachorrera"
+            ],
+            "nota_ubicaciones": "Si el estado es 'estudios', colocar IDs de escuelas.json (ej: ['condado', 'viaargentina'])"
+        },
+        "portafolio_inicio": {
+            "activo": true,
+            "nota_config": "Detecta archivos 01 a 99 con el prefijo en la carpeta indicada",
+            "carpeta": "portafolio",
+            "prefijo": "k_25_",
+            "extension": "jpg",
+            "nota_extension": "jpg | png | webp"
+        },
+        "portafolio_medio": {
+            "activo": false,
+            "carpeta": "portafolio_mixto",
+            "prefijo": "k_25_",
+            "extension": "jpg"
+        },
+        "sobre_mike": {
+            "activo": true
+        },
+        "faq": {
+            "activo": true
+        },
+        "portafolio_cierre": {
+            "activo": false,
+            "carpeta": "portafolio",
+            "prefijo": "p3_",
+            "extension": "jpg"
+        },
+        "mascotas": {
+            "activo": false
+        },
+        "fondos": {
+            "activo": false
+        },
+        "direccion_estudio": {
+            "activo": false
+        },
+        "reserva": {
+            "activo": true
+        }
+    },
+    "salones": [
+        {
+            "valor": "prekinder",
+            "label": "Prekínder",
+            "corto": "pk"
+        },
+        {
+            "valor": "kinder",
+            "label": "Kínder",
+            "corto": "k"
+        },
+        {
+            "valor": "6to",
+            "label": "6to grado",
+            "corto": "6"
+        }
+    ],
+    "metadata": {
+        "version": "3.1",
+        "nota": "Plantilla maestra v3.1 (URL-driven). REGLA: la visibilidad de la sección 'paquetes' se controla ÚNICAMENTE desde precios.json (publicar | pendiente | no_publicar).",
+        "actualizado": "2026-05-14"
+    }
+}

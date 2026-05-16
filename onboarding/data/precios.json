@@ -11,7 +11,36 @@
   },
   "escuelas": [
     {
-      "code": "clia",
+      "code": "port",
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Paquete 1",
+          "precio": 0,
+          "descripcion": "4 Fotos únicamente en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "sabi",
       "visibilidad": "no_publicar",
       "paquetes": [
         {

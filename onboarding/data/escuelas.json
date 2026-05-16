@@ -3,56 +3,81 @@
     {
       "code": "clia",
       "name": "Chiara Lubich International Academy",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "borrador"
     },
     {
       "code": "dolo",
       "name": "Nuestra Señora De Los Dolores",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "publicado"
     },
     {
       "code": "ebrv",
       "name": "Escuela Bilingüe Residencial Vacamonte",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "publicado"
     },
     {
       "code": "lasa",
       "name": "Colegio La Salle",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "publicado"
     },
     {
       "code": "lion",
       "name": "Lions School",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "publicado"
     },
     {
       "code": "ofxd",
       "name": "Oxford International School",
-      "years": [26],
+      "years": [
+        26
+      ],
+      "ga_id": "",
+      "estado": "publicado"
+    },
+    {
+      "code": "port",
+      "name": "Portafolio",
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "publicado"
     },
     {
       "code": "sabi",
       "name": "Sabis International School",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "publicado"
     },
     {
       "code": "sagu",
       "name": "Colegio San Agustín",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "",
       "estado": "publicado"
     }
@@ -60,7 +85,7 @@
   "metadata": {
     "description": "Códigos de 4 letras para identificación de colegios",
     "created": "2026-02-21",
-    "updated": "2026-04-28",
+    "updated": "2026-05-16",
     "total_schools": 8,
     "format": "4-letter lowercase code — must match HTML filename prefix exactly"
   },
