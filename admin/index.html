@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Precios | Mi Mejor Retrato</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+    <header class="admin-header">
+        <div class="header-container">
+            <h1>Panel de Configuración de Precios</h1>
+            <p>Gestiona los paquetes y visibilidad sin tocar código.</p>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <section class="stats-bar" id="statsBar">
+            <div class="stat-card">
+                <span class="stat-value" id="statTotal">-</span>
+                <span class="stat-label">Colegios Totales</span>
+            </div>
+            <div class="stat-card stat-success">
+                <span class="stat-value" id="statPublished">-</span>
+                <span class="stat-label">Publicados</span>
+            </div>
+            <div class="stat-card stat-warning">
+                <span class="stat-value" id="statPending">-</span>
+                <span class="stat-label">Pendientes</span>
+            </div>
+            <div class="stat-card stat-hidden">
+                <span class="stat-value" id="statHidden">-</span>
+                <span class="stat-label">No Publicados</span>
+            </div>
+        </section>
+
+        <div class="dashboard-layout">
+            <!-- Lista de Escuelas -->
+            <aside class="schools-list" id="schoolsList">
+                <div class="list-header">
+                    <h2>Colegios</h2>
+                </div>
+                <div class="list-content" id="schoolsContainer">
+                    <p class="loading-text">Cargando datos...</p>
+                </div>
+            </aside>
+
+            <!-- Editor de la Escuela Seleccionada -->
+            <section class="school-editor" id="schoolEditor" style="display: none;">
+                <div class="editor-header">
+                    <h2>Configurando: <span id="currentSchoolCode" class="badge"></span></h2>
+                    
+                    <div class="form-group row-group">
+                        <label for="schoolVisibility">Estado:</label>
+                        <select id="schoolVisibility" class="visibility-select">
+                            <option value="publicar">🟢 Publicar</option>
+                            <option value="no_publicar">🔴 Ocultar (no_publicar)</option>
+                            <option value="pendiente">🟡 Pendiente</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="packages-container" id="packagesContainer">
+                    <!-- Los paquetes se inyectan aquí -->
+                </div>
+
+                <div class="editor-actions">
+                    <button class="btn btn-secondary" id="btnAddPackage">+ Agregar Paquete</button>
+                    <button class="btn btn-primary" id="btnSaveChanges">Guardar Cambios Temporales</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="admin-footer">
+        <div class="footer-actions">
+            <p><strong>Paso final:</strong> Una vez hechos todos tus cambios, descarga el archivo y guárdalo en <code>onboarding/data/precios.json</code> reemplazando el anterior.</p>
+            <button class="btn btn-success btn-large" id="btnDownloadJson">⬇️ Descargar precios.json actualizado</button>
+        </div>
+    </footer>
+
+    <!-- Template for a Package Card -->
+    <template id="packageTemplate">
+        <div class="package-card">
+            <div class="package-header">
+                <h3>Paquete</h3>
+                <button class="btn-icon text-danger delete-package-btn" title="Eliminar Paquete">🗑️</button>
+            </div>
+            <div class="package-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ID Interno</label>
+                        <input type="text" class="pkg-id" placeholder="ej: paquete_1">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Paquete</label>
+                        <input type="text" class="pkg-name" placeholder="ej: Esencial">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio ($ USD)</label>
+                        <input type="number" class="pkg-price" min="0">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Descripción corta</label>
+                        <input type="text" class="pkg-desc" placeholder="ej: 4 Fotos únicamente en galería online">
+                    </div>
+                </div>
+
+                <hr class="divider">
+                <h4>Tabla Comparativa (Checklist)</h4>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Fotos Digitales (Cantidad)</label>
+                        <input type="number" class="tc-digital" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Impresiones (Texto)</label>
+                        <input type="text" class="tc-prints" placeholder="ej: 1 gr. + 4 peq. (dejar vacío si no aplica)">
+                    </div>
+                    <div class="form-group">
+                        <label>Foto Enmarcada (Texto)</label>
+                        <input type="text" class="tc-framed" placeholder="ej: Las 2 grandes (dejar vacío si no aplica)">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Ideal para (Texto destacado)</label>
+                        <input type="text" class="tc-ideal" placeholder="ej: Un recuerdo digital sencillo">
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" class="tc-group"> 
+                            Incluye Foto Grupal del Salón
+                        </label>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" class="tc-family"> 
+                            Incluye Fotos Familiares
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

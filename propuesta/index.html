@@ -49,7 +49,7 @@
           <li>Coordinación moderna y ordenada de principio a fin</li>
           <li>Atención personalizada para cada familia</li>
           <li>Entrega digital e impresa</li>
-          <li>Desde $19</li>
+          <li id="precio-desde">Desde —</li>
         </ul>
       </section>
 
@@ -100,53 +100,20 @@
             <div class="pt-cell pt-head pt-label" role="columnheader"></div>
             <div class="pt-cell pt-head" role="columnheader">
               <span class="pt-name">Esencial</span>
-              <span class="pt-price" id="precio-esencial">$19</span>
+              <span class="pt-price" id="precio-esencial">—</span>
             </div>
             <div class="pt-cell pt-head pt-feat" role="columnheader">
               <span class="pt-popular-badge">Popular</span>
               <span class="pt-name">Familiar</span>
-              <span class="pt-price" id="precio-familiar">$37</span>
+              <span class="pt-price" id="precio-familiar">—</span>
             </div>
             <div class="pt-cell pt-head" role="columnheader">
               <span class="pt-name">Premium</span>
-              <span class="pt-price" id="precio-premium">$57</span>
+              <span class="pt-price" id="precio-premium">—</span>
             </div>
 
-            <!-- Fotos digitales -->
-            <div class="pt-cell pt-label" role="rowheader">Fotos digitales</div>
-            <div class="pt-cell" role="cell">4</div>
-            <div class="pt-cell pt-feat" role="cell">6</div>
-            <div class="pt-cell" role="cell">12</div>
-
-            <!-- Foto grupal -->
-            <div class="pt-cell pt-label" role="rowheader">Foto grupal</div>
-            <div class="pt-cell" role="cell"><span class="pt-ok">✓</span></div>
-            <div class="pt-cell pt-feat" role="cell"><span class="pt-ok-inv">✓</span></div>
-            <div class="pt-cell" role="cell"><span class="pt-ok">✓</span></div>
-
-            <!-- Impresiones -->
-            <div class="pt-cell pt-label" role="rowheader">Impresiones</div>
-            <div class="pt-cell" role="cell"><span class="pt-no">—</span></div>
-            <div class="pt-cell pt-feat pt-sm" role="cell">1 gr. + 2 peq.</div>
-            <div class="pt-cell pt-sm" role="cell">2 gr. + 4 peq.</div>
-
-            <!-- Foto enmarcada -->
-            <div class="pt-cell pt-label" role="rowheader">Foto enmarcada</div>
-            <div class="pt-cell" role="cell"><span class="pt-no">—</span></div>
-            <div class="pt-cell pt-feat" role="cell"><span class="pt-no-inv">—</span></div>
-            <div class="pt-cell pt-sm" role="cell">Las 2 grandes</div>
-
-            <!-- Fotos familiares -->
-            <div class="pt-cell pt-label" role="rowheader">Fotos familiares</div>
-            <div class="pt-cell" role="cell"><span class="pt-opt">Incluidas</span></div>
-            <div class="pt-cell pt-feat" role="cell"><span class="pt-opt-inv">Incluidas</span></div>
-            <div class="pt-cell" role="cell"><span class="pt-opt">Incluidas</span></div>
-
-            <!-- Ideal para -->
-            <div class="pt-cell pt-label pt-last" role="rowheader">Ideal para</div>
-            <div class="pt-cell pt-last pt-sm" role="cell">Un recuerdo sencillo</div>
-            <div class="pt-cell pt-feat pt-last pt-sm" role="cell">Variedad sin complicaciones</div>
-            <div class="pt-cell pt-last pt-sm" role="cell">Conservar la experiencia completa</div>
+            <!-- Filas de características: construidas dinámicamente por app.js -->
+            <!-- NOTA: Las celdas se inyectan con insertAdjacentHTML para ser hijas directas del pt-grid -->
 
           </div>
         </div>

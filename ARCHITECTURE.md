@@ -25,13 +25,14 @@ Existen dos modalidades principales en la aplicación:
 └──────────────────────┬──────────────────────────────┘
 ```
 
-### Arquitectura Propuesta B2B (Híbrida)
+### Arquitectura Propuesta B2B (Híbrida/Dinámica)
 ```
 ┌─────────────────────────────────────────────────────┐
 │                   HTML (View)                        │
 │                   propuesta/index.html               │
-│  — Mantiene copy, FAQ, logística y tabla estática    │
-│  — Inyecta precios, escuela y año vía app.js         │
+│  — Mantiene copy, FAQ y logística                    │
+│  — Inyecta precios, escuela, año y tabla de precios │
+│    vía app.js (cero contenido hardcodeado)           │
 │  — Diseño Mobile-First con variables CSS en :root    │
 │  — Enfocada en SEO, LLMs y carga veloz               │
 └─────────────────────────────────────────────────────┘
@@ -43,6 +44,8 @@ Existen dos modalidades principales en la aplicación:
 │  secciones.js      ubicacion.js  analytics.js        │
 │  — Renderizado de UI                                  │
 │  — Leen de state, llaman a storage                   │
+│  — paquetes.js ahora renderiza una tabla comparativa  │
+│    idéntica a la propuesta comercial (Unified UX)    │
 └──────────────────────┬──────────────────────────────┘
                        │ usa
 ┌──────────────────────▼──────────────────────────────┐
@@ -61,9 +64,32 @@ Existen dos modalidades principales en la aplicación:
 ┌──────────────────────▼──────────────────────────────┐
 │                   DATOS & BACKEND                    │
 │  DATOS (JSON): escuelas, precios, secciones          │
+│  — precios.json: Única Fuente de Verdad para todos    │
+│    los precios, inclusiones y fotos familiares       │
 │  BACKEND: Google Sheets (DB) + Discord (Alertas)     │
 └─────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 📊 La Tabla Comparativa Unificada y Única Fuente de Verdad
+
+Con el fin de eliminar la redundancia de precios (DRY), la tabla de precios comparativa se construye 100% dinámicamente desde `precios.json` en ambas modalidades (B2B propuesta y B2C onboarding).
+
+### Estructura del JSON (`onboarding/data/precios.json`):
+Cada paquete en una escuela activa (con `visibilidad: "publicar"`) expone un objeto `tabla_comparativa` que define exactamente qué se incluye:
+```json
+"tabla_comparativa": {
+  "fotos_digitales": 6,
+  "foto_grupal": true,
+  "impresiones": "1 gr. + 4 peq.",
+  "foto_enmarcada": null,
+  "fotos_familiares": false,
+  "ideal_para": "Variedad con foto impresa"
+}
+```
+* **Flexibilidad Logística**: El campo `fotos_familiares` (booleano) permite desactivar dinámicamente las fotos con acudientes por escuela (ej: `false` en sesiones escolares en horas de clase de `lasa`, `enda` o `ebrv`, y `true` en sesiones de estudio independiente como `indp`).
+* **Inserción Limpia en el DOM**: Para evitar que un contenedor intermedio rompa el comportamiento de `display: grid` en la tabla de 4 columnas, el JS inyecta las celdas directamente en el contenedor `.pt-grid` usando `insertAdjacentHTML('beforeend', ...)`. En el onboarding, se fuerza el contenedor contenedor principal a `display: block` para evitar el colapso del ancho debido al scroll horizontal (`overflow-x: auto`).
 
 ---
 

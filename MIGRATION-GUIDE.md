@@ -22,7 +22,7 @@ Frontend (Vercel)
 Se migró el módulo de `/propuesta/` a un diseño premium mobile-first basado en **Tokens de Diseño** declarados en `:root`:
 * **Tipografías**: `Playfair Display` (serif elegante para headings y cursivas expresivas) y `Outfit` (sans-serif geométrica para lectura cómoda).
 * **Colores**: Paleta neutra cálida con fondo de papel orgánico (`#FBF9F6`), acento terracota cálido (`#C8622A`), texto principal (`#2A2724`) y acento claro (`#F2E8E0`).
-* **Estabilidad del Layout**: Se mantiene la tabla comparativa de precios y la línea de tiempo tradicionales en HTML estático para garantizar una presentación impecable en escritorio y un scroll fluido en móviles.
+* **Estabilidad del Layout**: Se reemplazó la tabla de precios hardcodeada por una estructura basada en **CSS Grid** dinámica, garantizando adaptabilidad y control total de bordes e items destacados.
 
 ### 2. Integración Activa de Analytics Multi-Propuesta (Actualizado a Producción)
 Para medir de manera clara las visitas y la interacción en múltiples propuestas (ej. `/propuesta/lasa-26`, `/propuesta/indp-26`):
@@ -31,6 +31,12 @@ Para medir de manera clara las visitas y la interacción en múltiples propuesta
   * Se extrae dinámicamente el `schoolId` desde las rutas limpias manejadas por Vercel (`window.location.pathname`).
   * Se **retrasa el disparo** del hit de página hasta que `app.js` resuelve la configuración de la escuela (`_propuesta.json`).
   * Esto permite asignar dinámicamente el `document.title` antes de enviar el hit a Google Analytics. Como resultado, los informes en GA4 muestran los nombres limpios y comerciales de las escuelas (ej. `Propuesta: Colegio La Salle`) en vez del título genérico del archivo HTML.
+
+### 3. Migración a Tabla Comparativa Única y Dinámica (DRY) (18 de Mayo de 2026)
+Se unificaron y simplificaron los precios en el ecosistema:
+* **Eliminación de Hardcoding**: Toda la información de entregables y precios de la propuesta comercial (`propuesta/index.html`) y del formulario de onboarding (`onboarding/index.html`) se deriva de un solo archivo: `precios.json`.
+* **Esquema de Inclusiones Flexibles**: El objeto `tabla_comparativa` introducido en el JSON permite definir variables específicas del colegio de manera centralizada. Por ejemplo, el campo `fotos_familiares` (booleano) controla dinámicamente si la fila de fotos familiares se muestra como incluida (estudios independientes) o no (en horas de clase escolares) en ambos portales simultáneamente.
+* **Consolidación de Look & Feel**: El onboarding abandonó el diseño de "tarjeta individual" por el formato comparativo Premium, usando el mismo generador dinámico de celdas pero estilizado con los tokens del dark theme de la aplicación principal.
 
 ---
 

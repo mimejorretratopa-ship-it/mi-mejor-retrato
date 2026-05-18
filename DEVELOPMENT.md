@@ -23,7 +23,8 @@ El sistema de Propuestas (`/propuesta/`) utiliza un **Modelo Híbrido Estático/
 
 ```bash
 # 1. Agregar el código de la escuela y año en data/escuelas.json (ej: "lasa", 26)
-# 2. Configurar los precios en data/precios.json (visibilidad: "publicar")
+# 2. Configurar los precios en onboarding/data/precios.json (visibilidad: "publicar"),
+#    ASEGURANDO incluir el bloque "tabla_comparativa" para cada paquete.
 # 3. Crear el archivo propuesta/data/{code}_propuesta.json con el texto y logística específica.
 # 4. Abrir en Live Server con la URL: http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}
 # 5. En producción, la URL limpia mapeada en Vercel será: /propuesta/{code}-{yy}
@@ -32,7 +33,8 @@ El sistema de Propuestas (`/propuesta/`) utiliza un **Modelo Híbrido Estático/
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.
 * **Formulario Eliminado**: Se eliminó el formulario de contacto largo en favor de un botón directo de WhatsApp. El copy final `"Los niños cambian muy rápido..."` se inyecta directamente antes del botón de WhatsApp.
-* **Tabla de Precios Comparativa**: Para máxima robustez, se utiliza una tabla HTML nativa (`<table class="pricing-table">`) con scroll horizontal suave en móviles (`.pricing-table-wrapper`), la cual muestra todos los paquetes de un vistazo sin colapsar.
+* **Tabla de Precios Comparativa Dinámica**: La tabla utiliza una implementación moderna en **CSS Grid** (`.pt-grid`) con scroll horizontal suave en móviles (`.pricing-table-wrapper`). No hay código HTML hardcodeado para los entregables ni precios de los paquetes; todo se inyecta dinámicamente desde `precios.json`.
+* **Consistencia Visual con Onboarding**: La sección de paquetes de la pantalla de onboarding (`onboarding/index.html`) utiliza exactamente el mismo componente de tabla comparativa, logrando coherencia de diseño a lo largo del embudo del cliente (B2B -> B2C).
 
 ---
 

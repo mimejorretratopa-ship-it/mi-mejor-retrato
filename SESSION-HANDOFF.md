@@ -12,31 +12,32 @@ Hemos consolidado el módulo de `/propuesta/` (Brochure B2B para colegios) aplic
 * **Tipografía Editorial**: Integración de Google Fonts con **Playfair Display** (itálicas expresivas para títulos) y **Outfit** (alta legibilidad para cuerpo y etiquetas).
 * **Mobile-First & Resposividad**: Layout reestructurado desde cero para verse impecable y prémium en dispositivos móviles (WhatsApp) y adaptarse fluidamente a pantallas de escritorio.
 
-### 2. Estabilización de Componentes y Reversión
-* **Reversión del Acordeón Secundario**: Se probó un acordeón colapsable en móvil para los paquetes de precios y una línea de tiempo BEM. A petición del usuario, **se revirtieron estos cambios**, restaurando:
-  * La **Tabla de Precios Clásica**: Con contenedor de scroll horizontal suave en móviles (`.pricing-table-wrapper`), la cual es sumamente robusta y elegante.
-  * La **Línea de Tiempo Clásica**: Con pasos sencillos y claros, manteniendo el 100% de los copies y los identificadores dinámicos de precio (`#precio-esencial`, `#precio-familiar`, `#precio-premium`) para el renderizado dinámico en [propuesta/index.html](file:///d:/mmr_studio/01_core_apps/website/propuesta/index.html).
+### 2. Migración Dinámica y DRY de Precios (100% Completado)
+* **Single Source of Truth (`precios.json`)**: Eliminamos la redundancia de precios y entregables en todo el ecosistema.
+* **Refactorización de Tabla Comparativa**: Reemplazamos las filas hardcodeadas de la propuesta comercial (`propuesta/index.html`) por un generador dinámico en JavaScript (`propuesta/js/app.js`) que renderiza celdas dinámicas directamente en el layout CSS Grid (`.pt-grid`), manteniendo el scroll horizontal suave en móviles y un diseño premium.
+* **Unificación de UI/UX con Onboarding**: Reemplazamos la visualización tradicional de "cards" del formulario de onboarding (`onboarding/index.html`) por el mismo formato de tabla comparativa premium (con los colores del dark theme de onboarding), conservando la funcionalidad del selector de radio-buttons intacta.
+* **Control de Inclusiones Específicas**: El campo `fotos_familiares` en `precios.json` define automáticamente por escuela si las fotos familiares van incluidas (ej: `false` para escuelas como `lasa`, `enda` o `ebrv` por restricciones de horario de clase, y `true` para estudios independientes como `indp`).
 
 ### 3. Implementación Definitiva de Google Analytics & Estrategia Multi-Propuesta
 * **Código de Analytics Activo**: Se activó en producción el ID de medición `G-6H4H52RL0T` para Onboarding y Propuestas B2B.
 * **Estrategia de Títulos Legibles**: Para evitar que GA4 registre todas las visitas bajo un solo título HTML (`Propuesta — Mi Mejor Retrato`), se retrasó el disparo del evento de página hasta que `app.js` resuelve la URL, obtiene el nombre real de la institución en `escuelas.json` y actualiza el `document.title`. Así, las métricas son cristalinas (ej. `Propuesta: Tu Sesión de Retrato`).
 
 ### 4. Creación de Catálogo de Propuestas
-Se implementaron en JSON las propuestas específicas y genéricas requeridas:
-* **Específicas**: `enda` (Endara Galimani), `ofxd` (Oxford), `oxbg` (Oxford Brisas), `sagu` (San Agustín), `b2b` (Directores).
-* **Genéricas**: `indp` (Padres Independientes), `chor` (La Chorrera), `pana` (Panamá).
+Se implementaron en JSON las propuestas específicas y genéricas requeridas y se adaptó su estructura de precios con `tabla_comparativa`:
+* **Específicas**: `lasa` (La Salle), `enda` (Endara Galimani), `ebrv` (Enrique Barvo).
+* **Independientes**: `indp` (Padres Independientes).
 
 ---
 
 ## 📂 Archivos Modificados e Integridad
-* `propuesta/css/style.css` — Hojas de estilo unificadas y mobile-first con variables y tokens.
-* `propuesta/index.html` & `propuesta/js/app.js` — Actualizados con GA activo de disparo asíncrono.
-* `onboarding/data/escuelas.json` — Atualizado con slugs y GA ID universal.
-* `propuesta/data/*_propuesta.json` — Catálogo comercial de nuevas escuelas.
+* `onboarding/data/precios.json` — Estructurado con bloques `tabla_comparativa` para todas las escuelas activas.
+* `propuesta/index.html` & `propuesta/js/app.js` — Eliminada la tabla estática y reemplazada por inyección dinámica y fluida sobre CSS Grid.
+* `onboarding/modules/paquetes.js` & `onboarding/brochure.css` — Onboarding migrado al formato de tabla comparativa premium unificada.
+* `ARCHITECTURE.md`, `DEVELOPMENT.md`, `MIGRATION-GUIDE.md`, `SESSION-HANDOFF.md` — Documentación completamente actualizada.
 
 ---
 
 ## 🛠️ Siguientes Pasos (Fase 3: Producción)
-1. **Google Analytics**: ~~Descomentar y configurar el ID~~ *(¡Completado!)*.
+1. **Verificación de Envíos**: Probar el comportamiento de submit en los formularios de onboarding con las escuelas migradas.
 2. **Generador de Hojas de Ruta PDF**: Crear la herramienta para exportar la agenda de cada salón en formato imprimible.
 3. **Módulo de Códigos QR**: Configurar la generación de etiquetas QR por estudiante para automatizar la catalogación en Lightroom.

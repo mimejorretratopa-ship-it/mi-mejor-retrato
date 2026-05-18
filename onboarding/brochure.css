@@ -250,12 +250,104 @@ details summary::-webkit-details-marker { display: none; }
 .ejemplo-text { font-size: .92rem; color: var(--bark); line-height: 1.6; }
 .ejemplo-text strong { color: var(--ink); font-weight: 500; }
 
+
 /* ─── SECCIÓN: PAQUETES ──────────────────────────────────── */
 .paquetes-grid {
   display: grid;
   gap: 16px;
   margin-top: 32px;
 }
+
+/* ─── TABLA COMPARATIVA DE PAQUETES ──────────────────────── */
+.pricing-table-wrapper {
+  margin-top: 28px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.pt-grid {
+  display: grid;
+  grid-template-columns: 36% 1fr 1fr 1fr;
+  align-items: stretch;
+  font-family: var(--ff-body);
+  font-size: .9rem;
+  min-width: 340px;
+}
+.pt-cell {
+  padding: 10px 8px;
+  border-bottom: 0.5px solid var(--sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.pt-cell.pt-label {
+  justify-content: flex-start;
+  text-align: left;
+  color: var(--bark);
+  padding-left: 0;
+  font-size: .82rem;
+}
+.pt-cell.pt-head {
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 14px;
+  border-bottom: 0.5px solid var(--bark);
+}
+.pt-cell.pt-last {
+  border-bottom: none;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.pt-name {
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 3px;
+}
+.pt-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--terra);
+  display: block;
+  line-height: 1.1;
+  margin: 3px 0;
+}
+.pt-cell.pt-feat {
+  background: var(--terra);
+  color: #fff;
+  font-weight: 500;
+}
+.pt-cell.pt-feat.pt-head {
+  background: #D95E22;
+  border-bottom-color: #B84E1A;
+  border-radius: 8px 8px 0 0;
+}
+.pt-cell.pt-feat.pt-last {
+  border-radius: 0 0 8px 8px;
+}
+.pt-cell.pt-feat .pt-name { color: #FDDCC8; }
+.pt-cell.pt-feat .pt-price { color: #fff; }
+.pt-popular-badge {
+  display: inline-block;
+  font-size: .68rem;
+  font-weight: 500;
+  background: rgba(255,255,255,.2);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-bottom: 5px;
+  letter-spacing: .04em;
+}
+.pt-ok   { color: #5ECFA0; font-size: .9rem; }
+.pt-ok-inv { color: #AFECC8; font-size: .9rem; }
+.pt-no   { color: var(--sand); font-size: .9rem; }
+.pt-no-inv { color: #F2C4A8; font-size: .9rem; }
+.pt-opt     { font-size: .78rem; color: var(--bark); }
+.pt-opt-inv { font-size: .78rem; color: #FDDCC8; }
+.pt-sm  { font-size: .78rem; }
 .paquete-card {
   background: var(--white);
   border: 1.5px solid var(--sand);

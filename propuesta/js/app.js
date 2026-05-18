@@ -132,11 +132,83 @@ function renderContent(prop, precios) {
   setSafeText('txt-hermanos', prop.politicas.descuento_hermanos.texto);
   setSafeText('txt-dinero', prop.entrega_y_pagos.recoleccion_dinero.explicacion);
 
-  // D. Precios Dinámicos (inyectar en tabla)
-  if (precios && precios.visibilidad === 'publicar' && precios.paquetes.length >= 3) {
-    setSafeText('precio-esencial', '$' + precios.paquetes[0].precio);
-    setSafeText('precio-familiar', '$' + precios.paquetes[1].precio);
-    setSafeText('precio-premium', '$' + precios.paquetes[2].precio);
+  // D. Tabla Comparativa Dinámica (fuente única: precios.json)
+  if (precios && precios.visibilidad === 'publicar' && precios.paquetes && precios.paquetes.length > 0) {
+    const paquetes = precios.paquetes;
+    const minPrecio = Math.min(...paquetes.map(p => p.precio));
+    setSafeText('precio-desde', 'Desde $' + minPrecio);
+
+    // Precios en header
+    paquetes.forEach((pkg, i) => {
+      const ids = ['precio-esencial', 'precio-familiar', 'precio-premium'];
+      if (ids[i]) setSafeText(ids[i], '$' + pkg.precio);
+    });
+
+    // Nombres en header
+    paquetes.forEach((pkg, i) => {
+      const ids = ['pt-nombre-0', 'pt-nombre-1', 'pt-nombre-2'];
+      const el = document.getElementById(ids[i]);
+      if (el) el.textContent = pkg.nombre;
+    });
+
+    // Filas del body: inyectadas como hijas directas de pt-grid (crítico para CSS Grid)
+    const ptGrid = document.querySelector('.pt-grid');
+    if (ptGrid && paquetes.every(p => p.tabla_comparativa)) {
+      const tc = paquetes.map(p => p.tabla_comparativa);
+      const featClass = i => i === 1 ? ' pt-feat' : '';
+      const lastClass = ' pt-last';
+
+      function cell(content, extra = '') {
+        return `<div class="pt-cell${extra}" role="cell">${content}</div>`;
+      }
+      function labelCell(text, extra = '') {
+        return `<div class="pt-cell pt-label${extra}" role="rowheader">${text}</div>`;
+      }
+      function boolCell(val, inverted = false) {
+        if (val === null || val === false) {
+          const cls = inverted ? 'pt-no-inv' : 'pt-no';
+          return `<span class="${cls}">—</span>`;
+        }
+        const cls = inverted ? 'pt-ok-inv' : 'pt-ok';
+        return `<span class="${cls}">✓</span>`;
+      }
+      function textOrNull(val, inverted = false) {
+        if (!val) return boolCell(null, inverted);
+        return val;
+      }
+
+      const rows = [
+        // Fotos digitales
+        labelCell('Fotos digitales') +
+          tc.map((t, i) => cell(t.fotos_digitales, featClass(i))).join(''),
+        // Foto grupal
+        labelCell('Foto grupal') +
+          tc.map((t, i) => cell(boolCell(t.foto_grupal, i === 1), featClass(i))).join(''),
+        // Impresiones
+        labelCell('Impresiones') +
+          tc.map((t, i) => cell(textOrNull(t.impresiones, i === 1), featClass(i) + (t.impresiones ? ' pt-sm' : ''))).join(''),
+        // Foto enmarcada
+        labelCell('Foto enmarcada') +
+          tc.map((t, i) => cell(textOrNull(t.foto_enmarcada, i === 1), featClass(i) + (t.foto_enmarcada ? ' pt-sm' : ''))).join(''),
+        // Fotos familiares
+        labelCell('Fotos familiares') +
+          tc.map((t, i) => {
+            const txt = t.fotos_familiares ? (i === 1 ? '<span class="pt-opt-inv">Incluidas</span>' : '<span class="pt-opt">Incluidas</span>') : boolCell(null, i === 1);
+            return cell(txt, featClass(i));
+          }).join(''),
+        // Ideal para
+        labelCell('Ideal para', lastClass) +
+          tc.map((t, i) => cell(t.ideal_para, featClass(i) + lastClass + ' pt-sm')).join(''),
+      ];
+
+      ptGrid.insertAdjacentHTML('beforeend', rows.join(''));
+    }
+
+  } else {
+    setSafeText('precio-desde', 'Precio pendiente');
+    setSafeText('precio-esencial', 'Pendiente');
+    setSafeText('precio-familiar', 'Pendiente');
+    setSafeText('precio-premium', 'Pendiente');
   }
 }
 
