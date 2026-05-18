@@ -1,23 +1,21 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: PIPELINE DE COMUNICACIÓN COMPLETADO (v3.9)
-Hemos cerrado el ciclo de comunicación automatizada. El sistema ahora no solo captura leads y gestiona agendas, sino que genera proactivamente los canales de contacto (WhatsApp) y gestiona recordatorios automáticos.
+## 🎯 Estado Actual: OPTIMIZACIÓN DE CONVERSIÓN EN PROPUESTAS (Propuesta V2)
+Hemos transformado el módulo de `/propuesta/` (Brochure B2B para colegios) hacia un modelo **Híbrido Estático/Dinámico** enfocado en conversión, lectura rápida (skimmability) y reducción de fricción.
 
 ### ✅ Logros Técnicos de la Sesión
-1.  **Hub v3.9 (Estable)**: 
-    *   **B1 (Links Persistentes)**: Generación automática de `Link_WhatsApp_Q` (Discovery) y `Link_WhatsApp_Agenda` (Agenda Pública) al recibir cada lead.
-    *   **D2 (Recordatorios)**: Implementación de trigger diario (8 AM) que notifica a Discord para enviar el Discovery después de 3 días de inactividad.
-    *   **Fix Agenda**: Búsqueda robusta en Airtable usando `SEARCH()` sobre la columna `Colegio`, permitiendo coincidencias parciales (ej: `ebrv` encuentra `ebrv-26`).
-2.  **Estandarización de Fases**: Fase 1 renombrada oficialmente a **Discovery**.
-3.  **Integración CRM**: Sincronización bidireccional entre Sheets, Airtable y el Dashboard de Agenda.
+1. **Modelo Híbrido en Propuestas**: El `index.html` de propuesta ahora tiene el 80% del layout y copy *hardcoded* (fijo), lo que mejora drásticamente el SEO, accesibilidad para LLMs y tiempos de renderizado. Solo los datos estrictamente variables (ubicación, capas, nombres, inasistencia) se inyectan vía JS.
+2. **Precios en Tabla Comparativa**: Transición del grid dinámico de paquetes a una tabla comparativa estática (Básico, Familiar, Premium), inyectando dinámicamente solo el valor `$precio` desde `precios.json`.
+3. **Reducción de Fricción (Eliminación de Form)**: Se eliminó el `<form id="propuesta-form">` de contacto (y su integración de webhook con Discord). Fue reemplazado por un botón CTA directo a WhatsApp, que elimina pasos para el delegado.
+4. **Hub v3.9 (Estable en Onboarding)**: El ciclo automatizado de comunicación (Links persistentes y recordatorios WA) sigue funcionando sin problemas para el ecosistema post-venta de `/onboarding/`.
 
 ### 📂 Versiones Críticas
-- **Hub**: [MMR_brochures_hub_v3.9.gs](file:///d:/mmr_studio/01_core_apps/website/onboarding/apps-script/MMR_brochures_hub_v3.9.gs) (Código productivo actual).
-- **Backend**: Google Sheets con 16 columnas en Leads y pestaña "Agendas".
+- **Propuesta**: `/propuesta/index.html` (Modelo Híbrido) y `/propuesta/js/app.js` (Limpieza de Form/Discord).
+- **Hub**: `MMR_brochures_hub_v3.9.gs` (Maneja leads B2C de onboarding).
 
 ### 🛠️ Próximos Pasos (Fase 3: Producción)
 1.  **Generador de PDF**: Herramienta para exportar la agenda de cada salón en formato de "Hoja de Ruta" para el fotógrafo.
 2.  **Generación de QR**: Crear el sistema de etiquetas con el `student_id` para vincular fotos automáticamente en post-producción.
 
 ---
-**Nota para Mike:** Todo el sistema de comunicación ya está "en vivo" desde que hiciste el deploy de la v3.9. Los nuevos leads que entren ya tendrán sus botones de WhatsApp listos en Airtable.
+**Nota para Mike:** La propuesta comercial ha sido ultra optimizada. Todo el "papeleo" y el formulario largo han sido eliminados de la etapa exploratoria. Ahora todo apunta directamente a tu WhatsApp, acortando el embudo de ventas.

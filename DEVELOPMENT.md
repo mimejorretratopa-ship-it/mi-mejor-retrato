@@ -17,19 +17,30 @@ code "mmr_schools_proposals 1.5 - antigravity"
 
 ---
 
-## Crear un nuevo brochure
+## 1. Crear una nueva Propuesta Comercial (B2B)
+
+El sistema de Propuestas (`/propuesta/`) utiliza un **Modelo Híbrido Estático/Dinámico**. Gran parte del HTML está hardcodeado para optimización de conversión, y la data variable se inyecta.
 
 ```bash
 # 1. Agregar el código de la escuela y año en data/escuelas.json
-# 2. Crear data/{code}_secciones.json (copiar de ebrv_secciones.json y ajustar)
-# 3. Configurar precios en data/precios.json (visibilidad: "publicar")
-# 4. Abrir en Live Server con el parámetro ?brochure={code}-{yy}
-# 5. En producción, la URL será: /propuesta/{code}-{yy}
+# 2. Configurar precios en data/precios.json (visibilidad: "publicar")
+# 3. Abrir en Live Server con la URL: http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}
+# 4. En producción, la URL será: /propuesta/{code}-{yy}
 ```
 
-El sistema es ahora **URL-driven**. Ya no necesitas copiar archivos HTML.
+*Nota: Ya no hay formulario de contacto en la propuesta, todos los leads B2B entran directamente por WhatsApp.*
 
 ---
+
+## 2. Crear un nuevo Onboarding Pre-Sesión (B2C)
+
+El sistema Onboarding B2C es **100% URL-driven**. Todo el layout es montado dinámicamente por JS basado en JSONs.
+
+```bash
+# 1. Asegurarse de que el código y año estén en data/escuelas.json
+# 2. Crear data/{code}_secciones.json (copiar de ebrv_secciones.json y ajustar)
+# 3. En producción, la URL será: /onboarding/{code}-{yy}
+```
 
 ## Debugging
 

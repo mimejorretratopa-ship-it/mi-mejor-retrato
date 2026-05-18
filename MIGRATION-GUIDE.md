@@ -18,17 +18,18 @@ Frontend (Vercel)
 
 ## Migración de Arquitectura (Frontend)
 
-El 14 de Mayo de 2026 se migró de una arquitectura basada en archivos individuales a una **URL-driven architecture**.
+El 14 de Mayo de 2026 se migró de una arquitectura basada en archivos individuales a una **URL-driven architecture** (B2C - Onboarding).
+Posteriormente, el 18 de Mayo de 2026, el módulo B2B (`/propuesta/`) evolucionó hacia un **Modelo Híbrido Estático/Dinámico**.
 
-- **Rutas limpias**: Se usan rewrites en Vercel para servir `/propuesta/:slug` desde `index.html`.
-- **Datos centralizados**: Los metadatos de brochures viven en `escuelas.json`.
-- **Regla de Autoridad**: Se unificaron criterios; `*_secciones.json` manda sobre el layout y `precios.json` manda sobre la visibilidad de paquetes/precios.
+### 1. Modelo Híbrido Estático/Dinámico (`/propuesta/`)
+- **Mejoras SEO & LLM**: El ~80% de la estructura de la propuesta (FAQ, logística común, copy principal, tabla de precios) está *hardcoded* en `index.html`.
+- **Inyección Ligera**: Solo datos altamente variables (valores de `$precio`, ubicaciones, nombres y colores de togas) se inyectan dinámicamente desde los JSONs mediante `app.js`.
+- **Fricción Cero**: Se eliminó el `<form>` interactivo y la integración a Discord en favor de un botón directo de WhatsApp.
 
-### Extensión Post-Onboarding (Fase 1+)
-
-La arquitectura URL-driven se extenderá para soportar flujos post-onboarding:
+### 2. Extensión Post-Onboarding B2C (Fase 1+)
+La arquitectura URL-driven pura se mantiene para soportar flujos post-onboarding:
 - El formulario de reserva inicial generará un `student_id` único: `{whatsapp}_{nombre_slug}_{salon_slug}`
-- Airtable usará fórmulas para generar URLs dinámicas para el **Discovery Pre-Sesión**: `/onboarding/cuestionario?sid={student_id}`
+- Airtable usa fórmulas para generar URLs dinámicas para el **Discovery Pre-Sesión**: `/onboarding/cuestionario?sid={student_id}`
 - **Fase 2: Agenda**: Se habilitó el dashboard `/agenda/` (admin) y la vista pública `/agenda/:slug` (padres) que centraliza la asignación de horarios.
 
 ---

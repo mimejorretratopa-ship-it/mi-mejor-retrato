@@ -10,6 +10,11 @@ Un solo HTML funciona para cualquier escuela/año porque **todo el contenido se 
 
 ## Capas del sistema
 
+Existen dos modalidades principales en la aplicación:
+1. **Onboarding Pre-Sesión (B2C)**: Completamente montado vía Javascript (Dynamic Layout).
+2. **Propuesta Comercial (B2B)**: Usa un modelo **Híbrido Estático/Dinámico** (HTML fijo inyectando datos).
+
+### Arquitectura Onboarding B2C (Dinámica)
 ```
 ┌─────────────────────────────────────────────────────┐
 │                   HTML (View)                        │
@@ -18,6 +23,18 @@ Un solo HTML funciona para cualquier escuela/año porque **todo el contenido se 
 │  — Estructura semántica + placeholders               │
 │  — NO lógica de negocio, NO fetch directo            │
 └──────────────────────┬──────────────────────────────┘
+```
+
+### Arquitectura Propuesta B2B (Híbrida)
+```
+┌─────────────────────────────────────────────────────┐
+│                   HTML (View)                        │
+│                   propuesta/index.html               │
+│  — Mantiene copy, FAQ, logística y tabla estática    │
+│  — Inyecta precios, escuela y año vía app.js         │
+│  — Enfocada en SEO, LLMs y carga veloz               │
+└─────────────────────────────────────────────────────┘
+```
                        │ llama a
 ┌──────────────────────▼──────────────────────────────┐
 │                   MÓDULOS (/modules)                  │
