@@ -1,0 +1,52 @@
+{
+    "secciones": {
+        "hero": {
+            "activo": true
+        },
+        "la_diferencia": {
+            "activo": true
+        },
+        "como_funciona": {
+            "activo": true
+        },
+        "ubicacion": {
+            "activo": true,
+            "estado": "texto",
+            "mensaje": "La coordinación de sesiones para toda la institución se define tras nuestra reunión.",
+            "ubicaciones": []
+        },
+        "portafolio_inicio": {
+            "activo": true,
+            "carpeta": "portafolio",
+            "prefijo": "k_25_",
+            "extension": "jpg"
+        },
+        "portafolio_medio": {
+            "activo": false
+        },
+        "sobre_mike": {
+            "activo": true
+        },
+        "faq": {
+            "activo": true
+        },
+        "portafolio_cierre": {
+            "activo": false
+        },
+        "reserva": {
+            "activo": false
+        }
+    },
+    "salones": [
+        {
+            "valor": "all",
+            "label": "Todos los grados",
+            "corto": "all"
+        }
+    ],
+    "metadata": {
+        "version": "3.1",
+        "nota": "Propuesta B2B - Directores. Oculta reserva.",
+        "actualizado": "2026-05-18"
+    }
+}

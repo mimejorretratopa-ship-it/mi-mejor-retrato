@@ -1,0 +1,60 @@
+{
+    "secciones": {
+        "hero": {
+            "activo": true
+        },
+        "la_diferencia": {
+            "activo": true
+        },
+        "como_funciona": {
+            "activo": true
+        },
+        "ubicacion": {
+            "activo": true,
+            "estado": "estudios",
+            "mensaje": "",
+            "ubicaciones": [
+                "condado",
+                "viaargentina"
+            ]
+        },
+        "portafolio_inicio": {
+            "activo": true,
+            "carpeta": "portafolio",
+            "prefijo": "k_25_",
+            "extension": "jpg"
+        },
+        "portafolio_medio": {
+            "activo": false
+        },
+        "sobre_mike": {
+            "activo": true
+        },
+        "faq": {
+            "activo": true
+        },
+        "portafolio_cierre": {
+            "activo": false
+        },
+        "reserva": {
+            "activo": true
+        }
+    },
+    "salones": [
+        {
+            "valor": "k",
+            "label": "Kínder",
+            "corto": "k"
+        },
+        {
+            "valor": "6",
+            "label": "6to grado",
+            "corto": "6"
+        }
+    ],
+    "metadata": {
+        "version": "3.1",
+        "nota": "Propuesta Genérica Panamá",
+        "actualizado": "2026-05-18"
+    }
+}

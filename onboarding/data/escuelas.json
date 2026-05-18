@@ -80,6 +80,60 @@
       ],
       "ga_id": "",
       "estado": "publicado"
+    },
+    {
+      "code": "enda",
+      "name": "Colegio Guillermo Endara Galimani",
+      "years": [
+        26
+      ],
+      "ga_id": "",
+      "estado": "borrador"
+    },
+    {
+      "code": "oxbg",
+      "name": "Oxford International School (Brisas)",
+      "years": [
+        26
+      ],
+      "ga_id": "",
+      "estado": "borrador"
+    },
+    {
+      "code": "b2b",
+      "name": "Propuesta Directores",
+      "years": [
+        26
+      ],
+      "ga_id": "",
+      "estado": "borrador"
+    },
+    {
+      "code": "chor",
+      "name": "Propuesta La Chorrera",
+      "years": [
+        26
+      ],
+      "ga_id": "",
+      "estado": "borrador"
+    },
+    {
+      "code": "pana",
+      "name": "Propuesta Panamá",
+      "years": [
+        26
+      ],
+      "ga_id": "",
+      "estado": "borrador"
+    },
+    {
+      "code": "indp",
+      "name": "Tu Sesión de Retrato",
+      "years": [
+        26
+      ],
+      "ga_id": "",
+      "estado": "borrador"
     }
   ],
   "metadata": {
