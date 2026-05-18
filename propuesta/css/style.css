@@ -224,6 +224,17 @@ ul {
   margin-bottom: 20px;
 }
 
+.nota-contacto {
+  font-size: 13px;
+  color: #424245;
+  background-color: #fffbeb; /* suave amarillo cálido */
+  border-left: 4px solid var(--accent); /* naranja MMR */
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
 .form-group {
   margin-bottom: 15px;
 }

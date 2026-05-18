@@ -14,11 +14,16 @@ async function initPropuesta() {
   }
 
   if (!slug) {
-    document.getElementById('school-name').textContent = "Identificador de escuela no válido.";
+    showErrorState("El link que usaste no corresponde a una propuesta formal armada. Por eso te pedimos que escribas directo a Mike para darte respuesta más rápido.");
+    setupForm();
     return;
   }
 
   currentSchoolCode = slug.split('-')[0];
+
+  if (currentSchoolCode !== 'lasa') {
+    document.getElementById('content-wrapper').style.display = 'none';
+  }
 
   try {
     // 2. Cargar escuelas.json (reutilizando el del onboarding)
@@ -28,7 +33,8 @@ async function initPropuesta() {
     schoolData = escData.schools.find(s => s.code === currentSchoolCode);
 
     if (!schoolData) {
-      document.getElementById('school-name').textContent = "Escuela no encontrada en el sistema.";
+      showErrorState("El link que usaste no corresponde a una propuesta formal armada. Por eso te pedimos que escribas directo a Mike para darte respuesta más rápido.");
+      setupForm();
       return;
     }
 
@@ -71,8 +77,16 @@ async function initPropuesta() {
 
   } catch (err) {
     console.error(err);
-    document.getElementById('school-name').textContent = err.message;
+    showErrorState("El link que usaste no corresponde a una propuesta formal armada. Por eso te pedimos que escribas directo a Mike para darte respuesta más rápido.");
+    setupForm();
   }
+}
+
+function showErrorState(message) {
+  document.getElementById('propuesta-title').textContent = "Enlace no válido";
+  document.getElementById('school-name').textContent = message;
+  document.getElementById('doc-date').style.display = 'none';
+  document.getElementById('content-wrapper').style.display = 'none';
 }
 
 function renderContent(prop, precios) {
@@ -147,8 +161,8 @@ function setupForm() {
     
     const data = {
       tipo: 'Lead_Propuesta',
-      escuela: schoolData.name,
-      code: currentSchoolCode,
+      escuela: schoolData ? schoolData.name : 'Escuela Desconocida / Link Inválido',
+      code: currentSchoolCode || 'none',
       nombre: document.getElementById('f_nombre').value,
       whatsapp: document.getElementById('f_whatsapp').value,
       email: document.getElementById('f_email').value,
@@ -158,8 +172,9 @@ function setupForm() {
 
     try {
       // Usar Api.notificarDiscord (cargada via js/core/api.js)
+      const escName = schoolData ? schoolData.name : 'Escuela Desconocida';
       const discordPayload = {
-        title: `📄 Nuevo Lead Exploratorio (${schoolData.name})`,
+        title: `📄 Nuevo Lead Exploratorio (${escName})`,
         description: "Un tomador de decisión (Director/Delegado) está solicitando ampliación de detalles.",
         fields: [
           { name: '👤 Nombre', value: data.nombre, inline: true },
