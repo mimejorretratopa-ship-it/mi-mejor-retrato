@@ -40,12 +40,15 @@
 
         <div class="dashboard-layout">
             <!-- Lista de Escuelas -->
-            <aside class="schools-list" id="schoolsList">
+            <aside class="schools-list" id="schoolsList" style="display: flex; flex-direction: column;">
                 <div class="list-header">
                     <h2>Colegios</h2>
                 </div>
-                <div class="list-content" id="schoolsContainer">
+                <div class="list-content" id="schoolsContainer" style="flex: 1; overflow-y: auto;">
                     <p class="loading-text">Cargando datos...</p>
+                </div>
+                <div class="list-actions" style="padding: 16px; border-top: 1px solid var(--border); background: var(--bg-card);">
+                    <button class="btn btn-secondary" id="btnCreateSchool" style="width: 100%;">➕ Agregar Colegio</button>
                 </div>
             </aside>
 

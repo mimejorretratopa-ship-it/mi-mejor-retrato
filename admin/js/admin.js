@@ -276,6 +276,47 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPackages(school.paquetes);
     });
 
+    // Add new school
+    document.getElementById('btnCreateSchool').addEventListener('click', () => {
+        if (!preciosData) return;
+        
+        const code = prompt("Ingresa el código único del nuevo colegio (4 letras minúsculas, ej: lasa):");
+        if (!code) return;
+        
+        const cleanCode = code.trim().toLowerCase();
+        if (cleanCode.length !== 4) {
+            alert("El código debe tener exactamente 4 letras minúsculas.");
+            return;
+        }
+
+        const exists = preciosData.escuelas.some(e => e.code === cleanCode);
+        if (exists) {
+            alert(`El código ${cleanCode} ya está registrado.`);
+            return;
+        }
+
+        const name = prompt("Ingresa el nombre completo del colegio (ej: Colegio La Salle):");
+        if (!name) return;
+
+        const newSchool = {
+            code: cleanCode,
+            name: name.trim(),
+            years: [26],
+            ga_id: "G-6H4H52RL0T",
+            visibilidad: "pendiente",
+            paquetes: []
+        };
+
+        preciosData.escuelas.push(newSchool);
+        updateStats();
+        renderSchoolsList();
+        
+        // Select the newly created school
+        selectSchool(preciosData.escuelas.length - 1);
+        
+        alert(`¡Colegio ${cleanCode} creado con éxito en memoria! Recuerda guardar y descargar el archivo al finalizar.`);
+    });
+
     // Download JSON
     document.getElementById('btnDownloadJson').addEventListener('click', () => {
         if (!preciosData) return;
