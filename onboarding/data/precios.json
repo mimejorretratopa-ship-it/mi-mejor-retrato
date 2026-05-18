@@ -295,8 +295,88 @@
     },
     {
       "code": "indp",
-      "visibilidad": "pendiente",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Paquete 1",
+          "precio": 19,
+          "descripcion": "4 Fotos únicamente en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Paquete 2",
+          "precio": 34,
+          "descripcion": "6 Fotos impresas y en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Paquete 3",
+          "precio": 57,
+          "descripcion": "12 Fotos impresas y en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     }
   ]
 }
