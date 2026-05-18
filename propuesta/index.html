@@ -13,11 +13,11 @@
   <link rel="stylesheet" href="./css/style.css">
 
   <!-- Google Analytics (Comentado para producción futura) -->
-
+  <!--
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
+    function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
     // Extraer dinámicamente el schoolId de la URL para tracking segmentado
@@ -25,11 +25,11 @@
     const schoolId = urlParams.get('brochure') || 'generic';
 
     gtag('config', 'G-XXXXXXXXXX', {
-      'custom_map': { 'dimension1': 'school_id' },
+      'custom_map': {'dimension1': 'school_id'},
       'school_id': schoolId
     });
   </script>
-
+  -->
 </head>
 
 <body>
@@ -40,7 +40,7 @@
       <div class="doc-brand">Mi Mejor Retrato</div>
       <h1 id="propuesta-title" class="heading-1">Propuesta Fotográfica</h1>
       <div class="doc-meta">
-        <div class="doc-meta-item"><strong id="school-name">Cargando...</strong></div>
+        <div class="doc-meta-item">Propuesta preparada para: <strong id="school-name">Cargando...</strong></div>
         <div class="doc-meta-item" id="doc-date"></div>
       </div>
     </header>
@@ -51,10 +51,10 @@
       <section class="doc-section summary-section">
         <h3 class="heading-3">¿Qué incluye?</h3>
         <ul class="include-list">
-          <li>Retratos que hacen sentir orgullosas a las familias</li>
-          <li>Una experiencia elegante y memorable para los estudiantes</li>
-          <li>Coordinación moderna y ordenada de principio a fin</li>
-          <li>Atención personalizada para cada familia</li>
+          <li>Sesión individual relajada</li>
+          <li>Galería privada online</li>
+          <li>Fotos familiares opcionales</li>
+          <li>Reserva por horario</li>
           <li>Entrega digital e impresa</li>
           <li>Desde $19</li>
         </ul>
@@ -108,15 +108,18 @@
             <div class="pt-cell pt-head" role="columnheader">
               <span class="pt-name">Esencial</span>
               <span class="pt-price" id="precio-esencial">$65</span>
+              <span class="pt-tagline">Un recuerdo sencillo</span>
             </div>
             <div class="pt-cell pt-head pt-feat" role="columnheader">
               <span class="pt-popular-badge">Popular</span>
               <span class="pt-name">Familiar</span>
               <span class="pt-price" id="precio-familiar">$95</span>
+              <span class="pt-tagline">La mejor combinación</span>
             </div>
             <div class="pt-cell pt-head" role="columnheader">
               <span class="pt-name">Premium</span>
               <span class="pt-price" id="precio-premium">$145</span>
+              <span class="pt-tagline">Toda la experiencia</span>
             </div>
 
             <!-- Fotos digitales -->
