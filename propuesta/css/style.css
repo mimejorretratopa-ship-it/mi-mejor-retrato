@@ -446,63 +446,186 @@ p + p {
 .gap-4 { gap: var(--space-4); }
 
 /* ==========================================================================
-   COMPONENTE: TABLA DE PRECIOS COMPARATIVA (Out of Handoff scope, Styled)
+   COMPONENTE: TABLA DE PRECIOS COMPARATIVA (Collapse Mobile / Table Desktop)
    ========================================================================== */
-.pricing-table-wrapper {
-  overflow-x: auto;
-  margin-top: var(--space-6);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
-}
-
+/* ── Wrapper ────────────────────────────────────── */
 .pricing-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: var(--space-6);
+}
+
+/* ── Card base ──────────────────────────────────── */
+.pricing-card {
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: var(--color-paper);
+}
+
+/* Card destacada */
+.pricing-card--featured {
+  border: 2px solid var(--color-accent);   /* #C8622A */
+}
+
+/* ── Header (siempre visible, clickeable) ───────── */
+.pricing-card__header {
   width: 100%;
-  border-collapse: collapse;
-  min-width: 600px;
-  background-color: #ffffff;
-}
-
-.pricing-table th, .pricing-table td {
-  padding: var(--space-4);
-  text-align: center;
-  border-bottom: 1px solid var(--color-border);
-  font-size: var(--text-sm);
-  font-family: var(--font-body);
-}
-
-.pricing-table th {
-  font-weight: 700;
-  color: var(--color-ink);
-  background: var(--color-surface);
-}
-
-.pricing-table th small {
-  display: block;
-  font-weight: 400;
-  color: var(--color-ink-muted);
-  font-size: var(--text-xs);
-  margin-top: var(--space-1);
-}
-
-.pricing-table td:first-child, .pricing-table th:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   text-align: left;
-  font-weight: 600;
+  gap: 12px;
+}
+
+.pricing-card--featured .pricing-card__header {
+  background-color: var(--color-accent-light);  /* #F2E8E0 */
+}
+
+.pricing-card__header:hover {
+  background-color: var(--color-surface);
+}
+
+.pricing-card--featured .pricing-card__header:hover {
+  background-color: #EAD9CE;  /* un paso más oscuro que accent-light */
+}
+
+/* ── Nombre del paquete ─────────────────────────── */
+.pricing-card__name {
+  font-family: var(--font-body);
+  font-size: var(--text-base);         /* 16px */
+  font-weight: 500;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Badge "Más popular" ────────────────────────── */
+.pricing-card__badge {
+  font-size: 11px;
+  font-weight: 500;
+  background-color: var(--color-accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* ── Precio + chevron agrupados ─────────────────── */
+.pricing-card__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.pricing-card__price {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);           /* 22px */
+  font-weight: 500;
+  color: var(--color-accent);          /* #C8622A */
+}
+
+/* ── Chevron ────────────────────────────────────── */
+.pricing-card__chevron {
   color: var(--color-ink-muted);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
-.pricing-table .highlight {
-  background: #FFFDF9; /* marfil super claro */
-  border-left: 2px solid var(--color-accent);
-  border-right: 2px solid var(--color-accent);
+.pricing-card__chevron--open {
+  transform: rotate(180deg);
 }
 
-.pricing-table th.highlight {
-  border-top: 2px solid var(--color-accent);
+/* ── Body colapsable ────────────────────────────── */
+.pricing-card__body {
+  border-top: 0.5px solid var(--color-border);
 }
 
-.pricing-table tr:last-child .highlight {
-  border-bottom: 2px solid var(--color-accent);
+.pricing-card__body[hidden] {
+  display: none;
+}
+
+/* ── Tagline ────────────────────────────────────── */
+.pricing-card__tagline {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);           /* 14px */
+  color: var(--color-ink-muted);
+  padding: 10px 16px 6px;
+  margin: 0;
+}
+
+/* ── Lista de features (dl) ─────────────────────── */
+.pricing-card__features {
+  margin: 0;
+}
+
+.pricing-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);           /* 14px */
+}
+
+.pricing-card__row + .pricing-card__row {
+  border-top: 0.5px solid var(--color-border);
+}
+
+.pricing-card__row dt {
+  color: var(--color-ink-muted);
+  font-weight: 400;
+}
+
+.pricing-card__row dd {
+  font-weight: 500;
+  color: var(--color-ink);
+  margin: 0;
+  text-align: right;
+}
+
+.pricing-card__row dd.ok {
+  color: var(--color-ok);              /* #2E7D50 */
+}
+
+.pricing-card__row dd.no {
+  color: var(--color-ink-faint);       /* #A09C96 */
+  font-weight: 400;
+}
+
+/* ── Desktop: tabla horizontal opcional ─────────── */
+@media (min-width: 720px) {
+  .pricing-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .pricing-card {
+    display: table-row;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .pricing-card__header,
+  .pricing-card__body {
+    /* En desktop se ignora el collapse — mostrar todo */
+    display: table-cell;
+    vertical-align: middle;
+    padding: 14px 16px;
+    border-bottom: 0.5px solid var(--color-border);
+  }
+
+  .pricing-card__chevron { display: none; }
+  .pricing-card__body[hidden] { display: table-cell; }
 }
 
 /* ==========================================================================
@@ -568,67 +691,120 @@ p + p {
 }
 
 /* ==========================================================================
-   COMPONENTE: TIMELINE POST-SESIÓN (Out of Handoff scope, Styled)
+   COMPONENTE: TIMELINE POST-SESIÓN (BEM Responsive Specs)
    ========================================================================== */
+/* ── Wrapper ────────────────────────────────────── */
 .timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-top: var(--space-4);
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0 0;
 }
 
-.timeline-step {
+/* ── Ítem ───────────────────────────────────────── */
+.timeline__item {
   display: flex;
-  gap: var(--space-4);
-  align-items: flex-start;
+  gap: 16px;
 }
 
-.timeline-left {
+/* ── Columna izquierda (ícono + línea) ──────────── */
+.timeline__left {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 36px;
   flex-shrink: 0;
+  width: 40px;
 }
 
-.timeline-dot {
-  width: 32px;
-  height: 32px;
+/* ── Círculo de ícono ───────────────────────────── */
+.timeline__icon {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: var(--color-accent);
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--text-base);
   flex-shrink: 0;
+  z-index: 1;
+
+  /* Estado por defecto: neutro */
+  background-color: var(--color-surface);
+  border: 0.5px solid var(--color-border);
+  color: var(--color-ink-muted);
 }
 
-.timeline-connector {
-  width: 2px;
-  flex-grow: 1;
-  min-height: 24px;
-  background: var(--color-border);
+/* Estado activo / completado */
+.timeline__icon--done {
+  background-color: var(--color-accent-light);  /* #F2E8E0 */
+  border-color: var(--color-accent);             /* #C8622A */
+  color: var(--color-accent);
+}
+
+/* ── Línea conectora ────────────────────────────── */
+.timeline__connector {
+  width: 1px;
+  flex: 1;
+  background-color: var(--color-border);
   margin: 4px 0;
+  min-height: 24px;
 }
 
-.timeline-content {
-  padding-bottom: var(--space-6);
+/* El último ítem no lleva conector */
+.timeline__item:last-child .timeline__connector {
+  display: none;
+}
+
+/* ── Columna derecha (texto) ────────────────────── */
+.timeline__content {
+  padding-top: 8px;
+  padding-bottom: 28px;   /* espaciado entre pasos */
   flex: 1;
 }
 
-.timeline-content h5 {
-  margin: var(--space-1) 0;
-  font-size: var(--text-base);
-  font-weight: 600;
-  color: var(--color-ink);
+.timeline__item:last-child .timeline__content {
+  padding-bottom: 0;
 }
 
-.timeline-content p {
-  font-size: var(--text-sm);
+/* ── Label de paso ──────────────────────────────── */
+.timeline__label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-xs);           /* 12px */
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);          /* #C8622A */
+  margin-bottom: 2px;
+}
+
+/* ── Título del paso ────────────────────────────── */
+.timeline__title {
+  font-family: var(--font-body);
+  font-size: var(--text-base);         /* 16px */
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: var(--leading-tight);
+  margin-bottom: 4px;
+}
+
+/* ── Descripción ────────────────────────────────── */
+.timeline__desc {
+  font-size: var(--text-sm);           /* 14px */
   color: var(--color-ink-muted);
-  margin: 0;
   line-height: var(--leading-body);
+  margin: 0;
+}
+
+/* ── Badge opcional debajo de la descripción ───── */
+.timeline__badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: var(--text-xs);           /* 12px */
+  font-weight: 500;
+  color: var(--color-ink-muted);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 2px 10px;
 }
 
 /* ==========================================================================

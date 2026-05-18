@@ -7,8 +7,26 @@
   <title>Propuesta La Salle — Mi Mejor Retrato</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
+
+  <!-- Google Analytics (Comentado para producción futura) -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    // Configuración estática específica para Colegio La Salle (lasa-26)
+    gtag('config', 'G-XXXXXXXXXX', {
+      'custom_map': {'dimension1': 'school_id'},
+      'school_id': 'lasa-26'
+    });
+  </script>
+  -->
 </head>
 
 <body>
@@ -30,10 +48,10 @@
       <section class="doc-section summary-section">
         <h3 class="heading-3">¿Qué incluye?</h3>
         <ul class="include-list">
-          <li>Sesión individual relajada</li>
-          <li>Galería privada online</li>
-          <li>Fotos familiares opcionales</li>
-          <li>Reserva por horario</li>
+          <li>Retratos que hacen sentir orgullosas a las familias</li>
+          <li>Una experiencia elegante y memorable para los estudiantes</li>
+          <li>Coordinación moderna y ordenada de principio a fin</li>
+          <li>Atención personalizada para cada familia</li>
           <li>Entrega digital e impresa</li>
           <li>Desde $19</li>
         </ul>
@@ -45,12 +63,17 @@
         <div class="grid-2">
           <div class="card">
             <h4 class="heading-3">Trato al Estudiante</h4>
-            <p>Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real. Si el niño no quiere sonreír, no hay presión — las mejores fotos salen cuando están cómodos.</p>
-            <p style="margin-top:10px;font-style:italic;color:var(--color-ink-muted);">Cuando lo veas reír, sabrás que era de verdad.</p>
+            <p>Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con
+              paciencia y juego para capturar su personalidad real. Si el niño no quiere sonreír, no hay presión — las
+              mejores fotos salen cuando están cómodos.</p>
+            <p style="margin-top:10px;font-style:italic;color:var(--color-ink-muted);">Cuando lo veas reír, sabrás que
+              era de verdad.</p>
           </div>
           <div class="card">
             <h4 class="heading-3">Fotografía Auténtica</h4>
-            <p>El cuestionario previo — Nuestro truco secreto. Los papás nos cuentan los gustos, comidas favorita, música y nosotros nos preparamos antes. Cuando tu hijo llega ya tenemos tema de conversación que a él o ella le interesa.</p>
+            <p>El cuestionario previo — Nuestro truco secreto. Los papás nos cuentan los gustos, comidas favorita,
+              música y nosotros nos preparamos antes. Cuando tu hijo llega ya tenemos tema de conversación que a él o
+              ella le interesa.</p>
           </div>
           <div class="card full-width">
             <h4 class="heading-3">Nuestra Experiencia</h4>
@@ -68,19 +91,24 @@
         <h2 class="heading-2" id="gallery-title">Nuestro trabajo en <em>La Salle</em></h2>
         <div class="gallery-masonry" id="gallery-container">
           <div class="gallery-item vertical">
-            <img src="./portafolios/lasa/01.jpg" alt="Niña sonriente de Kínder del Colegio La Salle con birrete de graduación azul royal y capa" loading="lazy">
+            <img src="./portafolios/lasa/01.jpg"
+              alt="Niña sonriente de Kínder del Colegio La Salle con birrete de graduación azul royal y capa"
+              loading="lazy">
             <p class="gallery-caption">Expresiones genuinas y espontáneas en su ambiente escolar.</p>
           </div>
           <div class="gallery-item vertical">
-            <img src="./portafolios/lasa/02.jpg" alt="Niño sosteniendo diploma de kínder alegre en el estudio cerca de La Salle" loading="lazy">
+            <img src="./portafolios/lasa/02.jpg"
+              alt="Niño sosteniendo diploma de kínder alegre en el estudio cerca de La Salle" loading="lazy">
             <p class="gallery-caption">Retratos individuales cuidados al mínimo detalle.</p>
           </div>
           <div class="gallery-item horizontal">
-            <img src="./portafolios/lasa/03.jpg" alt="Grupo completo de Kínder del Colegio La Salle celebrando con confeti y alegría" loading="lazy">
+            <img src="./portafolios/lasa/03.jpg"
+              alt="Grupo completo de Kínder del Colegio La Salle celebrando con confeti y alegría" loading="lazy">
             <p class="gallery-caption">Capturando la energía y unión de todo el salón.</p>
           </div>
           <div class="gallery-item vertical">
-            <img src="./portafolios/lasa/04.jpg" alt="Retrato natural de niña de Kínder sin poses forzadas mirando a la cámara" loading="lazy">
+            <img src="./portafolios/lasa/04.jpg"
+              alt="Retrato natural de niña de Kínder sin poses forzadas mirando a la cámara" loading="lazy">
             <p class="gallery-caption">Pacientes y dedicados a lograr una sesión cómoda para ellos.</p>
           </div>
         </div>
@@ -91,61 +119,137 @@
         <h2 class="heading-2">2. Paquetes y <em>Precios</em></h2>
         <p class="nota">Escoge el recuerdo que mejor se adapte a tu familia</p>
 
-        <div class="pricing-table-wrapper">
-          <table class="pricing-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Básico<br><small>Un recuerdo sencillo y bonito.</small></th>
-                <th class="highlight">Familiar ⭐<br><small>La mejor combinación.</small></th>
-                <th>Premium<br><small>Para conservar toda la experiencia.</small></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Precio</td>
-                <td>$19</td>
-                <td class="highlight">$34</td>
-                <td>$57</td>
-              </tr>
-              <tr>
-                <td>Fotos digitales</td>
-                <td>3</td>
-                <td class="highlight">8</td>
-                <td>Todas</td>
-              </tr>
-              <tr>
-                <td>Foto grupal</td>
-                <td>✅</td>
-                <td class="highlight">✅</td>
-                <td>✅</td>
-              </tr>
-              <tr>
-                <td>Impresiones</td>
-                <td>—</td>
-                <td class="highlight">1 grande y 4 pequeñas</td>
-                <td>2 grandes y 10 pequeñas</td>
-              </tr>
-              <tr>
-                <td>Foto enmarcada</td>
-                <td>—</td>
-                <td class="highlight">—</td>
-                <td>Las 2 grandes</td>
-              </tr>
-              <tr>
-                <td>Fotos familiares</td>
-                <td>Opcional</td>
-                <td class="highlight">Opcional</td>
-                <td>Incluidas</td>
-              </tr>
-              <tr>
-                <td>Ideal para</td>
-                <td>Un recuerdo sencillo</td>
-                <td class="highlight">Variedad sin complicaciones</td>
-                <td>Conservar la experiencia completa</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="pricing-table" role="list">
+
+          <!-- Paquete 1: Básico -->
+          <div class="pricing-card" role="listitem">
+            <button class="pricing-card__header" aria-expanded="false" aria-controls="pkg-basico-body">
+              <div class="pricing-card__name">Básico</div>
+              <div class="pricing-card__right">
+                <span class="pricing-card__price">$19</span>
+                <svg class="pricing-card__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </button>
+            <div class="pricing-card__body" id="pkg-basico-body" hidden>
+              <p class="pricing-card__tagline">Un recuerdo sencillo y bonito.</p>
+              <dl class="pricing-card__features">
+                <div class="pricing-card__row">
+                  <dt>Fotos digitales</dt>
+                  <dd>3</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Foto grupal</dt>
+                  <dd class="ok" aria-label="Incluida">✓</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Impresiones</dt>
+                  <dd class="no" aria-label="No incluida">—</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Foto enmarcada</dt>
+                  <dd class="no" aria-label="No incluida">—</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Fotos familiares</dt>
+                  <dd>Opcional</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Ideal para</dt>
+                  <dd>Un recuerdo sencillo</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <!-- Paquete 2: Familiar (recomendado — empieza abierto) -->
+          <div class="pricing-card pricing-card--featured" role="listitem">
+            <button class="pricing-card__header" aria-expanded="true" aria-controls="pkg-familiar-body">
+              <div class="pricing-card__name">
+                Familiar ⭐
+                <span class="pricing-card__badge">Más popular</span>
+              </div>
+              <div class="pricing-card__right">
+                <span class="pricing-card__price">$34</span>
+                <svg class="pricing-card__chevron pricing-card__chevron--open" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </button>
+            <div class="pricing-card__body" id="pkg-familiar-body">
+              <p class="pricing-card__tagline">La mejor combinación.</p>
+              <dl class="pricing-card__features">
+                <div class="pricing-card__row">
+                  <dt>Fotos digitales</dt>
+                  <dd>8</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Foto grupal</dt>
+                  <dd class="ok" aria-label="Incluida">✓</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Impresiones</dt>
+                  <dd>1 grande y 4 pequeñas</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Foto enmarcada</dt>
+                  <dd class="no" aria-label="No incluida">—</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Fotos familiares</dt>
+                  <dd>Opcional</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Ideal para</dt>
+                  <dd>Variedad sin complicaciones</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <!-- Paquete 3: Premium -->
+          <div class="pricing-card" role="listitem">
+            <button class="pricing-card__header" aria-expanded="false" aria-controls="pkg-premium-body">
+              <div class="pricing-card__name">Premium</div>
+              <div class="pricing-card__right">
+                <span class="pricing-card__price">$57</span>
+                <svg class="pricing-card__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </button>
+            <div class="pricing-card__body" id="pkg-premium-body" hidden>
+              <p class="pricing-card__tagline">Para conservar toda la experiencia.</p>
+              <dl class="pricing-card__features">
+                <div class="pricing-card__row">
+                  <dt>Fotos digitales</dt>
+                  <dd>Todas</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Foto grupal</dt>
+                  <dd class="ok" aria-label="Incluida">✓</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Impresiones</dt>
+                  <dd>2 grandes y 10 pequeñas</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Foto enmarcada</dt>
+                  <dd>Las 2 grandes</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Fotos familiares</dt>
+                  <dd>Incluidas</dd>
+                </div>
+                <div class="pricing-card__row">
+                  <dt>Ideal para</dt>
+                  <dd>Conservar la experiencia completa</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -159,7 +263,8 @@
           </div>
           <div class="list-item">
             <strong>🎓 Capas y Birretes:</strong>
-            <span>Proveemos capas y birretes del color que requieran. Para grupos grandes, podemos confeccionar colores específicos previa recepción de abonos.</span>
+            <span>Proveemos capas y birretes del color que requieran. Para grupos grandes, podemos confeccionar colores
+              específicos previa recepción de abonos.</span>
           </div>
           <div class="list-item">
             <strong>👨‍👩‍👧‍👦 ¿Quiénes asisten?</strong>
@@ -187,47 +292,60 @@
       <!-- ── 4. ¿QUÉ PASA DESPUÉS DE LA SESIÓN? ──────────────── -->
       <section class="doc-section">
         <h2 class="heading-2">4. ¿Qué pasa <em>después de la sesión?</em></h2>
-        <div class="timeline">
-          <div class="timeline-step">
-            <div class="timeline-left">
-              <div class="timeline-dot">📷</div>
-              <div class="timeline-connector"></div>
+        <ol class="timeline">
+          <li class="timeline__item">
+            <div class="timeline__left">
+              <div class="timeline__icon timeline__icon--done">
+                <span aria-hidden="true" style="font-size: 18px;">📷</span>
+              </div>
+              <div class="timeline__connector"></div>
             </div>
-            <div class="timeline-content">
-              <h5>Día de la sesión</h5>
-              <p>Sesión individual, a su ritmo.</p>
+            <div class="timeline__content">
+              <span class="timeline__label">Día de la sesión</span>
+              <h3 class="timeline__title">Sesión individual</h3>
+              <p class="timeline__desc">Sesión individual, a su ritmo.</p>
             </div>
-          </div>
-          <div class="timeline-step">
-            <div class="timeline-left">
-              <div class="timeline-dot">🖼️</div>
-              <div class="timeline-connector"></div>
+          </li>
+          <li class="timeline__item">
+            <div class="timeline__left">
+              <div class="timeline__icon timeline__icon--done">
+                <span aria-hidden="true" style="font-size: 18px;">🖼️</span>
+              </div>
+              <div class="timeline__connector"></div>
             </div>
-            <div class="timeline-content">
-              <h5>7–10 días: Previews en galería</h5>
-              <p>Galería privada online para elegir favoritas.</p>
+            <div class="timeline__content">
+              <span class="timeline__label">7–10 días</span>
+              <h3 class="timeline__title">Previews en galería</h3>
+              <p class="timeline__desc">Galería privada online para elegir favoritas.</p>
             </div>
-          </div>
-          <div class="timeline-step">
-            <div class="timeline-left">
-              <div class="timeline-dot">⭐</div>
-              <div class="timeline-connector"></div>
+          </li>
+          <li class="timeline__item">
+            <div class="timeline__left">
+              <div class="timeline__icon timeline__icon--done">
+                <span aria-hidden="true" style="font-size: 18px;">⭐</span>
+              </div>
+              <div class="timeline__connector"></div>
             </div>
-            <div class="timeline-content">
-              <h5>2 semanas para escoger favoritas</h5>
-              <p>2 semanas para elegir. Vencido el plazo, el fotógrafo elige para no retrasar al grupo.</p>
+            <div class="timeline__content">
+              <span class="timeline__label">2 semanas</span>
+              <h3 class="timeline__title">Para escoger favoritas</h3>
+              <p class="timeline__desc">2 semanas para elegir. Vencido el plazo, el fotógrafo elige para no retrasar al grupo.</p>
             </div>
-          </div>
-          <div class="timeline-step">
-            <div class="timeline-left">
-              <div class="timeline-dot">📦</div>
+          </li>
+          <li class="timeline__item">
+            <div class="timeline__left">
+              <div class="timeline__icon timeline__icon--done">
+                <span aria-hidden="true" style="font-size: 18px;">📦</span>
+              </div>
+              <div class="timeline__connector"></div>
             </div>
-            <div class="timeline-content">
-              <h5>Entrega final en 2 semanas</h5>
-              <p>Dos semanas después de cerrado el período de selección, se entregan las fotos retocadas y los impresos (si aplica).</p>
+            <div class="timeline__content">
+              <span class="timeline__label">Entrega</span>
+              <h3 class="timeline__title">Entrega final en 2 semanas</h3>
+              <p class="timeline__desc">Dos semanas después de cerrado el período de selección, se entregan las fotos retocadas y los impresos (si aplica).</p>
             </div>
-          </div>
-        </div>
+          </li>
+        </ol>
       </section>
 
       <!-- ── 5. ENTREGA Y CONDICIONES ──────────────────────────── -->
@@ -244,7 +362,8 @@
           </div>
           <div class="policy-box">
             <h4 class="heading-3">Política de Reagendamiento</h4>
-            <p>Si la escuela contrata múltiples salones: se programa 1 fecha extra global sin costo. Si no puede asistir a esa segunda fecha, aplica un recargo de $15 por fecha individual.</p>
+            <p>Si la escuela contrata múltiples salones: se programa 1 fecha extra global sin costo. Si no puede asistir
+              a esa segunda fecha, aplica un recargo de $15 por fecha individual.</p>
           </div>
           <div class="policy-box">
             <h4 class="heading-3">Descuento por Hermanos Gemelos o de otros salones</h4>
@@ -281,7 +400,8 @@
             <li>Compartir este link al grupo de padres.</li>
             <li>Confirmar el interés aproximado del salón.</li>
           </ul>
-          <p style="margin-top:10px; font-size:13px; color:var(--color-ok);">Nosotros coordinamos todo directamente con cada familia.</p>
+          <p style="margin-top:10px; font-size:13px; color:var(--color-ok);">Nosotros coordinamos todo directamente con
+            cada familia.</p>
         </div>
         <div class="card" style="margin-top:16px;">
           <h4 class="heading-3">¿Qué pasa si deciden seguir adelante?</h4>
@@ -325,14 +445,36 @@
     <!-- ── CTA FINAL ─────────────────────────────────────────── -->
     <section class="cta-section">
       <h2 class="heading-2" style="font-size:22px;">¿Les gustaría organizarlo para su <em>salón?</em></h2>
-      <p style="font-size:16px; margin-bottom:20px; color:var(--color-ink-muted);">Los niños cambian muy rápido. Estas fotos terminan convirtiéndose en recuerdos que las familias guardan por años.<br><br>📲 Escríbenos por WhatsApp<br>Nosotros coordinamos directamente con cada familia.</p>
-      <a href="https://wa.me/50767438951" id="whatsapp-link" target="_blank" class="btn-whatsapp">Escribir por WhatsApp</a>
+      <p style="font-size:16px; margin-bottom:20px; color:var(--color-ink-muted);">Los niños cambian muy rápido. Estas
+        fotos terminan convirtiéndose en recuerdos que las familias guardan por años.<br><br>📲 Escríbenos por
+        WhatsApp<br>Nosotros coordinamos directamente con cada familia.</p>
+      <a href="https://wa.me/50767438951" id="whatsapp-link" target="_blank" class="btn-whatsapp">Escribir por
+        WhatsApp</a>
     </section>
   </div>
 
   <!-- Scripts: Reusando core + logica especifica -->
   <script src="../js/core/config.js"></script>
   <script src="../js/core/api.js"></script>
+
+  <!-- Control de Acordeón para la Tabla de Paquetes -->
+  <script>
+    document.querySelectorAll('.pricing-card__header').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card   = btn.closest('.pricing-card');
+        const body   = document.getElementById(btn.getAttribute('aria-controls'));
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+        btn.setAttribute('aria-expanded', String(!isOpen));
+        body.hidden = isOpen;
+
+        const chevron = btn.querySelector('.pricing-card__chevron');
+        if (chevron) {
+          chevron.classList.toggle('pricing-card__chevron--open', !isOpen);
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>
