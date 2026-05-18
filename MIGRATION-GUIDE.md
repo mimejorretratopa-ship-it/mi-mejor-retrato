@@ -26,7 +26,7 @@ Se migró el módulo de `/propuesta/` a un diseño premium mobile-first basado e
 
 ### 2. Integración Activa de Analytics Multi-Propuesta (Actualizado a Producción)
 Para medir de manera clara las visitas y la interacción en múltiples propuestas (ej. `/propuesta/lasa-26`, `/propuesta/indp-26`):
-* **Código GA4 Activo**: Se insertó en producción el ID de medición `G-6H4H52RL0T` para todas las propuestas (`propuesta/index.html`) y para los flujos de onboarding (`escuelas.json`).
+* **Código GA4 Activo**: Se insertó en producción el ID de medición `G-6H4H52RL0T` para todas las propuestas (`propuesta/index.html`) y para los flujos de onboarding (`precios.json`).
 * **Estrategia Multi-Propuesta y SPA**: 
   * Se extrae dinámicamente el `schoolId` desde las rutas limpias manejadas por Vercel (`window.location.pathname`).
   * Se **retrasa el disparo** del hit de página hasta que `app.js` resuelve la configuración de la escuela (`_propuesta.json`).
@@ -73,5 +73,5 @@ El frontend se conecta al webhook de Discord configurado en `js/core/config.js` 
 ---
 
 ## Diagnóstico y Soporte
-* Si la propuesta no carga correctamente, verifique que el slug esté declarado en `escuelas.json` y el año esté incluido en la lista de `years`.
+* Si la propuesta no carga correctamente, verifique que el slug esté declarado en `precios.json` (dentro de `escuelas`) y el año esté incluido en la lista de `years`.
 * Para depurar en caliente en localhost, abra la consola del navegador y ejecute `window.appState.debug()` para revisar el estado global de la aplicación.

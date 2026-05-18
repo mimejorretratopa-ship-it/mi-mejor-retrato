@@ -20,7 +20,7 @@ Hemos consolidado el módulo de `/propuesta/` (Brochure B2B para colegios) aplic
 
 ### 3. Implementación Definitiva de Google Analytics & Estrategia Multi-Propuesta
 * **Código de Analytics Activo**: Se activó en producción el ID de medición `G-6H4H52RL0T` para Onboarding y Propuestas B2B.
-* **Estrategia de Títulos Legibles**: Para evitar que GA4 registre todas las visitas bajo un solo título HTML (`Propuesta — Mi Mejor Retrato`), se retrasó el disparo del evento de página hasta que `app.js` resuelve la URL, obtiene el nombre real de la institución en `escuelas.json` y actualiza el `document.title`. Así, las métricas son cristalinas (ej. `Propuesta: Tu Sesión de Retrato`).
+* **Estrategia de Títulos Legibles**: Para evitar que GA4 registre todas las visitas bajo un solo título HTML (`Propuesta — Mi Mejor Retrato`), se retrasó el disparo del evento de página hasta que `app.js` resuelve la URL, obtiene el nombre real de la institución en `precios.json` (dentro de `escuelas`) y actualiza el `document.title`. Así, las métricas son cristalinas (ej. `Propuesta: Tu Sesión de Retrato`).
 
 ### 4. Creación de Catálogo de Propuestas
 Se implementaron en JSON las propuestas específicas y genéricas requeridas y se adaptó su estructura de precios con `tabla_comparativa`:
@@ -30,6 +30,7 @@ Se implementaron en JSON las propuestas específicas y genéricas requeridas y s
 ### 5. Creación del Admin Dashboard Local
 * **Herramienta Interna sin Código**: Se desarrolló un panel de control local en `/admin/` (HTML/JS Vanilla) para editar visualmente el archivo `precios.json`.
 * **Beneficios**: Previene errores de sintaxis (comas faltantes, llaves rotas), permite alternar funciones como "Fotos Familiares" con un checkbox, y muestra estadísticas en tiempo real de los colegios publicados.
+* **Autoguardado Inteligente & Descargas Perfectas**: Se implementó una lógica de autoguardado automático e invisible que escribe los datos del colegio activo en memoria tanto al cambiar de colegio en la barra lateral como al hacer clic directamente en el botón verde de descargar. Además, se solucionó un problema en navegadores Chromium difiriendo la revocación de la URL temporal en 100ms, logrando que el archivo se descargue siempre de forma impecable bajo el nombre real `precios.json` y con su extensión correspondiente.
 
 ### 6. Unificación Absoluta de la Arquitectura de Datos (Fusión de escuelas.json en precios.json)
 * **Eliminación de Redundancia (DRY)**: Fusionamos por completo el catálogo `escuelas.json` dentro de `precios.json`. Ahora existe una **única fuente de verdad** para los colegios, donde cada registro contiene la identidad comercial (`name`, `years`, `ga_id`), visibilidad y la estructura de precios.

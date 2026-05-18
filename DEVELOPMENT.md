@@ -21,19 +21,23 @@ code "d:\mmr_studio\01_core_apps\website"
 
 El sistema requiere configurar tanto la experiencia comercial para el colegio (Brochure) como el portal de reservas para los padres (Onboarding).
 
-### Paso 1: Registrar el Colegio
-Agrega el código del colegio y el año en `onboarding/data/escuelas.json`:
-```json
-{ "code": "nuevo", "name": "Colegio Nuevo", "years": [26] }
-```
-
-### Paso 2: Configurar Precios (Usando el Dashboard)
+### Paso 1: Registrar el Colegio (Usando el Dashboard)
 No edites `precios.json` a mano.
 1. Abre `admin/index.html` con Live Server.
-2. Selecciona tu colegio en la barra lateral (debería aparecer tras el Paso 1).
-3. Cambia el Estado a **"🟢 Publicar"**.
-4. Añade y configura los paquetes visualmente (asegúrate de encender/apagar la opción de Fotos Familiares según aplique).
-5. Haz clic en "Guardar Cambios Temporales" y luego en el botón verde inferior para descargar el `precios.json` actualizado y guardarlo en `onboarding/data/precios.json`.
+2. Haz clic en el botón **`➕ Agregar Colegio`** en la parte inferior del menú lateral izquierdo.
+3. Ingresa el código único de 4 letras minúsculas (ej: `lasa`) y el nombre completo de la institución.
+4. El colegio se creará y se seleccionará automáticamente en la interfaz.
+
+### Paso 2: Configurar Identidad, Precios y Visibilidad
+1. Selecciona tu colegio en la barra lateral del panel de administración.
+2. Configura los metadatos comerciales en la sección **Identidad del Colegio**:
+   * **Nombre Comercial** (ej: *Colegio La Salle*)
+   * **Años Activos** (ej: *26*)
+   * **ID de Google Analytics 4** (ej: *G-6H4H52RL0T*)
+3. Cambia el Estado a **"🟢 Publicar"**, **"🔴 Ocultar"** o **"🟡 Pendiente"** en la esquina superior derecha.
+4. Añade y configura los paquetes visualmente (asegúrate de encender/apagar la opción de Fotos Familiares y configurar la tabla comparativa según aplique).
+5. **Autoguardado Inteligente:** ¡Ya no tienes que preocuparte por perder datos! El panel guarda de manera automática e invisible lo que edites al cambiar de colegio o al hacer clic en el botón verde inferior.
+6. Haz clic en el botón verde inferior **`Descargar precios.json actualizado`** para bajar tu archivo corregido y guárdalo en `onboarding/data/precios.json` reemplazando el anterior.
 
 ### Paso 3: Crear Configuración B2C (Onboarding)
 Duplica un archivo existente en `onboarding/data/` (ej: `lasa_secciones.json`) y renómbralo a `{code}_secciones.json`.
@@ -82,7 +86,7 @@ config.debug()                  // Muestra la configuración de endpoints activa
 ---
 
 ## Checklist de Publicación (B2B + B2C)
-- [ ] **1. Core:** Código y año agregados en `onboarding/data/escuelas.json`
+- [ ] **1. Core:** Colegio registrado en `onboarding/data/precios.json` usando el **Dashboard Admin** (`admin/index.html`)
 - [ ] **2. Precios:** Configurados y en `"visibilidad": "publicar"` usando el **Dashboard Admin** (`admin/index.html`)
 - [ ] **3. B2C (Padres):** Archivo `[code]_secciones.json` creado en `onboarding/data/` con horarios y logística B2C
 - [ ] **4. B2B (Directiva):** Archivo `[code]_propuesta.json` creado en `propuesta/data/` con el copy B2B

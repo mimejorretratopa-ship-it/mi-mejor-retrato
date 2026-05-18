@@ -63,9 +63,10 @@ Existen dos modalidades principales en la aplicación:
                        │ lee / escribe
 ┌──────────────────────▼──────────────────────────────┐
 │                   DATOS & BACKEND                    │
-│  DATOS (JSON): escuelas, precios, secciones          │
-│  — precios.json: Única Fuente de Verdad para todos    │
-│    los precios, inclusiones y fotos familiares       │
+│  DATOS (JSON): precios, secciones                     │
+│  — precios.json: Única Fuente de Verdad para la       │
+│    identidad, visibilidad, precios, inclusiones y    │
+│    fotos familiares                                  │
 │  BACKEND: Google Sheets (DB) + Discord (Alertas)     │
 └─────────────────────────────────────────────────────┘
 ```
@@ -160,5 +161,5 @@ El sistema consolida el rastreo mediante una sola propiedad GA4 (`G-6H4H52RL0T`)
 1. El usuario navega a la URL específica mediante Vercel (ej: `/propuesta/lasa-26`).
 2. El script inline en `<head>` carga la librería gtag, pero **no** dispara el hit de configuración (`gtag('config')`).
 3. `app.js` extrae el `schoolId` (soportando tanto Query Strings como URLs limpias de Vercel).
-4. `app.js` lee `escuelas.json`, actualiza el `document.title` dinámicamente (ej: `Propuesta: Colegio La Salle`).
+4. `app.js` lee `precios.json` (sección `escuelas`), actualiza el `document.title` dinámicamente (ej: `Propuesta: Colegio La Salle`).
 5. Finalmente, `app.js` dispara el evento de GA4, enviando el `page_title` legible y la dimensión personalizada `school_id`.
