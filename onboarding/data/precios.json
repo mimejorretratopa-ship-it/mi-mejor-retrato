@@ -30,7 +30,9 @@
     {
       "code": "clia",
       "name": "Chiara Lubich International Academy",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "no_publicar",
       "paquetes": []
@@ -38,7 +40,9 @@
     {
       "code": "dolo",
       "name": "Nuestra Señora De Los Dolores",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "no_publicar",
       "paquetes": []
@@ -46,7 +50,9 @@
     {
       "code": "ebrv",
       "name": "Escuela Bilingüe Residencial Vacamonte",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
@@ -65,10 +71,20 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 3, "tamano": "digital", "detalle": "del estudiante" },
-              { "cantidad": 1, "tamano": "digital", "detalle": "de grupo" }
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -86,11 +102,25 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 1, "tamano": "8x12", "detalle": "Grande" },
-              { "cantidad": 4, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "Grupo del salón" }
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -108,11 +138,25 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 2, "tamano": "8x12", "detalle": "ENMARCADAS y listas para colgar" },
-              { "cantidad": 9, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "Grupo del salón" }
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         }
       ]
@@ -120,7 +164,9 @@
     {
       "code": "lasa",
       "name": "Colegio La Salle",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
@@ -134,15 +180,25 @@
             "foto_grupal": true,
             "impresiones": null,
             "foto_enmarcada": null,
-            "fotos_familiares": false,
+            "fotos_familiares": true,
             "ideal_para": "Un recuerdo digital sencillo"
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 3, "tamano": "digital", "detalle": "del estudiante" },
-              { "cantidad": 1, "tamano": "digital", "detalle": "de grupo" }
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -155,16 +211,30 @@
             "foto_grupal": true,
             "impresiones": "1 gr. + 4 peq.",
             "foto_enmarcada": null,
-            "fotos_familiares": false,
-            "ideal_para": "Variedad con foto impresa"
+            "fotos_familiares": true,
+            "ideal_para": "Para quienes quieren variedad sin complicarse"
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 1, "tamano": "8x12", "detalle": "Grande" },
-              { "cantidad": 4, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "Grupo del salón" }
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -177,16 +247,30 @@
             "foto_grupal": true,
             "impresiones": "2 gr. + 9 peq.",
             "foto_enmarcada": "Las 2 grandes",
-            "fotos_familiares": false,
+            "fotos_familiares": true,
             "ideal_para": "La experiencia completa"
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 2, "tamano": "8x12", "detalle": "ENMARCADAS y listas para colgar" },
-              { "cantidad": 9, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "Grupo del salón" }
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         }
       ]
@@ -194,7 +278,9 @@
     {
       "code": "lion",
       "name": "Lions School",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "no_publicar",
       "paquetes": []
@@ -202,7 +288,9 @@
     {
       "code": "ofxd",
       "name": "Oxford International School",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
@@ -210,7 +298,9 @@
     {
       "code": "port",
       "name": "Portafolio",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
@@ -247,7 +337,9 @@
     {
       "code": "sabi",
       "name": "Sabis International School",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "no_publicar",
       "paquetes": [
@@ -284,7 +376,9 @@
     {
       "code": "sagu",
       "name": "Colegio San Agustín",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
@@ -292,7 +386,9 @@
     {
       "code": "enda",
       "name": "Colegio Guillermo Endara Galimani",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
@@ -311,10 +407,20 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 2, "tamano": "digital", "detalle": "del estudiante" },
-              { "cantidad": 1, "tamano": "digital", "detalle": "de grupo" }
+              {
+                "cantidad": 2,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -332,11 +438,25 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 1, "tamano": "8x12", "detalle": "Grande" },
-              { "cantidad": 3, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "Grupo del salón" }
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 3,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -354,11 +474,25 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 1, "tamano": "8x12", "detalle": "ENMARCADADA y lista para colgar" },
-              { "cantidad": 7, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "Grupo del salón" }
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "ENMARCADADA y lista para colgar"
+              },
+              {
+                "cantidad": 7,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         }
       ]
@@ -366,7 +500,9 @@
     {
       "code": "oxbg",
       "name": "Oxford International School (Brisas)",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
@@ -374,7 +510,9 @@
     {
       "code": "b2b",
       "name": "Propuesta Directores",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
@@ -382,7 +520,9 @@
     {
       "code": "chor",
       "name": "Propuesta La Chorrera",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
@@ -390,7 +530,9 @@
     {
       "code": "pana",
       "name": "Propuesta Panamá",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
@@ -398,7 +540,9 @@
     {
       "code": "indp",
       "name": "Tu Sesión de Retrato",
-      "years": [26],
+      "years": [
+        26
+      ],
       "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
@@ -417,10 +561,20 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 3, "tamano": "digital", "detalle": "del estudiante" },
-              { "cantidad": 1, "tamano": "digital", "detalle": "familiar" }
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "familiar"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -438,11 +592,25 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 1, "tamano": "8x12", "detalle": "Grande" },
-              { "cantidad": 4, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "familiar" }
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "familiar"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         },
         {
@@ -460,11 +628,25 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 2, "tamano": "8x12", "detalle": "ENMARCADAS y listas para colgar" },
-              { "cantidad": 9, "tamano": "4x6", "detalle": "Chicas" },
-              { "cantidad": 1, "tamano": "4x6", "detalle": "familiar" }
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "familiar"
+              }
             ],
-            "digitales": { "plataforma": "Galería online" }
+            "digitales": {
+              "plataforma": "Galería online"
+            }
           }
         }
       ]

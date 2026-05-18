@@ -77,6 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function selectSchool(index) {
+        // Auto-save active changes before switching
+        if (currentSchoolIndex !== null && currentSchoolIndex !== index) {
+            saveCurrentSchoolChanges();
+        }
+
         currentSchoolIndex = index;
         const school = preciosData.escuelas[index];
         
@@ -202,8 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
     packagesContainer.addEventListener('input', renderPreview);
     packagesContainer.addEventListener('change', renderPreview);
 
-    // Save temporary changes to memory
-    document.getElementById('btnSaveChanges').addEventListener('click', () => {
+    // Save current school changes to memory
+    function saveCurrentSchoolChanges() {
         if (currentSchoolIndex === null) return;
         
         const school = preciosData.escuelas[currentSchoolIndex];
@@ -247,7 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
         school.paquetes = newPackages;
         updateStats();
         renderSchoolsList();
-        
+    }
+
+    // Save temporary changes to memory
+    document.getElementById('btnSaveChanges').addEventListener('click', () => {
+        saveCurrentSchoolChanges();
         alert('Cambios guardados en memoria. ¡No olvides descargar el archivo final!');
     });
 
@@ -321,6 +330,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btnDownloadJson').addEventListener('click', () => {
         if (!preciosData) return;
         
+        // Auto-save whatever is currently open to prevent data loss
+        saveCurrentSchoolChanges();
+        
         const dataStr = JSON.stringify(preciosData, null, 2);
         const blob = new Blob([dataStr], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -331,8 +343,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(a);
         a.click();
         
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
     });
 
     // Init App
