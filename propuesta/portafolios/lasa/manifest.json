@@ -4,26 +4,44 @@
     {
       "archivo": "01.jpg",
       "orientacion": "vertical",
-      "alt": "Niña sonriente de Kínder del Colegio La Salle con birrete de graduación azul royal y capa",
+      "alt": "Niña sonriente de Kínder con birrete de graduación azul royal y capa",
       "caption": "Expresiones genuinas y espontáneas en su ambiente escolar."
     },
     {
       "archivo": "02.jpg",
       "orientacion": "vertical",
       "alt": "Niño sosteniendo diploma de kínder alegre en el estudio cerca de La Salle",
-      "caption": "Retratos individuales cuidados al mínimo detalle."
+      "caption": "Retratos individuales cuidando cada detalle."
     },
     {
       "archivo": "03.jpg",
-      "orientacion": "horizontal",
+      "orientacion": "vertical",
       "alt": "Grupo completo de Kínder del Colegio La Salle celebrando con confeti y alegría",
-      "caption": "Capturando la energía y unión de todo el salón."
+      "caption": "Todos son bienvenidos a la sesión."
     },
     {
       "archivo": "04.jpg",
+      "orientacion": "horizontal",
+      "alt": "Retrato natural de niña de Kínder sin poses forzadas mirando a la cámara",
+      "caption": "Sí, también hacemos las fotós clásicas, porque esas son las que quieren ver los abuelos."
+    },
+    {
+      "archivo": "05.jpg",
       "orientacion": "vertical",
       "alt": "Retrato natural de niña de Kínder sin poses forzadas mirando a la cámara",
-      "caption": "Pacientes y dedicados a lograr una sesión cómoda para ellos."
+      "caption": "SI le gusta el fútbol, que se note en las fotos también."
+    },
+    {
+      "archivo": "06.jpg",
+      "orientacion": "vertical",
+      "alt": "Retrato natural de niña de Kínder sin poses forzadas mirando a la cámara",
+      "caption": "Y verás la risa genuina de tu hijo cuando se sienta en confianza."
+    },
+    {
+      "archivo": "07.jpg",
+      "orientacion": "vertica",
+      "alt": "Retrato naturall de niña de Kínder sin poses forzadas mirando a la cámara",
+      "caption": "Tu hijo se va a divertir, esa es nuestra promesa."
     }
   ]
 }
