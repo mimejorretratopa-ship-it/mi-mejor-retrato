@@ -85,62 +85,100 @@ function showErrorState(message) {
   document.getElementById('content-wrapper').style.display = 'none';
 }
 
+function setSafeText(id, text) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = text;
+  }
+}
+
 function renderContent(prop, precios) {
   // A. Diferenciadores
-  document.getElementById('txt-trato').textContent = prop.diferenciadores.trato_nino;
-  document.getElementById('txt-fotos').textContent = prop.diferenciadores.fotos_autenticas;
-  document.getElementById('txt-entregables').textContent = prop.diferenciadores.entregables;
+  setSafeText('txt-trato', prop.diferenciadores.trato_nino);
+  setSafeText('txt-fotos', prop.diferenciadores.fotos_autenticas);
+  setSafeText('txt-entregables', prop.diferenciadores.entregables);
 
   // B. Logística
   const ubs = prop.logistica.ubicacion.opciones_activas.map(u => u.texto_display).join(" / ");
-  document.getElementById('txt-ubicaciones').textContent = ubs;
-  document.getElementById('txt-capas').textContent = prop.logistica.capas_birretes.texto;
-  document.getElementById('txt-mascotas').textContent = prop.logistica.solicitudes_especiales.mascotas ? 'Sí' : 'No';
-  document.getElementById('txt-familiares').textContent = prop.logistica.solicitudes_especiales.familiares;
+  setSafeText('txt-ubicaciones', ubs);
+  setSafeText('txt-capas', prop.logistica.capas_birretes.texto);
+  
+  const mascEl = document.getElementById('txt-mascotas');
+  if (mascEl) {
+    mascEl.textContent = prop.logistica.solicitudes_especiales.mascotas ? 'Sí' : 'No';
+  }
+  setSafeText('txt-familiares', prop.logistica.solicitudes_especiales.familiares);
 
   // C. Entregas y Políticas
   const ul = document.getElementById('list-entregas');
-  prop.entrega_y_pagos.metodo_entrega.forEach(m => {
-    const li = document.createElement('li');
-    li.textContent = m.texto;
-    ul.appendChild(li);
-  });
-  document.getElementById('txt-tiempo').textContent = prop.entrega_y_pagos.tiempo_entrega_semanas;
-  
-  document.getElementById('txt-inasistencia').textContent = prop.politicas.inasistencia.opcion_multiples_salones;
-  document.getElementById('txt-hermanos').textContent = prop.politicas.descuento_hermanos.texto;
-  document.getElementById('txt-dinero').textContent = prop.entrega_y_pagos.recoleccion_dinero.explicacion;
-
-  // D. Precios
-  const cont = document.getElementById('pricing-container');
-  if (precios && precios.visibilidad === 'publicar' && precios.paquetes.length > 0) {
-    precios.paquetes.forEach(p => {
-      let entregablesHTML = '';
-      if (p.entregables) {
-        entregablesHTML += '<ul class="price-details">';
-        if (p.entregables.impresos) {
-          p.entregables.impresos.forEach(imp => {
-            entregablesHTML += `<li>${imp.cantidad} foto(s) ${imp.tamano} ${imp.detalle || ''}</li>`;
-          });
-        }
-        if (p.entregables.digitales && p.entregables.digitales.plataforma) {
-          entregablesHTML += `<li>Acceso a ${p.entregables.digitales.plataforma}</li>`;
-        }
-        entregablesHTML += '</ul>';
-      }
-
-      const card = document.createElement('div');
-      card.className = 'price-card';
-      card.innerHTML = `
-        <h4>${p.nombre}</h4>
-        <div class="price-val">$${p.precio}</div>
-        <div class="price-desc">${p.descripcion}</div>
-        ${entregablesHTML}
-      `;
-      cont.appendChild(card);
+  if (ul) {
+    ul.innerHTML = ''; // Limpiar anterior
+    prop.entrega_y_pagos.metodo_entrega.forEach(m => {
+      const li = document.createElement('li');
+      li.textContent = m.texto;
+      ul.appendChild(li);
     });
-  } else {
-    cont.innerHTML = '<p>Los precios están pendientes de confirmación para esta institución.</p>';
+  }
+  setSafeText('txt-tiempo', prop.entrega_y_pagos.tiempo_entrega_semanas);
+  
+  setSafeText('txt-inasistencia', prop.politicas.inasistencia.opcion_multiples_salones);
+  setSafeText('txt-hermanos', prop.politicas.descuento_hermanos.texto);
+  setSafeText('txt-dinero', prop.entrega_y_pagos.recoleccion_dinero.explicacion);
+
+  // D. Precios Dinámicos con Estilos Premium
+  const cont = document.getElementById('pricing-container');
+  if (cont) {
+    cont.innerHTML = ''; // Limpiar anterior
+    if (precios && precios.visibilidad === 'publicar' && precios.paquetes.length > 0) {
+      precios.paquetes.forEach((p, index) => {
+        let entregablesHTML = '';
+        if (p.entregables) {
+          entregablesHTML += '<ul class="price-details">';
+          if (p.entregables.impresos) {
+            p.entregables.impresos.forEach(imp => {
+              // Determinar la etiqueta según el tipo
+              let tagHTML = '';
+              const detalleLower = (imp.detalle || '').toLowerCase();
+              const tamanoLower = (imp.tamano || '').toLowerCase();
+              if (detalleLower.includes('enmarcada') || tamanoLower.includes('enmarcada')) {
+                tagHTML = '<span class="price-tag tag-enmarcado">Enmarcado</span>';
+              } else if (detalleLower.includes('digital') || tamanoLower.includes('digital')) {
+                tagHTML = '<span class="price-tag tag-digital">Digital</span>';
+              } else {
+                tagHTML = '<span class="price-tag tag-impreso">Impreso</span>';
+              }
+              entregablesHTML += `<li>${imp.cantidad} foto(s) ${imp.tamano} ${imp.detalle || ''} ${tagHTML}</li>`;
+            });
+          }
+          if (p.entregables.digitales && p.entregables.digitales.plataforma) {
+            entregablesHTML += `<li>Galería privada online (descargable)</li>`;
+          }
+          entregablesHTML += '</ul>';
+        }
+
+        // Icono sugerido
+        let icon = '📸';
+        if (index === 0) icon = '🖥️';
+        else if (index === 1) icon = '🖼️';
+        else if (index === 2) icon = '🏆';
+
+        // Destacar el segundo paquete
+        const esDestacado = index === 1;
+        const card = document.createElement('div');
+        card.className = `price-card ${esDestacado ? 'destacado' : ''}`;
+        card.innerHTML = `
+          ${esDestacado ? '<span class="badge-popular">⭐ Más solicitado</span>' : ''}
+          <div class="price-icon">${icon}</div>
+          <h4>${p.nombre}</h4>
+          <div class="price-val">$${p.precio}</div>
+          <div class="price-desc">${p.descripcion}</div>
+          ${entregablesHTML}
+        `;
+        cont.appendChild(card);
+      });
+    } else {
+      cont.innerHTML = '<p>Los precios están pendientes de confirmación para esta institución.</p>';
+    }
   }
 }
 

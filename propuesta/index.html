@@ -15,95 +15,244 @@
       <h1 id="propuesta-title">Propuesta Fotográfica</h1>
       <h2 id="school-name">Cargando...</h2>
       <p id="doc-date" class="doc-date"></p>
-    </header>
+    </header    <div class="content-wrapper" id="content-wrapper" style="display: none;">
 
-    <div class="content-wrapper" id="content-wrapper" style="display: none;">
-      <!-- Diferenciadores -->
+      <!-- ── 1. ¿POR QUÉ MI MEJOR RETRATO? ───────────────────── -->
       <section class="doc-section">
         <h3>1. ¿Por qué Mi Mejor Retrato?</h3>
         <div class="grid-2">
           <div class="card">
             <h4>Trato al Estudiante</h4>
             <p id="txt-trato"></p>
+            <!-- HARDCODED: aplica a todas las escuelas -->
+            <p style="margin-top:10px;font-style:italic;color:#666;">Aunque su hijo sea tímido, inquieto o no le guste posar, trabajamos con paciencia para lograr retratos naturales y una experiencia tranquila.</p>
           </div>
           <div class="card">
             <h4>Fotografía Auténtica</h4>
             <p id="txt-fotos"></p>
           </div>
           <div class="card full-width">
-            <h4>Nuestros Entregables</h4>
-            <p id="txt-entregables"></p>
+            <!-- HARDCODED: datos del fotógrafo, no varían por escuela -->
+            <h4>Nuestra Experiencia</h4>
+            <div class="credenciales">
+              <div class="credencial-badge"><span class="cred-icon">📸</span> Más de 250 familias fotografiadas</div>
+              <div class="credencial-badge"><span class="cred-icon">🎓</span> Especializados en fotografía escolar de niños</div>
+              <div class="credencial-badge"><span class="cred-icon">💒</span> Formados en fotografía de bodas de alto nivel</div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Galería (Portafolio) -->
+      <!-- ── GALERÍA (Portafolio) ───────────────────────────────── -->
       <section class="doc-section">
         <h3 id="gallery-title">Muestra de Trabajo</h3>
         <div class="gallery-masonry" id="gallery-container">
-          <!-- Las fotos se cargarán dinámicamente aquí -->
+          <!-- Las fotos se cargarán dinámicamente desde el manifest.json del portafolio -->
         </div>
       </section>
 
-      <!-- Precios -->
+      <!-- ── 2. PAQUETES Y PRECIOS ─────────────────────────────── -->
       <section class="doc-section">
         <h3>2. Paquetes y Precios</h3>
-        <p class="nota">Estos son los paquetes pre-aprobados para esta institución.</p>
+        <p class="nota">Paquetes pre-aprobados para esta institución.</p>
         <div id="pricing-container" class="pricing-grid"></div>
+        <!-- HARDCODED: aplica a todas las escuelas -->
+        <div class="card" style="margin-top:16px;">
+          <h4>¿Qué incluye la galería online?</h4>
+          <ul>
+            <li>✅ Fotos <strong>descargables en alta resolución</strong></li>
+            <li>✅ <strong>Sin marca de agua</strong> (sin firma del fotógrafo)</li>
+            <li>✅ Acceso privado, solo para la familia</li>
+          </ul>
+        </div>
       </section>
 
-      <!-- Logistica -->
+      <!-- ── 3. LOGÍSTICA DE LA SESIÓN ────────────────────────── -->
       <section class="doc-section">
         <h3>3. Logística de la Sesión</h3>
         <div class="list-container">
           <div class="list-item">
-            <strong>📍 Ubicación de la Sesión:</strong>
+            <strong>📍 Ubicación:</strong>
             <span id="txt-ubicaciones"></span>
           </div>
           <div class="list-item">
             <strong>🎓 Capas y Birretes:</strong>
             <span id="txt-capas"></span>
           </div>
+          <!-- HARDCODED: proceso universal -->
           <div class="list-item">
-            <strong>🐕 Mascotas permitidas:</strong> <span id="txt-mascotas"></span>
+            <strong>👨‍👩‍👧‍👦 ¿Quiénes pueden asistir?</strong>
+            <span>El niño(a) + mamá + papá + hermanos, sin costo extra.</span>
           </div>
           <div class="list-item">
-            <strong>👨‍👩‍👧‍👦 Fotos con Familiares:</strong> <span id="txt-familiares"></span>
+            <strong>🐕 Mascotas:</strong> <span id="txt-mascotas"></span>
+          </div>
+          <!-- HARDCODED: proceso universal -->
+          <div class="list-item">
+            <strong>👗 Guía de vestuario:</strong>
+            <span>3 semanas antes de la sesión les enviaremos una guía sencilla de vestuario por WhatsApp.</span>
+          </div>
+          <!-- HARDCODED: política universal -->
+          <div class="list-item">
+            <strong>👶 ¿Pueden participar hermanos?</strong>
+            <span>Sí, sin costo extra. El precio del paquete aplica por familia.</span>
+          </div>
+        </div>
+        <!-- HARDCODED: siempre se agenda por WhatsApp -->
+        <div class="card" style="margin-top:16px;">
+          <h4>📅 ¿Cómo se agenda la sesión?</h4>
+          <p>Cada familia escoge su horario individual mediante chat directo con el fotógrafo por WhatsApp. No hay formularios ni sistemas complicados.</p>
+        </div>
+      </section>
+
+      <!-- ── 4. ¿QUÉ PASA DESPUÉS DE LA SESIÓN? ──────────────── -->
+      <!-- HARDCODED: el proceso/timeline es igual para todas las escuelas -->
+      <section class="doc-section">
+        <h3>4. ¿Qué pasa después de la sesión?</h3>
+        <div class="timeline">
+          <div class="timeline-step">
+            <div class="timeline-left">
+              <div class="timeline-dot">📷</div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-content">
+              <h5>Día de la sesión</h5>
+              <p>El fotógrafo trabaja con cada niño individualmente, con calma y sin apresurar.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-left">
+              <div class="timeline-dot">🖼️</div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-content">
+              <h5>7–10 días: Previews en galería</h5>
+              <p>Cada familia recibe su galería privada con todas las fotos de vista previa para escoger sus favoritas.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-left">
+              <div class="timeline-dot">⭐</div>
+              <div class="timeline-connector"></div>
+            </div>
+            <div class="timeline-content">
+              <h5>2 semanas para escoger favoritas</h5>
+              <p>Las familias tienen 2 semanas para marcar sus favoritas. Si se vence el plazo, el fotógrafo selecciona las mejores para no retrasar la entrega global del salón.</p>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-left">
+              <div class="timeline-dot">📦</div>
+            </div>
+            <div class="timeline-content">
+              <h5>Entrega final en 2 semanas</h5>
+              <p>Dos semanas después de cerrado el período de selección, se entregan las fotos retocadas y los impresos (si aplica).</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Entrega y Políticas -->
+      <!-- ── 5. ENTREGA Y CONDICIONES ──────────────────────────── -->
       <section class="doc-section">
-        <h3>4. Entrega y Condiciones</h3>
+        <h3>5. Entrega y Condiciones</h3>
         <div class="grid-2">
           <div class="policy-box">
             <h4>Métodos de Entrega</h4>
             <ul id="list-entregas"></ul>
-            <p><strong>Tiempo estándar:</strong> <span id="txt-tiempo"></span> semanas.</p>
+            <p><strong>Tiempo estándar:</strong> <span id="txt-tiempo"></span> semanas desde selección de favoritas.</p>
           </div>
           <div class="policy-box">
-            <h4>Política de Inasistencia</h4>
+            <h4>Política de Reagendamiento</h4>
             <p id="txt-inasistencia"></p>
           </div>
           <div class="policy-box">
             <h4>Descuento por Hermanos</h4>
             <p id="txt-hermanos"></p>
           </div>
+          <!-- HARDCODED: política de pago universal -->
           <div class="policy-box">
-            <h4>Recolección de Dinero</h4>
-            <p id="txt-dinero"></p>
+            <h4>Pagos y Cobros</h4>
+            <p>Cobramos directamente a cada familia vía <strong>Yappy</strong>. Cualquier solicitud especial o reclamo puede hacerse directo por WhatsApp. <strong>El delegado no tiene que cobrar nada.</strong></p>
           </div>
         </div>
       </section>
+
+      <!-- ── 6. PARA EL DELEGADO ───────────────────────────────── -->
+      <!-- HARDCODED: el rol del delegado es igual para todas las escuelas -->
+      <section class="doc-section">
+        <h3>6. Para el Delegado o Coordinador</h3>
+        <p style="margin-bottom:16px;font-size:14px;color:#424245;">Queremos que tu trabajo sea mínimo. Te explicamos cómo funciona.</p>
+        <div class="delegado-grid">
+          <div class="delegado-no">
+            <strong>❌ No tienes que hacer esto</strong>
+            ¿Tengo que cobrar? <strong>No.</strong>
+          </div>
+          <div class="delegado-no">
+            <strong>❌ No tienes que hacer esto</strong>
+            ¿Tengo que organizar horarios? <strong>No.</strong>
+          </div>
+          <div class="delegado-no">
+            <strong>❌ No tienes que hacer esto</strong>
+            ¿Tengo que perseguir a las familias? <strong>No.</strong>
+          </div>
+          <div class="delegado-no">
+            <strong>❌ No tienes que hacer esto</strong>
+            ¿Tengo que entregar paquetes? <strong>No</strong> (a menos que decidas hacerlo tú).
+          </div>
+        </div>
+        <div class="delegado-si">
+          <h5>✅ Solo necesitamos que hagas esto</h5>
+          <ul>
+            <li>Compartir este enlace al grupo de padres.</li>
+            <li>Confirmarnos el interés aproximado del salón.</li>
+          </ul>
+          <p style="margin-top:10px;font-size:13px;color:#166534;">Nosotros coordinamos directamente con cada familia: horarios, pagos, entregas y cualquier duda.</p>
+        </div>
+        <div class="card" style="margin-top:16px;">
+          <h4>¿Qué pasa si las familias deciden seguir adelante?</h4>
+          <p>Cuando una familia confirma que quiere guardar el recuerdo con nosotros, les enviamos un enlace personalizado para completar el proceso de inscripción (agenda, paquetes y pago). Todo directo con el fotógrafo, sin intermediarios.</p>
+        </div>
+      </section>
+
+      <!-- ── 7. PREGUNTAS FRECUENTES ───────────────────────────── -->
+      <!-- HARDCODED: preguntas universales -->
+      <section class="doc-section">
+        <h3>7. Preguntas Frecuentes</h3>
+        <dl class="faq-list">
+          <div class="faq-item">
+            <dt>¿Qué pasa si mi hijo es tímido o inquieto?</dt>
+            <dd>Trabajamos con paciencia y sin prisa. No forzamos poses ni sonrisas. Las mejores fotos salen cuando el niño está cómodo y en su propio ritmo.</dd>
+          </div>
+          <div class="faq-item">
+            <dt>¿Puedo llevar a mis otros hijos (hermanos)?</dt>
+            <dd>Sí, sin costo extra. El precio del paquete aplica por familia, no por hijo.</dd>
+          </div>
+          <div class="faq-item">
+            <dt>¿Las fotos de la galería online se pueden descargar?</dt>
+            <dd>Sí. Son descargables en alta resolución y sin marca de agua (sin firma del fotógrafo).</dd>
+          </div>
+          <div class="faq-item">
+            <dt>¿Cómo sé qué ropa llevar?</dt>
+            <dd>3 semanas antes de la sesión te enviaremos una guía sencilla de vestuario por WhatsApp.</dd>
+          </div>
+          <div class="faq-item">
+            <dt>¿Puedo llevar a mi mascota?</dt>
+            <dd>Sí, se permiten mascotas en las sesiones de estudio.</dd>
+          </div>
+          <div class="faq-item">
+            <dt>¿Cómo se paga?</dt>
+            <dd>Cobramos directamente a cada familia vía Yappy. El delegado no tiene que cobrar ni manejar dinero.</dd>
+          </div>
+        </dl>
+      </section>
+
     </div> <!-- Cierre de content-wrapper -->
 
-    <!-- Formulario Contacto (Siempre visible) -->
+    <!-- ── FORMULARIO CONTACTO (Siempre visible) ─────────────── -->
     <section class="doc-section form-section">
       <h3>¿Desea avanzar o tiene dudas?</h3>
       <p>Envíe un mensaje directo a Mike para solicitar la ampliación de algún detalle.</p>
       <p class="nota-contacto"><strong>⚡ Respuesta rápida:</strong> Le responderemos vía WhatsApp (nuestra vía más ágil). De no ser posible el contacto por ese medio, le escribiremos a su correo electrónico.</p>
-
       <form id="propuesta-form">
         <div class="form-group">
           <label>Su Nombre Completo</label>
@@ -138,5 +287,4 @@
   <script src="../js/core/api.js"></script>
   <script src="./js/app.js"></script>
 </body>
-
 </html>
