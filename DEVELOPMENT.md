@@ -24,8 +24,9 @@ El sistema de Propuestas (`/propuesta/`) utiliza un **Modelo Híbrido Estático/
 ```bash
 # 1. Agregar el código de la escuela y año en data/escuelas.json (ej: "lasa", 26)
 # 2. Configurar los precios en data/precios.json (visibilidad: "publicar")
-# 3. Abrir en Live Server con la URL: http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}
-# 4. En producción, la URL limpia mapeada en Vercel será: /propuesta/{code}-{yy}
+# 3. Crear el archivo propuesta/data/{code}_propuesta.json con el texto y logística específica.
+# 4. Abrir en Live Server con la URL: http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}
+# 5. En producción, la URL limpia mapeada en Vercel será: /propuesta/{code}-{yy}
 ```
 
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
@@ -38,33 +39,14 @@ El sistema de Propuestas (`/propuesta/`) utiliza un **Modelo Híbrido Estático/
 ## 2. Configuración de Google Analytics en Producción
 
 ### Integración de GA4
-El script estándar de Google Analytics 4 (GA4) está integrado en [propuesta/index.html](file:///d:/mmr_studio/01_core_apps/website/propuesta/index.html) y [propuesta/lasalletest.html](file:///d:/mmr_studio/01_core_apps/website/propuesta/lasalletest.html) de manera comentada:
+El script estándar de Google Analytics 4 (GA4) está integrado activamente en la aplicación con el ID de medición en producción (`G-6H4H52RL0T`).
 
-```html
-<!-- Google Analytics (Uncomment for production) -->
-<!-- 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
--->
-```
-
-### Estrategia Multi-Propuesta
-Para medir de forma individualizada el comportamiento de delegados y colegios (`lasa-26`, `clia-26`, `sagu-26`, etc.) utilizando **una sola propiedad global de GA4**:
-1. Descomente el bloque de GA4 y sustituya `G-XXXXXXXXXX` con su ID de Medición real.
-2. GA4 rastreará automáticamente la ruta completa (`/propuesta/lasalletest.html` o `/propuesta/index.html?brochure=lasa-26`), permitiendo ver el desglose en el panel de **Páginas y pantallas**.
-3. **Dimensión Personalizada**: Si desea segmentar con mayor facilidad en informes avanzados, configure la dimensión `school_slug` capturando el parámetro `brochure` de la URL en la inicialización:
-   ```javascript
-   const urlParams = new URLSearchParams(window.location.search);
-   const brochureId = urlParams.get('brochure') || 'general';
-   gtag('config', 'G-XXXXXXXXXX', {
-     'school_slug': brochureId
-   });
-   ```
+### Estrategia Multi-Propuesta y Títulos Legibles
+Para medir de forma individualizada el comportamiento en las múltiples propuestas comerciales y asegurar que los reportes sean fáciles de leer y segmentar en GA4:
+1. **Librería asíncrona:** El script base se carga en el `<head>` del HTML (`propuesta/index.html`), pero **no dispara el hit inicial**.
+2. **URLs limpias de Vercel:** Vercel usa URLs limpias (ej. `/propuesta/lasa-26`). La aplicación intercepta el tráfico y parsea este slug correctamente, evitando que las métricas colapsen bajo parámetros `?brochure=` inválidos.
+3. **Disparo dinámico:** En `js/app.js`, el sistema consulta el nombre del colegio, actualiza la pestaña del navegador (`document.title = "Propuesta: Colegio La Salle"`) y entonces dispara el hit `page_view` (`gtag('config')`) hacia Analytics.
+4. **Claridad en reportes:** Gracias a esto, los reportes mostrarán directamente el nombre comercial (ej. `Propuesta: Tu Sesión de Retrato`) y la dimensión `school_id`.
 
 ---
 
@@ -83,6 +65,7 @@ config.debug()                  // Muestra la configuración de endpoints activa
 ## Checklist antes de publicar una Propuesta
 - [ ] Código y año agregados en `data/escuelas.json`
 - [ ] Precios configurados y en estado `"visibilidad": "publicar"` en `data/precios.json`
+- [ ] Archivo `[code]_propuesta.json` creado en la carpeta `propuesta/data/` con la logística correcta
 - [ ] El título dinámico de la propuesta carga el nombre del colegio y año correctamente
 - [ ] El botón de WhatsApp tiene el número y mensaje de inicio correctos
 - [ ] Las fotos del portafolio cargan fluidamente desde la ruta de archivos correspondiente

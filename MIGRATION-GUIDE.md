@@ -24,13 +24,13 @@ Se migró el módulo de `/propuesta/` a un diseño premium mobile-first basado e
 * **Colores**: Paleta neutra cálida con fondo de papel orgánico (`#FBF9F6`), acento terracota cálido (`#C8622A`), texto principal (`#2A2724`) y acento claro (`#F2E8E0`).
 * **Estabilidad del Layout**: Se mantiene la tabla comparativa de precios y la línea de tiempo tradicionales en HTML estático para garantizar una presentación impecable en escritorio y un scroll fluido en móviles.
 
-### 2. Integración de Analytics Multi-Propuesta
-Para medir las visitas y la interacción en múltiples propuestas comerciales activas (`/propuesta/lasa-26`, `/propuesta/clia-26`, etc.) se ha diseñado la siguiente estrategia de tracking:
-* **Código GA4 Estándar**: Insertado en los encabezados HTML de forma comentada para producción.
-* **Estrategia Multi-Propuesta**: 
-  * Se utiliza **una única propiedad GA4** con un solo ID de Medición `G-XXXXXXXXXX`.
-  * GA4 rastrea automáticamente el `page_location` y `page_title`, los cuales contienen el slug de la escuela (ej. `/propuesta/lasalletest.html`).
-  * **Dimensión Personalizada (Recomendada)**: Configurar un parámetro personalizado `school_slug` en la etiqueta de configuración global leyendo de la URL para facilitar filtros e informes consolidados en GA4.
+### 2. Integración Activa de Analytics Multi-Propuesta (Actualizado a Producción)
+Para medir de manera clara las visitas y la interacción en múltiples propuestas (ej. `/propuesta/lasa-26`, `/propuesta/indp-26`):
+* **Código GA4 Activo**: Se insertó en producción el ID de medición `G-6H4H52RL0T` para todas las propuestas (`propuesta/index.html`) y para los flujos de onboarding (`escuelas.json`).
+* **Estrategia Multi-Propuesta y SPA**: 
+  * Se extrae dinámicamente el `schoolId` desde las rutas limpias manejadas por Vercel (`window.location.pathname`).
+  * Se **retrasa el disparo** del hit de página hasta que `app.js` resuelve la configuración de la escuela (`_propuesta.json`).
+  * Esto permite asignar dinámicamente el `document.title` antes de enviar el hit a Google Analytics. Como resultado, los informes en GA4 muestran los nombres limpios y comerciales de las escuelas (ej. `Propuesta: Colegio La Salle`) en vez del título genérico del archivo HTML.
 
 ---
 

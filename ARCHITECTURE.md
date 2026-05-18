@@ -127,10 +127,12 @@ const res = await fetch('/data/precios.json');
 
 ## Inicialización de Google Analytics en Propuestas B2B
 
-Para mantener la velocidad y optimizar la carga del brochure comercial, se implementó la etiqueta oficial de **Google Analytics 4 (GA4)** de forma estática y comentada en el HTML.
+Para mantener la legibilidad de los reportes en Google Analytics 4 (GA4) y evitar que todas las propuestas registren el título genérico del HTML (`Propuesta — Mi Mejor Retrato`), el sistema utiliza una estrategia de **Disparo Asíncrono Retrasado**.
 
 ### Flujo de Monitoreo Multi-Colegio
-El sistema consolida el rastreo mediante una sola propiedad GA4:
-1. El usuario navega a la URL específica del colegio (ej: `/propuesta/index.html?brochure=lasa-26`).
-2. La etiqueta de GA4 captura el `page_location` automáticamente.
-3. Se puede inyectar dinámicamente el parámetro `school_slug` en la llamada a `gtag` para crear dimensiones personalizadas que faciliten la analítica consolidada y reportes de conversión específicos por colegio de forma ágil y centralizada.
+El sistema consolida el rastreo mediante una sola propiedad GA4 (`G-6H4H52RL0T`):
+1. El usuario navega a la URL específica mediante Vercel (ej: `/propuesta/lasa-26`).
+2. El script inline en `<head>` carga la librería gtag, pero **no** dispara el hit de configuración (`gtag('config')`).
+3. `app.js` extrae el `schoolId` (soportando tanto Query Strings como URLs limpias de Vercel).
+4. `app.js` lee `escuelas.json`, actualiza el `document.title` dinámicamente (ej: `Propuesta: Colegio La Salle`).
+5. Finalmente, `app.js` dispara el evento de GA4, enviando el `page_title` legible y la dimensión personalizada `school_id`.
