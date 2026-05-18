@@ -13,7 +13,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   margin: 0;
-  padding: 40px 20px;
+  padding: 0;
   line-height: 1.5;
 }
 
@@ -21,9 +21,8 @@ body {
   max-width: 800px;
   margin: 0 auto;
   background: var(--doc-bg);
-  padding: 50px;
-  border-radius: var(--radius);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Sombra tipo PDF */
+  padding: 24px 16px;
+  box-shadow: none;
 }
 
 .doc-header {
@@ -61,7 +60,7 @@ body {
 
 .grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 
@@ -169,8 +168,8 @@ ul {
 
 .gallery-masonry {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   margin-top: 20px;
 }
 
@@ -189,7 +188,7 @@ ul {
 }
 
 .gallery-item.horizontal {
-  grid-column: span 3;
+  grid-column: 1 / -1;
 }
 
 .gallery-item img {
@@ -288,13 +287,25 @@ input:focus, textarea:focus {
 .msg-success { color: #15803d; margin-top: 15px; font-size: 14px; text-align:center; font-weight: 500;}
 .msg-error { color: #b91c1c; margin-top: 15px; font-size: 14px; text-align:center; font-weight: 500;}
 
-@media (max-width: 600px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .document-container { padding: 30px 20px; }
-  body { padding: 0; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  .gallery-masonry { grid-template-columns: repeat(3, 1fr); }
-  .gallery-item.horizontal { grid-column: span 3; }
+@media (min-width: 768px) {
+  body {
+    padding: 40px 20px;
+  }
+  .document-container {
+    padding: 50px;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .gallery-masonry {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  .delegado-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 /* ─── Precios mejorados ─────────────────────────────────── */
@@ -454,7 +465,7 @@ input:focus, textarea:focus {
 /* ─── Sección Delegado ──────────────────────────────────── */
 .delegado-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   margin-bottom: 20px;
 }
