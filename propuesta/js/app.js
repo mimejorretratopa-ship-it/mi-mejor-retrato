@@ -66,15 +66,12 @@ async function initPropuesta() {
       document.getElementById('gallery-container').style.display = 'none';
     }
     
-    // Configurar form
-    setupForm();
-
+    // Formulario de contacto eliminado a favor del botón de WhatsApp directo.
     document.getElementById('content-wrapper').style.display = 'block';
 
   } catch (err) {
     console.error(err);
     showErrorState("El link que usaste no corresponde a una propuesta formal armada. Por eso te pedimos que escribas directo a Mike para darte respuesta más rápido.");
-    setupForm();
   }
 }
 
@@ -125,119 +122,12 @@ function renderContent(prop, precios) {
   setSafeText('txt-hermanos', prop.politicas.descuento_hermanos.texto);
   setSafeText('txt-dinero', prop.entrega_y_pagos.recoleccion_dinero.explicacion);
 
-  // D. Precios Dinámicos con Estilos Premium
-  const cont = document.getElementById('pricing-container');
-  if (cont) {
-    cont.innerHTML = ''; // Limpiar anterior
-    if (precios && precios.visibilidad === 'publicar' && precios.paquetes.length > 0) {
-      precios.paquetes.forEach((p, index) => {
-        let entregablesHTML = '';
-        if (p.entregables) {
-          entregablesHTML += '<ul class="price-details">';
-          if (p.entregables.impresos) {
-            p.entregables.impresos.forEach(imp => {
-              // Determinar la etiqueta según el tipo
-              let tagHTML = '';
-              const detalleLower = (imp.detalle || '').toLowerCase();
-              const tamanoLower = (imp.tamano || '').toLowerCase();
-              if (detalleLower.includes('enmarcada') || tamanoLower.includes('enmarcada')) {
-                tagHTML = '<span class="price-tag tag-enmarcado">Enmarcado</span>';
-              } else if (detalleLower.includes('digital') || tamanoLower.includes('digital')) {
-                tagHTML = '<span class="price-tag tag-digital">Digital</span>';
-              } else {
-                tagHTML = '<span class="price-tag tag-impreso">Impreso</span>';
-              }
-              entregablesHTML += `<li>${imp.cantidad} foto(s) ${imp.tamano} ${imp.detalle || ''} ${tagHTML}</li>`;
-            });
-          }
-          if (p.entregables.digitales && p.entregables.digitales.plataforma) {
-            entregablesHTML += `<li>Galería privada online (descargable)</li>`;
-          }
-          entregablesHTML += '</ul>';
-        }
-
-        // Icono sugerido
-        let icon = '📸';
-        if (index === 0) icon = '🖥️';
-        else if (index === 1) icon = '🖼️';
-        else if (index === 2) icon = '🏆';
-
-        // Destacar el segundo paquete
-        const esDestacado = index === 1;
-        const card = document.createElement('div');
-        card.className = `price-card ${esDestacado ? 'destacado' : ''}`;
-        card.innerHTML = `
-          ${esDestacado ? '<span class="badge-popular">⭐ Más solicitado</span>' : ''}
-          <div class="price-icon">${icon}</div>
-          <h4>${p.nombre}</h4>
-          <div class="price-val">$${p.precio}</div>
-          <div class="price-desc">${p.descripcion}</div>
-          ${entregablesHTML}
-        `;
-        cont.appendChild(card);
-      });
-    } else {
-      cont.innerHTML = '<p>Los precios están pendientes de confirmación para esta institución.</p>';
-    }
+  // D. Precios Dinámicos (inyectar en tabla)
+  if (precios && precios.visibilidad === 'publicar' && precios.paquetes.length >= 3) {
+    setSafeText('precio-esencial', '$' + precios.paquetes[0].precio);
+    setSafeText('precio-familiar', '$' + precios.paquetes[1].precio);
+    setSafeText('precio-premium', '$' + precios.paquetes[2].precio);
   }
-}
-
-function setupForm() {
-  const form = document.getElementById('propuesta-form');
-  const btn = document.getElementById('btn-submit');
-  const msg = document.getElementById('form-msg');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-    msg.className = 'msg-hidden';
-    
-    const data = {
-      tipo: 'Lead_Propuesta',
-      escuela: schoolData ? schoolData.name : 'Escuela Desconocida / Link Inválido',
-      code: currentSchoolCode || 'none',
-      nombre: document.getElementById('f_nombre').value,
-      whatsapp: document.getElementById('f_whatsapp').value,
-      email: document.getElementById('f_email').value,
-      salon: document.getElementById('f_salon').value,
-      tema: document.getElementById('f_tema').value
-    };
-
-    try {
-      // Usar Api.notificarDiscord (cargada via js/core/api.js)
-      const escName = schoolData ? schoolData.name : 'Escuela Desconocida';
-      const discordPayload = {
-        title: `📄 Nuevo Lead Exploratorio (${escName})`,
-        description: "Un tomador de decisión (Director/Delegado) está solicitando ampliación de detalles.",
-        fields: [
-          { name: '👤 Nombre', value: data.nombre, inline: true },
-          { name: '🏫 Cargo / Salón', value: data.salon, inline: true },
-          { name: '📱 WhatsApp', value: data.whatsapp, inline: true },
-          { name: '✉️ Email', value: data.email, inline: true },
-          { name: '💬 "Mike, dame más detalles de:"', value: data.tema, inline: false }
-        ]
-      };
-      
-      if (window.api && typeof window.api.notificarDiscord === 'function') {
-        await window.api.notificarDiscord(discordPayload, true);
-      } else {
-        console.warn("API de Discord no está disponible. No se envió la notificación.");
-      }
-
-      msg.textContent = '¡Mensaje enviado exitosamente! Mike le contactará pronto.';
-      msg.className = 'msg-success msg-hidden'; // quitamos msg-hidden abajo
-      msg.classList.remove('msg-hidden');
-      form.reset();
-    } catch (err) {
-      msg.textContent = 'Hubo un error al enviar. Por favor contáctenos directamente.';
-      msg.className = 'msg-error msg-hidden';
-      msg.classList.remove('msg-hidden');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Enviar mensaje a Mike';
-    }
-  });
 }
 
 async function initGaleria(portafolioId) {
