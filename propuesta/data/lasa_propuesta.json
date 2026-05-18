@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "nota": "Este archivo contiene el contenido específico para la página de propuesta de una escuela. Las opciones disponibles para cada sección están documentadas aquí para que sea fácil modificarlas o crear nuevas escuelas.",
+    "escuela_code": "lasa",
+    "titulo_principal": "Propuesta de Fotos de Recuerdo Kinder",
+    "fecha_actualizacion": "18 de Mayo, 2026"
+  },
+  
+  "diferenciadores": {
+    "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real. Si el niño no quiere sonreír, no hay presión — las mejores fotos salen cuando están cómodos.",
+    "fotos_autenticas": "Nuestras fotografías no son retratos genéricos con fondos plásticos. Buscamos expresiones genuinas, momentos naturales y una estética cuidada que los papás quieran enmarcar, no guardar en un cajón.",
+    "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas. Las fotos seleccionadas se retocan individualmente — no es un filtro masivo, es edición foto por foto."
+  },
+
+  "galeria": {
+    "_nota": "Carpeta del portafolio a cargar en propuesta/portafolios/. Ej: 'lasa', 'generico_kinder', 'generico_sexto'",
+    "portafolio_id": "lasa"
+  },
+
+  "logistica": {
+    "nota_ubicacion": "OPCIONES DISPONIBLES para 'tipo': 'escuela' (En la escuela), 'estudio_via_argentina' (Vía Argentina), 'estudio_chorrera' (La Chorrera), 'locacion_externa' (Locación alquilada por el fotógrafo). Puedes poner una o varias en el array de 'opciones_activas'.",
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "estudio_via_argentina",
+          "texto_display": "Estudio Vía Argentina (a 500 mts del Colegio La Salle)",
+          "descripcion": "Estudio fotográfico profesional ubicado convenientemente cerca del colegio."
+        }
+      ]
+    },
+    
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos capas y birretes del color que requieran. Para grupos grandes, podemos confeccionar colores específicos previa recepción de abonos."
+    },
+    
+    "solicitudes_especiales": {
+      "mascotas": true,
+      "familiares": "Sin límite en el estudio (Tome en cuenta que acomodar a más personas reduce el tiempo efectivo de fotos individuales del estudiante).",
+      "cambios_vestuario": "Permitidos, pero limitados por el tiempo asignado a la sesión."
+    }
+  },
+
+  "entrega_y_pagos": {
+    "nota_metodo_entrega": "OPCIONES DISPONIBLES: 1. 'fotografo_escuela' (Yo entrego a la escuela), 2. 'fotografo_delegado' (Yo entrego a los delegados), 3. 'punto_encuentro' (Coordino fechas en un punto medio), 4. 'delivery' (Envío a casa/trabajo por $2.50).",
+    "metodo_entrega": [
+      {
+        "tipo": "punto_encuentro",
+        "texto": "Entrega personal coordinada (Ej. en un café cercano, 2 o 3 fechas acordadas)."
+      },
+      {
+        "tipo": "delivery",
+        "texto": "Delivery directo a casa o trabajo ($2.50)."
+      }
+    ],
+    
+    "tiempo_entrega_semanas": 2,
+    
+    "recoleccion_dinero": {
+      "metodo_principal": "Pago directo al fotógrafo (Recomendado)",
+      "explicacion": "Aunque la escuela o coordinador pueda recoger el dinero, preferimos el pago directo ya que cada familia debe comunicarse individualmente con nosotros de todos modos para recibir su galería privada por WhatsApp."
+    }
+  },
+
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Política de Reagendamiento",
+      "texto_base": "Entendemos que los imprevistos suceden. Aquí detallamos cómo manejamos las inasistencias:",
+      "opcion_multiples_salones": "Si la escuela contrata múltiples salones: Se programará 1 fecha extra global sin costo. Si no puede asistir a esa segunda fecha, habrá un recargo de $15 por asignar una nueva fecha individual.",
+      "opcion_un_salon": "Si solo se contrata un salón: El estudiante podrá asistir a una fecha de recuperación sin costo (espacio separado, pero el día se comparte con niños rezagados de otras escuelas). Si falta a esta segunda fecha, aplica el recargo de $15."
+    },
+    "descuento_hermanos": {
+      "aplica": true,
+      "porcentaje": 25,
+      "texto": "25% de descuento por cada hijo adicional (hermanos)."
+    },
+    "extras": "Posibilidad de adquirir fondos extra, impresiones adicionales o archivos digitales extra. (Precios varían por escuela)."
+  }
+}

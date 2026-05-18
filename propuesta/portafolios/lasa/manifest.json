@@ -1,0 +1,29 @@
+{
+  "titulo": "Nuestro trabajo en La Salle",
+  "fotos": [
+    {
+      "archivo": "01.jpg",
+      "orientacion": "vertical",
+      "alt": "Niña sonriente de Kínder del Colegio La Salle con birrete de graduación azul royal y capa",
+      "caption": "Expresiones genuinas y espontáneas en su ambiente escolar."
+    },
+    {
+      "archivo": "02.jpg",
+      "orientacion": "vertical",
+      "alt": "Niño sosteniendo diploma de kínder alegre en el estudio cerca de La Salle",
+      "caption": "Retratos individuales cuidados al mínimo detalle."
+    },
+    {
+      "archivo": "03.jpg",
+      "orientacion": "horizontal",
+      "alt": "Grupo completo de Kínder del Colegio La Salle celebrando con confeti y alegría",
+      "caption": "Capturando la energía y unión de todo el salón."
+    },
+    {
+      "archivo": "04.jpg",
+      "orientacion": "vertical",
+      "alt": "Retrato natural de niña de Kínder sin poses forzadas mirando a la cámara",
+      "caption": "Pacientes y dedicados a lograr una sesión cómoda para ellos."
+    }
+  ]
+}

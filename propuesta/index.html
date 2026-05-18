@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta — Mi Mejor Retrato</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="document-container">
+    <header class="doc-header">
+      <h1 id="propuesta-title">Propuesta Fotográfica</h1>
+      <h2 id="school-name">Cargando...</h2>
+      <p id="doc-date" class="doc-date"></p>
+    </header>
+
+    <div class="content-wrapper" id="content-wrapper" style="display: none;">
+      <!-- Diferenciadores -->
+      <section class="doc-section">
+        <h3>1. ¿Por qué Mi Mejor Retrato?</h3>
+        <div class="grid-2">
+          <div class="card">
+            <h4>Trato al Estudiante</h4>
+            <p id="txt-trato"></p>
+          </div>
+          <div class="card">
+            <h4>Fotografía Auténtica</h4>
+            <p id="txt-fotos"></p>
+          </div>
+          <div class="card full-width">
+            <h4>Nuestros Entregables</h4>
+            <p id="txt-entregables"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Galería (Portafolio) -->
+      <section class="doc-section">
+        <h3 id="gallery-title">Muestra de Trabajo</h3>
+        <div class="gallery-masonry" id="gallery-container">
+          <!-- Las fotos se cargarán dinámicamente aquí -->
+        </div>
+      </section>
+
+      <!-- Precios -->
+      <section class="doc-section">
+        <h3>2. Paquetes y Precios</h3>
+        <p class="nota">Estos son los paquetes pre-aprobados para esta institución.</p>
+        <div id="pricing-container" class="pricing-grid"></div>
+      </section>
+
+      <!-- Logistica -->
+      <section class="doc-section">
+        <h3>3. Logística de la Sesión</h3>
+        <div class="list-container">
+          <div class="list-item">
+            <strong>📍 Ubicación de la Sesión:</strong>
+            <span id="txt-ubicaciones"></span>
+          </div>
+          <div class="list-item">
+            <strong>🎓 Capas y Birretes:</strong>
+            <span id="txt-capas"></span>
+          </div>
+          <div class="list-item">
+            <strong>🐕 Mascotas permitidas:</strong> <span id="txt-mascotas"></span>
+          </div>
+          <div class="list-item">
+            <strong>👨‍👩‍👧‍👦 Fotos con Familiares:</strong> <span id="txt-familiares"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Entrega y Políticas -->
+      <section class="doc-section">
+        <h3>4. Entrega y Condiciones</h3>
+        <div class="grid-2">
+          <div class="policy-box">
+            <h4>Métodos de Entrega</h4>
+            <ul id="list-entregas"></ul>
+            <p><strong>Tiempo estándar:</strong> <span id="txt-tiempo"></span> semanas.</p>
+          </div>
+          <div class="policy-box">
+            <h4>Política de Inasistencia</h4>
+            <p id="txt-inasistencia"></p>
+          </div>
+          <div class="policy-box">
+            <h4>Descuento por Hermanos</h4>
+            <p id="txt-hermanos"></p>
+          </div>
+          <div class="policy-box">
+            <h4>Recolección de Dinero</h4>
+            <p id="txt-dinero"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Formulario Contacto -->
+      <section class="doc-section form-section">
+        <h3>¿Desea avanzar o tiene dudas?</h3>
+        <p>Envíe un mensaje directo a Mike para solicitar ampliación de algún detalle.</p>
+
+        <form id="propuesta-form">
+          <div class="form-group">
+            <label>Su Nombre Completo</label>
+            <input type="text" id="f_nombre" required>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label>WhatsApp</label>
+              <input type="tel" id="f_whatsapp" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="f_email" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Salón o Cargo</label>
+            <input type="text" id="f_salon" placeholder="Ej: Delegado 6to Grado" required>
+          </div>
+          <div class="form-group">
+            <label>Mike, dame más detalles de...</label>
+            <textarea id="f_tema" rows="3" placeholder="¿Qué punto le gustaría que le ampliáramos?" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" id="btn-submit">Enviar mensaje a Mike</button>
+          <div id="form-msg" class="msg-hidden"></div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <!-- Scripts: Reusando core + logica especifica -->
+  <script src="../js/core/config.js"></script>
+  <script src="../js/core/api.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+
+</html>

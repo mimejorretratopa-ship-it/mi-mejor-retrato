@@ -1,0 +1,23 @@
+{
+  "titulo": "Portafolio de Recuerdos Kínder",
+  "fotos": [
+    {
+      "archivo": "01.jpg",
+      "orientacion": "vertical",
+      "alt": "Retrato en primer plano de niño sonriente de graduación de Kínder con birrete",
+      "caption": "Retratos que reflejan la alegría natural de esta gran etapa."
+    },
+    {
+      "archivo": "02.jpg",
+      "orientacion": "horizontal",
+      "alt": "Pequeños graduados de preescolar sonriendo juntos en una locación externa céntrica",
+      "caption": "Fotos grupales llenas de vida y naturalidad."
+    },
+    {
+      "archivo": "03.jpg",
+      "orientacion": "vertical",
+      "alt": "Niña feliz con diploma en mano y capa de graduación de kínder",
+      "caption": "Accesorios y capas limpias provistos para toda la sesión."
+    }
+  ]
+}

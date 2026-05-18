@@ -1,0 +1,23 @@
+{
+  "titulo": "Portafolio de Recuerdos de 6to Grado",
+  "fotos": [
+    {
+      "archivo": "01.jpg",
+      "orientacion": "vertical",
+      "alt": "Graduando de sexto grado posando formalmente con capa y birrete en el estudio",
+      "caption": "Retratos elegantes para recordar el cierre de la primaria."
+    },
+    {
+      "archivo": "02.jpg",
+      "orientacion": "horizontal",
+      "alt": "Grupo de estudiantes de sexto grado compartiendo risas y chocando manos en su sesión de fotos",
+      "caption": "Momentos espontáneos entre compañeros de salón."
+    },
+    {
+      "archivo": "03.jpg",
+      "orientacion": "vertical",
+      "alt": "Estudiante de primaria sonriente sosteniendo diploma de graduación de sexto grado",
+      "caption": "Un recuerdo inolvidable de sus metas alcanzadas."
+    }
+  ]
+}
