@@ -37,7 +37,7 @@
       <div class="doc-brand">Mi Mejor Retrato</div>
       <h1 id="propuesta-title" class="heading-1">Propuesta de Fotos de Recuerdo Kinder</h1>
       <div class="doc-meta">
-        <div class="doc-meta-item">Propuesta preparada para: <strong id="school-name">Colegio La Salle</strong></div>
+        <div class="doc-meta-item"><strong id="school-name">Colegio La Salle</strong></div>
         <div class="doc-meta-item" id="doc-date" class="doc-date">Última actualización: 18 de Mayo, 2026</div>
       </div>
     </header>
@@ -48,10 +48,10 @@
       <section class="doc-section summary-section">
         <h3 class="heading-3">¿Qué incluye?</h3>
         <ul class="include-list">
-          <li>Retratos que hacen sentir orgullosas a las familias</li>
-          <li>Una experiencia elegante y memorable para los estudiantes</li>
-          <li>Coordinación moderna y ordenada de principio a fin</li>
-          <li>Atención personalizada para cada familia</li>
+          <li>Sesión individual relajada</li>
+          <li>Galería privada online</li>
+          <li>Fotos familiares opcionales</li>
+          <li>Reserva por horario</li>
           <li>Entrega digital e impresa</li>
           <li>Desde $19</li>
         </ul>
@@ -66,6 +66,7 @@
             <p>Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con
               paciencia y juego para capturar su personalidad real. Si el niño no quiere sonreír, no hay presión — las
               mejores fotos salen cuando están cómodos.</p>
+            <!-- HARDCODED: aplica a todas las escuelas -->
             <p style="margin-top:10px;font-style:italic;color:var(--color-ink-muted);">Cuando lo veas reír, sabrás que
               era de verdad.</p>
           </div>
@@ -76,6 +77,7 @@
               ella le interesa.</p>
           </div>
           <div class="card full-width">
+            <!-- HARDCODED: datos del fotógrafo, no varían por escuela -->
             <h4 class="heading-3">Nuestra Experiencia</h4>
             <div class="credenciales">
               <div class="credencial-badge"><span class="cred-icon">📸</span> +250 familias fotografiadas</div>
@@ -120,60 +122,64 @@
         <p class="nota">Escoge el recuerdo que mejor se adapte a tu familia</p>
 
         <div class="pricing-table-wrapper">
-          <table class="pricing-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Básico<br><small>Un recuerdo sencillo y bonito.</small></th>
-                <th class="highlight">Familiar ⭐<br><small>La mejor combinación.</small></th>
-                <th>Premium<br><small>Para conservar toda la experiencia.</small></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Precio</td>
-                <td>$19</td>
-                <td class="highlight">$34</td>
-                <td>$57</td>
-              </tr>
-              <tr>
-                <td>Fotos digitales</td>
-                <td>3</td>
-                <td class="highlight">8</td>
-                <td>Todas</td>
-              </tr>
-              <tr>
-                <td>Foto grupal</td>
-                <td>✅</td>
-                <td class="highlight">✅</td>
-                <td>✅</td>
-              </tr>
-              <tr>
-                <td>Impresiones</td>
-                <td>—</td>
-                <td class="highlight">1 grande y 4 pequeñas</td>
-                <td>2 grandes y 10 pequeñas</td>
-              </tr>
-              <tr>
-                <td>Foto enmarcada</td>
-                <td>—</td>
-                <td class="highlight">—</td>
-                <td>Las 2 grandes</td>
-              </tr>
-              <tr>
-                <td>Fotos familiares</td>
-                <td>Opcional</td>
-                <td class="highlight">Opcional</td>
-                <td>Incluidas</td>
-              </tr>
-              <tr>
-                <td>Ideal para</td>
-                <td>Un recuerdo sencillo</td>
-                <td class="highlight">Variedad sin complicaciones</td>
-                <td>Conservar la experiencia completa</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="pt-grid" role="table" aria-label="Comparación de paquetes">
+
+            <!-- HEADER -->
+            <div class="pt-cell pt-head pt-label" role="columnheader"></div>
+            <div class="pt-cell pt-head" role="columnheader">
+              <span class="pt-name">Básico</span>
+              <span class="pt-price" id="precio-esencial">$19</span>
+              <span class="pt-tagline">Un recuerdo sencillo y bonito</span>
+            </div>
+            <div class="pt-cell pt-head pt-feat" role="columnheader">
+              <span class="pt-popular-badge">Popular</span>
+              <span class="pt-name">Familiar</span>
+              <span class="pt-price" id="precio-familiar">$34</span>
+              <span class="pt-tagline">La mejor combinación</span>
+            </div>
+            <div class="pt-cell pt-head" role="columnheader">
+              <span class="pt-name">Premium</span>
+              <span class="pt-price" id="precio-premium">$57</span>
+              <span class="pt-tagline">Para conservar toda la experiencia</span>
+            </div>
+
+            <!-- Fotos digitales -->
+            <div class="pt-cell pt-label" role="rowheader">Fotos digitales</div>
+            <div class="pt-cell" role="cell">3</div>
+            <div class="pt-cell pt-feat" role="cell">8</div>
+            <div class="pt-cell" role="cell">Todas</div>
+
+            <!-- Foto grupal -->
+            <div class="pt-cell pt-label" role="rowheader">Foto grupal</div>
+            <div class="pt-cell" role="cell"><span class="pt-ok">✓</span></div>
+            <div class="pt-cell pt-feat" role="cell"><span class="pt-ok-inv">✓</span></div>
+            <div class="pt-cell" role="cell"><span class="pt-ok">✓</span></div>
+
+            <!-- Impresiones -->
+            <div class="pt-cell pt-label" role="rowheader">Impresiones</div>
+            <div class="pt-cell" role="cell"><span class="pt-no">—</span></div>
+            <div class="pt-cell pt-feat pt-sm" role="cell">1 grande y 4 pequeñas</div>
+            <div class="pt-cell pt-sm" role="cell">2 grandes y 10 pequeñas</div>
+
+            <!-- Foto enmarcada -->
+            <div class="pt-cell pt-label" role="rowheader">Foto enmarcada</div>
+            <div class="pt-cell" role="cell"><span class="pt-no">—</span></div>
+            <div class="pt-cell pt-feat" role="cell"><span class="pt-no-inv">—</span></div>
+            <div class="pt-cell pt-sm" role="cell">Las 2 grandes</div>
+
+            <!-- Fotos familiares -->
+            <div class="pt-cell pt-label" role="rowheader">Fotos familiares</div>
+            <div class="pt-cell" role="cell"><span class="pt-opt">Opcional</span></div>
+            <div class="pt-cell pt-feat" role="cell"><span class="pt-opt-inv">Opcional</span></div>
+            <div class="pt-cell" role="cell"><span class="pt-opt">Incluidas</span></div>
+
+            <!-- Ideal para -->
+            <div class="pt-cell pt-label pt-last" role="rowheader">Ideal para</div>
+            <div class="pt-cell pt-last pt-sm" role="cell">Un recuerdo sencillo</div>
+            <div class="pt-cell pt-feat pt-last pt-sm" role="cell">Variedad sin complicaciones</div>
+            <div class="pt-cell pt-last pt-sm" role="cell">Conservar la experiencia completa</div>
+
+          </div>
         </div>
       </section>
 
@@ -187,9 +193,9 @@
           </div>
           <div class="list-item">
             <strong>🎓 Capas y Birretes:</strong>
-            <span>Proveemos capas y birretes del color que requieran. Para grupos grandes, podemos confeccionar colores
-              específicos previa recepción de abonos.</span>
+            <span>Proveemos capas y birretes del color que requieran. Para grupos grandes, podemos confeccionar colores específicos previa recepción de abonos.</span>
           </div>
+          <!-- HARDCODED: proceso universal -->
           <div class="list-item">
             <strong>👨‍👩‍👧‍👦 ¿Quiénes asisten?</strong>
             <span>Niño(a) + padres + hermanos. Sin costo extra.</span>
@@ -198,15 +204,18 @@
             <strong>🐕 Mascotas:</strong>
             <span>Sí se permiten.</span>
           </div>
+          <!-- HARDCODED: proceso universal -->
           <div class="list-item">
             <strong>👗 Guía de vestuario:</strong>
             <span>Guía sencilla enviada 3 semanas antes.</span>
           </div>
+          <!-- HARDCODED: política universal -->
           <div class="list-item">
             <strong>👶 ¿Participan hermanos?</strong>
             <span>Sí, el paquete aplica por familia.</span>
           </div>
         </div>
+        <!-- HARDCODED: siempre se agenda por WhatsApp -->
         <div class="card" style="margin-top:16px;">
           <h4 class="heading-3">📅 ¿Cómo se agenda la sesión?</h4>
           <p>Cada familia elige su horario por WhatsApp directo con nosotros.</p>
@@ -214,6 +223,7 @@
       </section>
 
       <!-- ── 4. ¿QUÉ PASA DESPUÉS DE LA SESIÓN? ──────────────── -->
+      <!-- HARDCODED: el proceso/timeline es igual para todas las escuelas -->
       <section class="doc-section">
         <h2 class="heading-2">4. ¿Qué pasa <em>después de la sesión?</em></h2>
         <div class="timeline">
@@ -278,9 +288,10 @@
               a esa segunda fecha, aplica un recargo de $15 por fecha individual.</p>
           </div>
           <div class="policy-box">
-            <h4 class="heading-3">Descuento por Hermanos Gemelos o de otros salones</h4>
+            <h4 class="heading-3">Descuento por Hermanos</h4>
             <p>25% de descuento por cada hijo.</p>
           </div>
+          <!-- HARDCODED: política de pago universal -->
           <div class="policy-box">
             <h4 class="heading-3">Pagos y Cobros</h4>
             <p>Cobro directo vía <strong>Yappy</strong> a cada familia. El delegado no cobra ni gestiona pagos.</p>
@@ -289,6 +300,7 @@
       </section>
 
       <!-- ── 6. PARA EL DELEGADO ───────────────────────────────── -->
+      <!-- HARDCODED: el rol del delegado es igual para todas las escuelas -->
       <section class="doc-section">
         <h2 class="heading-2">6. Para el <em>Delegado o Coordinador</em></h2>
         <p style="margin-bottom:16px; font-size:14px; color:var(--color-ink-muted);">Tu trabajo será mínimo:</p>
@@ -322,6 +334,7 @@
       </section>
 
       <!-- ── 7. PREGUNTAS FRECUENTES ───────────────────────────── -->
+      <!-- HARDCODED: preguntas universales -->
       <section class="doc-section">
         <h2 class="heading-2">7. Preguntas <em>Frecuentes</em></h2>
         <dl class="faq-list">
@@ -352,7 +365,7 @@
         </dl>
       </section>
 
-    </div>
+    </div> <!-- Cierre de content-wrapper -->
 
     <!-- ── CTA FINAL ─────────────────────────────────────────── -->
     <section class="cta-section">
