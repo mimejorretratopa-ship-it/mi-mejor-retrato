@@ -1,0 +1,68 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "nota": "Propuesta Genérica para Padres Independientes",
+    "escuela_code": "indp",
+    "titulo_principal": "Tu Sesión de Retrato",
+    "fecha_actualizacion": "18 de Mayo, 2026"
+  },
+  "diferenciadores": {
+    "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real. Si el niño no quiere sonreír, no hay presión — las mejores fotos salen cuando están cómodos.",
+    "fotos_autenticas": "El cuestionario previo — Nuestro truco secreto. Nos cuentan los gustos, comida favorita, música y nosotros nos preparamos antes. Cuando tu hijo llega ya tenemos tema de conversación que a él o ella le interesa.",
+    "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas. Las fotos seleccionadas se retocan individualmente — no es un filtro masivo, es edición foto por foto."
+  },
+  "galeria": {
+    "_nota": "Carpeta del portafolio a cargar en propuesta/portafolios/. Ej: 'lasa', 'generico_kinder', 'generico_sexto'",
+    "portafolio_id": "lasa"
+  },
+  "logistica": {
+    "nota_ubicacion": "OPCIONES DISPONIBLES para 'tipo': 'escuela' (En la escuela), 'estudio_via_argentina' (Vía Argentina), 'estudio_chorrera' (La Chorrera), 'locacion_externa' (Locación alquilada por el fotógrafo).",
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "estudios",
+          "texto_display": "Estudio fotográfico a tu elección (Condado del Rey, Vía Argentina o La Chorrera)",
+          "descripcion": "Contamos con múltiples estudios equipados."
+        }
+      ]
+    },
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos capas y birretes del color que requieran si la sesión es para graduación."
+    },
+    "solicitudes_especiales": {
+      "mascotas": true,
+      "familiares": "Sin límite de personas del núcleo familiar.",
+      "cambios_vestuario": "Permitidos dentro del tiempo de la sesión."
+    }
+  },
+  "entrega_y_pagos": {
+    "nota_metodo_entrega": "OPCIONES DISPONIBLES: 1. 'fotografo_escuela' (Yo entrego a la escuela), 2. 'fotografo_delegado' (Yo entrego a los delegados), 3. 'punto_encuentro' (Coordino fechas en un punto medio), 4. 'delivery' (Envío a casa/trabajo por $2.50).",
+    "metodo_entrega": [
+      {
+        "tipo": "delivery",
+        "texto": "Delivery directo a casa o trabajo ($2.50) o retiro en el estudio."
+      }
+    ],
+    "tiempo_entrega_semanas": 2,
+    "recoleccion_dinero": {
+      "metodo_principal": "Pago directo",
+      "explicacion": "Pago directo vía Yappy o transferencia al coordinar la sesión."
+    }
+  },
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Política de Reagendamiento",
+      "texto_base": "Entendemos que los imprevistos suceden. Aquí detallamos cómo manejamos las inasistencias:",
+      "opcion_multiples_salones": "Si no puedes asistir a tu sesión programada, por favor avísanos con 24 horas de anticipación para reagendar sin costo.",
+      "opcion_un_salon": "El reagendamiento de último minuto puede conllevar cargos adicionales dependiendo del estudio reservado."
+    },
+    "descuento_hermanos": {
+      "aplica": true,
+      "porcentaje": 25,
+      "texto": "25% de descuento por cada hijo adicional para fotos individuales."
+    },
+    "extras": "Posibilidad de adquirir fondos extra, impresiones adicionales o archivos digitales extra."
+  }
+}
