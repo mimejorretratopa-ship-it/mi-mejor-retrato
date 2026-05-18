@@ -12,22 +12,15 @@
     rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
 
-  <!-- Google Analytics (Comentado para producción futura) -->
-
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H4H52RL0T"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
-    // Extraer dinámicamente el schoolId de la URL para tracking segmentado
-    const urlParams = new URLSearchParams(window.location.search);
-    const schoolId = urlParams.get('brochure') || 'generic';
-
-    gtag('config', 'G-XXXXXXXXXX', {
-      'custom_map': { 'dimension1': 'school_id' },
-      'school_id': schoolId
-    });
+    // El hit ('config') no se dispara aquí. 
+    // Se dispara en app.js cuando ya conocemos el nombre real de la escuela.
   </script>
 
 </head>

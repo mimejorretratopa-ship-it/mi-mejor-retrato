@@ -35,6 +35,16 @@ async function initPropuesta() {
     }
 
     document.getElementById('school-name').textContent = "Propuesta preparada para: " + schoolData.name;
+    document.title = "Propuesta: " + schoolData.name;
+
+    // Disparar Google Analytics AHORA con el título y código correcto
+    if (typeof gtag === 'function') {
+      gtag('config', 'G-6H4H52RL0T', {
+        'page_title': document.title,
+        'custom_map': { 'dimension1': 'school_id' },
+        'school_id': currentSchoolCode
+      });
+    }
 
     // 3. Cargar contenido de la propuesta específica
     const propRes = await fetch(`./data/${currentSchoolCode}_propuesta.json`);
