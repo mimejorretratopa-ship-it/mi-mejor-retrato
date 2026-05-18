@@ -13,11 +13,11 @@
   <link rel="stylesheet" href="./css/style.css">
 
   <!-- Google Analytics (Comentado para producción futura) -->
-  <!--
+
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     // Extraer dinámicamente el schoolId de la URL para tracking segmentado
@@ -25,11 +25,11 @@
     const schoolId = urlParams.get('brochure') || 'generic';
 
     gtag('config', 'G-XXXXXXXXXX', {
-      'custom_map': {'dimension1': 'school_id'},
+      'custom_map': { 'dimension1': 'school_id' },
       'school_id': schoolId
     });
   </script>
-  -->
+
 </head>
 
 <body>
