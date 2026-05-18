@@ -185,8 +185,8 @@
         {
           "id": "paquete_1",
           "nombre": "Paquete 1",
-          "precio": 19,
-          "descripcion": "4 Fotos únicamente en galería online",
+          "precio": 12,
+          "descripcion": "3 Fotos únicamente en galería online",
           "entregables": {
             "impresos": [
               {
@@ -208,7 +208,7 @@
         {
           "id": "paquete_2",
           "nombre": "Paquete 2",
-          "precio": 34,
+          "precio": 26,
           "descripcion": "6 Fotos impresas y en galería online",
           "entregables": {
             "impresos": [
@@ -236,7 +236,7 @@
         {
           "id": "paquete_3",
           "nombre": "Paquete 3",
-          "precio": 57,
+          "precio": 41,
           "descripcion": "12 Fotos impresas y en galería online",
           "entregables": {
             "impresos": [
