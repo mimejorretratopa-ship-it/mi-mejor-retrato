@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "escuela_code": "enda",
+    "titulo_principal": "Propuesta Fotográfica Guillermo Endara Galimani",
+    "fecha_actualizacion": "18 de Mayo, 2026"
+  },
+  "diferenciadores": {
+    "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego.",
+    "fotos_autenticas": "El cuestionario previo — Nuestro truco secreto. Nos cuentan los gustos, comida favorita y nos preparamos antes.",
+    "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas."
+  },
+  "galeria": {
+    "portafolio_id": "lasa"
+  },
+  "logistica": {
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "mixta",
+          "texto_display": "En Estudio Fotográfico (La Chorrera) o Locación coordinada con el colegio.",
+          "descripcion": "Podemos hacer la sesión cómodamente en nuestro estudio o acordar una locación si el grupo es suficiente."
+        }
+      ]
+    },
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos capas y birretes del color oficial de la escuela."
+    },
+    "solicitudes_especiales": {
+      "mascotas": true,
+      "familiares": "Familiares bienvenidos.",
+      "cambios_vestuario": "Permitidos dentro de los límites de tiempo."
+    }
+  },
+  "entrega_y_pagos": {
+    "metodo_entrega": [
+      {
+        "tipo": "punto_encuentro",
+        "texto": "Entrega personal coordinada (2 o 3 fechas) o Delivery a domicilio por $2.50."
+      }
+    ],
+    "tiempo_entrega_semanas": 2,
+    "recoleccion_dinero": {
+      "metodo_principal": "Pago directo",
+      "explicacion": "Pago directo a nosotros por Yappy para evitar a los delegados el manejo de dinero."
+    }
+  },
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Política de Reagendamiento",
+      "opcion_multiples_salones": "Se programa 1 fecha de recuperación. Si falta a esta, recargo de $15.",
+      "opcion_un_salon": "Posibilidad de reagendar sin problemas con previo aviso."
+    },
+    "descuento_hermanos": {
+      "aplica": true,
+      "porcentaje": 25,
+      "texto": "25% de descuento por cada hijo extra."
+    },
+    "extras": "Fondos extra y fotografías digitales extra disponibles."
+  }
+}

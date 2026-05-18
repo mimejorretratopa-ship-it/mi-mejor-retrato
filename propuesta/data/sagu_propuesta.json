@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "escuela_code": "sagu",
+    "titulo_principal": "Propuesta Colegio San Agustín",
+    "fecha_actualizacion": "18 de Mayo, 2026"
+  },
+  "diferenciadores": {
+    "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. Trabajamos con paciencia y juego para capturar su personalidad real.",
+    "fotos_autenticas": "El cuestionario previo nos ayuda a tener temas de conversación preparados.",
+    "entregables": "Cada familia recibe su galería privada por WhatsApp."
+  },
+  "galeria": {
+    "portafolio_id": "lasa"
+  },
+  "logistica": {
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "estudio",
+          "texto_display": "Estudio Vía Argentina o Condado del Rey",
+          "descripcion": "Estudios totalmente equipados."
+        }
+      ]
+    },
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos capas y birretes."
+    },
+    "solicitudes_especiales": {
+      "mascotas": true,
+      "familiares": "Familiares bienvenidos.",
+      "cambios_vestuario": "Sí."
+    }
+  },
+  "entrega_y_pagos": {
+    "metodo_entrega": [
+      {
+        "tipo": "delivery",
+        "texto": "Delivery a casa/trabajo o entrega en punto medio."
+      }
+    ],
+    "tiempo_entrega_semanas": 2,
+    "recoleccion_dinero": {
+      "metodo_principal": "Pago directo",
+      "explicacion": "A través de Yappy."
+    }
+  },
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Política de Reagendamiento",
+      "opcion_multiples_salones": "1 fecha extra sin costo si contratan salones enteros.",
+      "opcion_un_salon": "Recargo aplicable."
+    },
+    "descuento_hermanos": {
+      "aplica": true,
+      "porcentaje": 25,
+      "texto": "25% por hijo."
+    },
+    "extras": "Disponibles."
+  }
+}
