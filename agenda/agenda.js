@@ -30,14 +30,14 @@ function minsToTime(mins) {
 // --- Data Fetching (Context Setup) ---
 async function loadContextData() {
   try {
-    const res = await fetch('../onboarding/data/escuelas.json');
-    if (!res.ok) throw new Error('Error cargando escuelas.json');
+    const res = await fetch('../onboarding/data/precios.json');
+    if (!res.ok) throw new Error('Error cargando precios.json');
     const data = await res.json();
     
     const selEscuela = document.getElementById('sel-escuela');
     selEscuela.innerHTML = '<option value="">Selecciona una escuela...</option>';
     
-    data.schools.forEach(school => {
+    data.escuelas.forEach(school => {
       const option = document.createElement('option');
       option.value = school.code;
       option.textContent = school.name;

@@ -35,9 +35,9 @@ async function initView() {
   const [schoolCode, salonValue] = sParam.split('_');
 
   try {
-    const schoolsRes = await fetch('../onboarding/data/escuelas.json');
+    const schoolsRes = await fetch('../onboarding/data/precios.json');
     const schoolsData = await schoolsRes.json();
-    const school = schoolsData.schools.find(s => s.code === schoolCode);
+    const school = schoolsData.escuelas.find(s => s.code === schoolCode);
     
     const sectionsRes = await fetch(`../onboarding/data/${schoolCode}_secciones.json`);
     const sectionsData = await sectionsRes.json();

@@ -543,8 +543,8 @@
       return false;
     }
 
-    const schools = await storage.loadJSON('escuelas.json');
-    const school  = schools.schools.find(s =>
+    const schools = await storage.loadJSON('precios.json');
+    const school  = schools.escuelas.find(s =>
       s.code.toLowerCase() === brochureConfig.code && 
       (s.years || []).includes(brochureConfig.year)
     );

@@ -17,18 +17,35 @@ code "d:\mmr_studio\01_core_apps\website"
 
 ---
 
-## 1. Crear una nueva Propuesta Comercial (B2B)
+## 1. Flujo Completo: Publicar Propuesta (B2B) y Onboarding (B2C)
 
-El sistema de Propuestas (`/propuesta/`) utiliza un **Modelo Híbrido Estático/Dinámico** altamente optimizado para conversión visual y lectura rápida (skimmability).
+El sistema requiere configurar tanto la experiencia comercial para el colegio (Brochure) como el portal de reservas para los padres (Onboarding).
 
-```bash
-# 1. Agregar el código de la escuela y año en data/escuelas.json (ej: "lasa", 26)
-# 2. Configurar los precios en onboarding/data/precios.json (visibilidad: "publicar"),
-#    ASEGURANDO incluir el bloque "tabla_comparativa" para cada paquete.
-# 3. Crear el archivo propuesta/data/{code}_propuesta.json con el texto y logística específica.
-# 4. Abrir en Live Server con la URL: http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}
-# 5. En producción, la URL limpia mapeada en Vercel será: /propuesta/{code}-{yy}
+### Paso 1: Registrar el Colegio
+Agrega el código del colegio y el año en `onboarding/data/escuelas.json`:
+```json
+{ "code": "nuevo", "name": "Colegio Nuevo", "years": [26] }
 ```
+
+### Paso 2: Configurar Precios (Usando el Dashboard)
+No edites `precios.json` a mano.
+1. Abre `admin/index.html` con Live Server.
+2. Selecciona tu colegio en la barra lateral (debería aparecer tras el Paso 1).
+3. Cambia el Estado a **"🟢 Publicar"**.
+4. Añade y configura los paquetes visualmente (asegúrate de encender/apagar la opción de Fotos Familiares según aplique).
+5. Haz clic en "Guardar Cambios Temporales" y luego en el botón verde inferior para descargar el `precios.json` actualizado y guardarlo en `onboarding/data/precios.json`.
+
+### Paso 3: Crear Configuración B2C (Onboarding)
+Duplica un archivo existente en `onboarding/data/` (ej: `lasa_secciones.json`) y renómbralo a `{code}_secciones.json`.
+Ajusta los horarios, las fechas límites y los salones disponibles.
+
+### Paso 4: Crear Configuración B2B (Brochure Comercial)
+Duplica un archivo existente en `propuesta/data/` (ej: `lasa_propuesta.json`) y renómbralo a `{code}_propuesta.json`.
+Ajusta la logística, fechas y el copy específico que leerá la directiva del colegio.
+
+### Paso 5: Probar Localmente
+* **Brochure:** `http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}`
+* **Onboarding:** `http://127.0.0.1:5500/onboarding/index.html?brochure={code}-{yy}`
 
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.
@@ -64,11 +81,11 @@ config.debug()                  // Muestra la configuración de endpoints activa
 
 ---
 
-## Checklist antes de publicar una Propuesta
-- [ ] Código y año agregados en `data/escuelas.json`
-- [ ] Precios configurados y en estado `"visibilidad": "publicar"` en `data/precios.json`
-- [ ] Archivo `[code]_propuesta.json` creado en la carpeta `propuesta/data/` con la logística correcta
-- [ ] El título dinámico de la propuesta carga el nombre del colegio y año correctamente
-- [ ] El botón de WhatsApp tiene el número y mensaje de inicio correctos
-- [ ] Las fotos del portafolio cargan fluidamente desde la ruta de archivos correspondiente
-- [ ] Sin errores en la consola del navegador (`F12`)
+## Checklist de Publicación (B2B + B2C)
+- [ ] **1. Core:** Código y año agregados en `onboarding/data/escuelas.json`
+- [ ] **2. Precios:** Configurados y en `"visibilidad": "publicar"` usando el **Dashboard Admin** (`admin/index.html`)
+- [ ] **3. B2C (Padres):** Archivo `[code]_secciones.json` creado en `onboarding/data/` con horarios y logística B2C
+- [ ] **4. B2B (Directiva):** Archivo `[code]_propuesta.json` creado en `propuesta/data/` con el copy B2B
+- [ ] **5. UX:** El título dinámico de la propuesta carga el nombre del colegio correctamente en la pestaña
+- [ ] **6. Conversión:** El botón de WhatsApp tiene el número y mensaje de inicio correctos
+- [ ] **7. QA:** Sin errores en la consola del navegador (`F12`) al cargar ambas rutas en local

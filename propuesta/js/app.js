@@ -22,11 +22,11 @@ async function initPropuesta() {
   currentSchoolCode = slug.split('-')[0];
 
   try {
-    // 2. Cargar escuelas.json (reutilizando el del onboarding)
-    const escRes = await fetch('../onboarding/data/escuelas.json');
+    // 2. Cargar precios.json (fuente unificada)
+    const escRes = await fetch('../onboarding/data/precios.json');
     if (!escRes.ok) throw new Error("No se pudo cargar el catálogo de escuelas.");
     const escData = await escRes.json();
-    schoolData = escData.schools.find(s => s.code === currentSchoolCode);
+    schoolData = escData.escuelas.find(s => s.code === currentSchoolCode);
 
     if (!schoolData) {
       showErrorState("El link que usaste no corresponde a una propuesta formal armada. Por eso te pedimos que escribas directo a Mike para darte respuesta más rápido.");
@@ -60,13 +60,8 @@ async function initPropuesta() {
       }
     }
 
-    // 4. Cargar precios
-    const preRes = await fetch('../onboarding/data/precios.json');
-    const preData = await preRes.json();
-    const preciosEscuela = preData.escuelas.find(e => e.code === currentSchoolCode);
-
-    // 5. Renderizar
-    renderContent(propuesta, preciosEscuela);
+    // 4. Renderizar (schoolData ya contiene los precios y paquetes)
+    renderContent(propuesta, schoolData);
     
     // 6. Inicializar Galería
     if (propuesta.galeria && propuesta.galeria.portafolio_id) {

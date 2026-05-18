@@ -186,11 +186,11 @@
     // Mapear nombre del colegio
     let schoolName = student.colegio;
     try {
-      const schoolsData = await storage.loadJSON('escuelas.json');
+      const schoolsData = await storage.loadJSON('precios.json');
       const schoolCode = student.colegio.split('-')[0].toLowerCase();
-      const found = schoolsData.schools.find(s => s.code === schoolCode);
+      const found = schoolsData.escuelas.find(s => s.code === schoolCode);
       if (found) schoolName = found.name;
-    } catch (e) { console.warn('Error cargando escuelas.json', e); }
+    } catch (e) { console.warn('Error cargando precios.json', e); }
 
     // Inyectar contexto en UI
     document.getElementById('txt-nombre-estudiante').textContent = student.nombre;

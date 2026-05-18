@@ -1,7 +1,7 @@
 {
-  "version": "2.0",
+  "version": "3.0",
   "metadata": {
-    "nota": "REGLA: Este archivo controla ÚNICAMENTE la visibilidad y precios de los paquetes. La visibilidad de las demás secciones se controla en *_secciones.json.",
+    "nota": "REGLA: Este archivo es la ÚNICA fuente de verdad para la identidad, visibilidad y precios de los paquetes para todos los colegios.",
     "visibilidad_opciones": {
       "publicar": "Muestra sección pública + selector en formulario",
       "no_publicar": "Oculta sección pública + preselecciona primer paquete en formulario (silencioso)",
@@ -9,82 +9,45 @@
     },
     "moneda": "USD"
   },
+  "ubicaciones_catalogo": [
+    {
+      "id": "condado",
+      "nombre": "Estudio Condado del Rey",
+      "imagen": "ubicaciones/condado.jpg"
+    },
+    {
+      "id": "viaargentina",
+      "nombre": "Estudio Vía Argentina",
+      "imagen": "ubicaciones/viaargentina.jpg"
+    },
+    {
+      "id": "lachorrera",
+      "nombre": "Estudio La Chorrera",
+      "imagen": "ubicaciones/lachorrera.jpg"
+    }
+  ],
   "escuelas": [
     {
-      "code": "port",
-      "visibilidad": "publicar",
-      "paquetes": [
-        {
-          "id": "paquete_1",
-          "nombre": "Paquete 1",
-          "precio": 0,
-          "descripcion": "5 Fotos únicamente en galería online.  No incluye fotos impresas",
-          "entregables": {
-            "impresos": [
-              {
-                "cantidad": 75,
-                "tamano": "de preview en galería online",
-                "detalle": "para que escojas las que más te gusten"
-              },
-              {
-                "cantidad": 4,
-                "tamano": "retocadas",
-                "detalle": "del estudiante"
-              },
-              {
-                "cantidad": 1,
-                "tamano": "retocadas",
-                "detalle": "con papá y mamá"
-              }
-            ],
-            "digitales": {
-              "plataforma": "Galería online"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "code": "sabi",
+      "code": "clia",
+      "name": "Chiara Lubich International Academy",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "no_publicar",
-      "paquetes": [
-        {
-          "id": "paquete_1",
-          "nombre": "Paquete 1",
-          "precio": 34,
-          "descripcion": "6 Fotos impresas y en galería online",
-          "entregables": {
-            "impresos": [
-              {
-                "cantidad": 1,
-                "tamano": "8x12",
-                "detalle": "Grande"
-              },
-              {
-                "cantidad": 4,
-                "tamano": "4x6",
-                "detalle": "Chicas"
-              },
-              {
-                "cantidad": 1,
-                "tamano": "4x6",
-                "detalle": "Grupo del salón"
-              }
-            ],
-            "digitales": {
-              "plataforma": "Galería online"
-            }
-          }
-        }
-      ]
+      "paquetes": []
     },
     {
-      "code": "sabi",
-      "visibilidad": "pendiente",
+      "code": "dolo",
+      "name": "Nuestra Señora De Los Dolores",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
+      "visibilidad": "no_publicar",
       "paquetes": []
     },
     {
       "code": "ebrv",
+      "name": "Escuela Bilingüe Residencial Vacamonte",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
         {
@@ -155,17 +118,10 @@
       ]
     },
     {
-      "code": "lion",
-      "visibilidad": "no_publicar",
-      "paquetes": []
-    },
-    {
-      "code": "ofxd",
-      "visibilidad": "pendiente",
-      "paquetes": []
-    },
-    {
       "code": "lasa",
+      "name": "Colegio La Salle",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
         {
@@ -236,12 +192,108 @@
       ]
     },
     {
+      "code": "lion",
+      "name": "Lions School",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
+      "visibilidad": "no_publicar",
+      "paquetes": []
+    },
+    {
+      "code": "ofxd",
+      "name": "Oxford International School",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
+      "visibilidad": "pendiente",
+      "paquetes": []
+    },
+    {
+      "code": "port",
+      "name": "Portafolio",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Paquete 1",
+          "precio": 0,
+          "descripcion": "5 Fotos únicamente en galería online.  No incluye fotos impresas",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 75,
+                "tamano": "de preview en galería online",
+                "detalle": "para que escojas las que más te gusten"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "retocadas",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "retocadas",
+                "detalle": "con papá y mamá"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "code": "sabi",
+      "name": "Sabis International School",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
+      "visibilidad": "no_publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Paquete 1",
+          "precio": 34,
+          "descripcion": "6 Fotos impresas y en galería online",
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
+    },
+    {
       "code": "sagu",
+      "name": "Colegio San Agustín",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
     },
     {
       "code": "enda",
+      "name": "Colegio Guillermo Endara Galimani",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
         {
@@ -302,7 +354,7 @@
           },
           "entregables": {
             "impresos": [
-              { "cantidad": 1, "tamano": "8x12", "detalle": "ENMARCADA y lista para colgar" },
+              { "cantidad": 1, "tamano": "8x12", "detalle": "ENMARCADADA y lista para colgar" },
               { "cantidad": 7, "tamano": "4x6", "detalle": "Chicas" },
               { "cantidad": 1, "tamano": "4x6", "detalle": "Grupo del salón" }
             ],
@@ -313,26 +365,41 @@
     },
     {
       "code": "oxbg",
+      "name": "Oxford International School (Brisas)",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
     },
     {
       "code": "b2b",
+      "name": "Propuesta Directores",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
     },
     {
       "code": "chor",
+      "name": "Propuesta La Chorrera",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
     },
     {
       "code": "pana",
+      "name": "Propuesta Panamá",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "pendiente",
       "paquetes": []
     },
     {
       "code": "indp",
+      "name": "Tu Sesión de Retrato",
+      "years": [26],
+      "ga_id": "G-6H4H52RL0T",
       "visibilidad": "publicar",
       "paquetes": [
         {

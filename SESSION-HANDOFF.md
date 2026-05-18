@@ -27,12 +27,25 @@ Se implementaron en JSON las propuestas específicas y genéricas requeridas y s
 * **Específicas**: `lasa` (La Salle), `enda` (Endara Galimani), `ebrv` (Enrique Barvo).
 * **Independientes**: `indp` (Padres Independientes).
 
+### 5. Creación del Admin Dashboard Local
+* **Herramienta Interna sin Código**: Se desarrolló un panel de control local en `/admin/` (HTML/JS Vanilla) para editar visualmente el archivo `precios.json`.
+* **Beneficios**: Previene errores de sintaxis (comas faltantes, llaves rotas), permite alternar funciones como "Fotos Familiares" con un checkbox, y muestra estadísticas en tiempo real de los colegios publicados.
+
+### 6. Unificación Absoluta de la Arquitectura de Datos (Fusión de escuelas.json en precios.json)
+* **Eliminación de Redundancia (DRY)**: Fusionamos por completo el catálogo `escuelas.json` dentro de `precios.json`. Ahora existe una **única fuente de verdad** para los colegios, donde cada registro contiene la identidad comercial (`name`, `years`, `ga_id`), visibilidad y la estructura de precios.
+* **Limpieza de Workspace**: Eliminamos físicamente el archivo obsoleto `escuelas.json` para evitar discrepancias futuras.
+* **Refactorización de Loaders**: Actualizamos todas las llamadas de la aplicación (`propuesta/js/app.js`, `onboarding/index.html`, `onboarding/cuestionario.html`, `agenda/agenda.js`, `agenda/view.js`) para que lean de la fuente unificada.
+* **Dashboard Enriquecido**: Agregamos campos editables en el panel de control local de `/admin/` para gestionar de forma fluida el nombre comercial, los años activos y el ID de Google Analytics de cada colegio.
+
 ---
 
 ## 📂 Archivos Modificados e Integridad
-* `onboarding/data/precios.json` — Estructurado con bloques `tabla_comparativa` para todas las escuelas activas.
-* `propuesta/index.html` & `propuesta/js/app.js` — Eliminada la tabla estática y reemplazada por inyección dinámica y fluida sobre CSS Grid.
-* `onboarding/modules/paquetes.js` & `onboarding/brochure.css` — Onboarding migrado al formato de tabla comparativa premium unificada.
+* `onboarding/data/precios.json` — Estructura final unificada con identidades, años activos, IDs de Analytics y configuraciones de precios de cada colegio.
+* `onboarding/data/escuelas.json` — **Eliminado** tras migrar todos sus datos.
+* `propuesta/js/app.js` — Refactorizado para cargar y cachear el catálogo directamente desde `precios.json`.
+* `onboarding/index.html` & `onboarding/cuestionario.html` — Actualizados para consumir la estructura unificada de colegios.
+* `agenda/agenda.js` & `agenda/view.js` — Actualizados para consumir colegios de la fuente consolidada.
+* `admin/index.html` & `admin/js/admin.js` — Enriquecidos con los nuevos controles interactivos de identidad comercial.
 * `ARCHITECTURE.md`, `DEVELOPMENT.md`, `MIGRATION-GUIDE.md`, `SESSION-HANDOFF.md` — Documentación completamente actualizada.
 
 ---

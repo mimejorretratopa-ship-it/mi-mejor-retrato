@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Header Info
     const currentSchoolCode = document.getElementById('currentSchoolCode');
     const schoolVisibility = document.getElementById('schoolVisibility');
+    const schoolNameInput = document.getElementById('schoolName');
+    const schoolYearsInput = document.getElementById('schoolYears');
+    const schoolGaIdInput = document.getElementById('schoolGaId');
     
     // Stats
     const statTotal = document.getElementById('statTotal');
@@ -83,6 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         currentSchoolCode.textContent = school.code;
         schoolVisibility.value = school.visibilidad || 'pendiente';
+        
+        schoolNameInput.value = school.name || '';
+        schoolYearsInput.value = (school.years || []).join(', ');
+        schoolGaIdInput.value = school.ga_id || '';
 
         renderPackages(school.paquetes || []);
     }
@@ -121,7 +128,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
             packagesContainer.appendChild(card);
         });
+        
+        renderPreview();
     }
+
+    function renderPreview() {
+        const tablePreview = document.getElementById('tablePreview');
+        const cards = packagesContainer.querySelectorAll('.package-card');
+        
+        if (cards.length === 0) {
+            tablePreview.innerHTML = '<div class="pt-cell">No hay paquetes para comparar.</div>';
+            tablePreview.style.gridTemplateColumns = '1fr';
+            return;
+        }
+
+        // Configure Grid Columns: 1 for features + 1 for each package
+        tablePreview.style.gridTemplateColumns = `minmax(200px, 1fr) repeat(${cards.length}, minmax(180px, 1fr))`;
+        
+        // Define rows we want to show
+        const rows = [
+            { key: 'header', label: '' },
+            { key: 'digitales', label: 'Fotos Digitales' },
+            { key: 'impresiones', label: 'Impresiones' },
+            { key: 'enmarcada', label: 'Foto Enmarcada' },
+            { key: 'grupal', label: 'Foto Grupal del Salón' },
+            { key: 'familiar', label: 'Fotos Familiares' },
+            { key: 'ideal', label: 'Ideal para' }
+        ];
+
+        let html = '';
+
+        // Generate cells row by row
+        rows.forEach(row => {
+            // First column: Feature Name
+            if (row.key === 'header') {
+                html += `<div class="pt-cell header" style="background: transparent;"></div>`;
+            } else {
+                html += `<div class="pt-cell feature-name">${row.label}</div>`;
+            }
+
+            // Columns for each package
+            cards.forEach(card => {
+                if (row.key === 'header') {
+                    const name = card.querySelector('.pkg-name').value || 'Paquete';
+                    const price = card.querySelector('.pkg-price').value || '0';
+                    html += `<div class="pt-cell header"><h4>${name}</h4><div class="price">$${price}</div></div>`;
+                } else if (row.key === 'digitales') {
+                    const val = card.querySelector('.tc-digital').value || 0;
+                    html += `<div class="pt-cell text-center" style="text-align:center;">${val > 0 ? val + ' Fotos' : '-'}</div>`;
+                } else if (row.key === 'impresiones') {
+                    const val = card.querySelector('.tc-prints').value;
+                    html += `<div class="pt-cell text-center" style="text-align:center;">${val ? val : '-'}</div>`;
+                } else if (row.key === 'enmarcada') {
+                    const val = card.querySelector('.tc-framed').value;
+                    html += `<div class="pt-cell text-center" style="text-align:center;">${val ? val : '-'}</div>`;
+                } else if (row.key === 'grupal') {
+                    const val = card.querySelector('.tc-group').checked;
+                    html += `<div class="pt-cell text-center" style="text-align:center; font-size: 1.2rem;">${val ? '✅' : '❌'}</div>`;
+                } else if (row.key === 'familiar') {
+                    const val = card.querySelector('.tc-family').checked;
+                    html += `<div class="pt-cell text-center" style="text-align:center; font-size: 1.2rem;">${val ? '✅' : '❌'}</div>`;
+                } else if (row.key === 'ideal') {
+                    const val = card.querySelector('.tc-ideal').value;
+                    html += `<div class="pt-cell ideal-para">${val ? val : ''}</div>`;
+                }
+            });
+        });
+
+        tablePreview.innerHTML = html;
+    }
+
+    // Attach event delegation for live preview
+    packagesContainer.addEventListener('input', renderPreview);
+    packagesContainer.addEventListener('change', renderPreview);
 
     // Save temporary changes to memory
     document.getElementById('btnSaveChanges').addEventListener('click', () => {
@@ -129,8 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const school = preciosData.escuelas[currentSchoolIndex];
         
-        // Update visibility
+        // Update visibility and identity
         school.visibilidad = schoolVisibility.value;
+        school.name = schoolNameInput.value.trim();
+        school.years = schoolYearsInput.value.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
+        school.ga_id = schoolGaIdInput.value.trim();
 
         // Rebuild packages array
         const newPackages = [];
