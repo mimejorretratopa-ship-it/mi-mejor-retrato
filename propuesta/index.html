@@ -7,7 +7,9 @@
   <title>Propuesta — Mi Mejor Retrato</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="./css/style.css">
 
   <!-- Google Analytics (Comentado para producción futura) -->
@@ -66,7 +68,8 @@
             <h4 class="heading-3">Trato al Estudiante</h4>
             <p id="txt-trato"></p>
             <!-- HARDCODED: aplica a todas las escuelas -->
-            <p style="margin-top:10px;font-style:italic;color:var(--color-ink-muted);">Cuando lo veas reír, sabrás que era de verdad.</p>
+            <p style="margin-top:10px;font-style:italic;color:var(--color-ink-muted);">Cuando lo veas reír, sabrás que
+              era de verdad.</p>
           </div>
           <div class="card">
             <h4 class="heading-3">Fotografía Auténtica</h4>
@@ -98,60 +101,61 @@
         <p class="nota">Escoge el recuerdo que mejor se adapte a tu familia</p>
 
         <div class="pricing-table-wrapper">
-          <table class="pricing-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Esencial<br><small>Un recuerdo sencillo y bonito.</small></th>
-                <th class="highlight">Familiar ⭐<br><small>La mejor combinación.</small></th>
-                <th>Premium<br><small>Para conservar toda la experiencia.</small></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Precio</td>
-                <td id="precio-esencial">$65</td>
-                <td class="highlight" id="precio-familiar">$95</td>
-                <td id="precio-premium">$145</td>
-              </tr>
-              <tr>
-                <td>Fotos digitales</td>
-                <td>4</td>
-                <td class="highlight">6</td>
-                <td>12</td>
-              </tr>
-              <tr>
-                <td>Foto grupal</td>
-                <td>✅</td>
-                <td class="highlight">✅</td>
-                <td>✅</td>
-              </tr>
-              <tr>
-                <td>Impresiones</td>
-                <td>—</td>
-                <td class="highlight">1 grande y 2 pequeñas</td>
-                <td>2 grandes y 4 pequeñas</td>
-              </tr>
-              <tr>
-                <td>Foto enmarcada</td>
-                <td>—</td>
-                <td class="highlight">—</td>
-                <td>Las 2 grandes</td>
-              </tr>
-              <tr>
-                <td>Fotos familiares</td>
-                <td>Incluidas</td>
-                <td class="highlight">Incluidas</td>
-                <td>Incluidas</td>
-              </tr>
-              <tr>
-                <td>Ideal para</td>
-                <td>Un recuerdo sencillo</td>
-                <td class="highlight">Variedad sin complicaciones</td>
-                <td>Conservar la experiencia completa</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="pt-grid" role="table" aria-label="Comparación de paquetes">
+
+            <!-- HEADER -->
+            <div class="pt-cell pt-head pt-label" role="columnheader"></div>
+            <div class="pt-cell pt-head" role="columnheader">
+              <span class="pt-name">Esencial</span>
+              <span class="pt-price" id="precio-esencial">$65</span>
+            </div>
+            <div class="pt-cell pt-head pt-feat" role="columnheader">
+              <span class="pt-popular-badge">Popular</span>
+              <span class="pt-name">Familiar</span>
+              <span class="pt-price" id="precio-familiar">$95</span>
+            </div>
+            <div class="pt-cell pt-head" role="columnheader">
+              <span class="pt-name">Premium</span>
+              <span class="pt-price" id="precio-premium">$145</span>
+            </div>
+
+            <!-- Fotos digitales -->
+            <div class="pt-cell pt-label" role="rowheader">Fotos digitales</div>
+            <div class="pt-cell" role="cell">4</div>
+            <div class="pt-cell pt-feat" role="cell">6</div>
+            <div class="pt-cell" role="cell">12</div>
+
+            <!-- Foto grupal -->
+            <div class="pt-cell pt-label" role="rowheader">Foto grupal</div>
+            <div class="pt-cell" role="cell"><span class="pt-ok">✓</span></div>
+            <div class="pt-cell pt-feat" role="cell"><span class="pt-ok-inv">✓</span></div>
+            <div class="pt-cell" role="cell"><span class="pt-ok">✓</span></div>
+
+            <!-- Impresiones -->
+            <div class="pt-cell pt-label" role="rowheader">Impresiones</div>
+            <div class="pt-cell" role="cell"><span class="pt-no">—</span></div>
+            <div class="pt-cell pt-feat pt-sm" role="cell">1 gr. + 2 peq.</div>
+            <div class="pt-cell pt-sm" role="cell">2 gr. + 4 peq.</div>
+
+            <!-- Foto enmarcada -->
+            <div class="pt-cell pt-label" role="rowheader">Foto enmarcada</div>
+            <div class="pt-cell" role="cell"><span class="pt-no">—</span></div>
+            <div class="pt-cell pt-feat" role="cell"><span class="pt-no-inv">—</span></div>
+            <div class="pt-cell pt-sm" role="cell">Las 2 grandes</div>
+
+            <!-- Fotos familiares -->
+            <div class="pt-cell pt-label" role="rowheader">Fotos familiares</div>
+            <div class="pt-cell" role="cell"><span class="pt-opt">Incluidas</span></div>
+            <div class="pt-cell pt-feat" role="cell"><span class="pt-opt-inv">Incluidas</span></div>
+            <div class="pt-cell" role="cell"><span class="pt-opt">Incluidas</span></div>
+
+            <!-- Ideal para -->
+            <div class="pt-cell pt-label pt-last" role="rowheader">Ideal para</div>
+            <div class="pt-cell pt-last pt-sm" role="cell">Un recuerdo sencillo</div>
+            <div class="pt-cell pt-feat pt-last pt-sm" role="cell">Variedad sin complicaciones</div>
+            <div class="pt-cell pt-last pt-sm" role="cell">Conservar la experiencia completa</div>
+
+          </div>
         </div>
       </section>
 
@@ -234,7 +238,8 @@
             </div>
             <div class="timeline-content">
               <h5>Entrega final en 2 semanas</h5>
-              <p>Dos semanas después de cerrado el período de selección, se entregan las fotos retocadas y los impresos (si aplica).</p>
+              <p>Dos semanas después de cerrado el período de selección, se entregan las fotos retocadas y los impresos
+                (si aplica).</p>
             </div>
           </div>
         </div>
@@ -247,7 +252,8 @@
           <div class="policy-box">
             <h4 class="heading-3">Métodos de Entrega</h4>
             <ul id="list-entregas"></ul>
-            <p style="margin-top:10px;"><strong>Tiempo estándar:</strong> <span id="txt-tiempo"></span> semanas desde selección.</p>
+            <p style="margin-top:10px;"><strong>Tiempo estándar:</strong> <span id="txt-tiempo"></span> semanas desde
+              selección.</p>
           </div>
           <div class="policy-box">
             <h4 class="heading-3">Política de Reagendamiento</h4>
@@ -290,7 +296,8 @@
             <li>Compartir este link al grupo de padres.</li>
             <li>Confirmar el interés aproximado del salón.</li>
           </ul>
-          <p style="margin-top:10px; font-size:13px; color:var(--color-ok);">Nosotros coordinamos todo directamente con cada familia.</p>
+          <p style="margin-top:10px; font-size:13px; color:var(--color-ok);">Nosotros coordinamos todo directamente con
+            cada familia.</p>
         </div>
         <div class="card" style="margin-top:16px;">
           <h4 class="heading-3">¿Qué pasa si deciden seguir adelante?</h4>
@@ -335,8 +342,11 @@
     <!-- ── CTA FINAL ─────────────────────────────────────────── -->
     <section class="cta-section">
       <h2 class="heading-2" style="font-size:22px;">¿Les gustaría organizarlo para su <em>salón?</em></h2>
-      <p style="font-size:16px; margin-bottom:20px; color:var(--color-ink-muted);">Los niños cambian muy rápido. Estas fotos terminan convirtiéndose en recuerdos que las familias guardan por años.<br><br>📲 Escríbenos por WhatsApp<br>Nosotros coordinamos directamente con cada familia.</p>
-      <a href="https://wa.me/50767438951" id="whatsapp-link" target="_blank" class="btn-whatsapp">Escribir por WhatsApp</a>
+      <p style="font-size:16px; margin-bottom:20px; color:var(--color-ink-muted);">Los niños cambian muy rápido. Estas
+        fotos terminan convirtiéndose en recuerdos que las familias guardan por años.<br><br>📲 Escríbenos por
+        WhatsApp<br>Nosotros coordinamos directamente con cada familia.</p>
+      <a href="https://wa.me/50767438951" id="whatsapp-link" target="_blank" class="btn-whatsapp">Escribir por
+        WhatsApp</a>
     </section>
   </div>
 
