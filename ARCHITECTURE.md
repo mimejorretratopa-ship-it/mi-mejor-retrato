@@ -2,9 +2,9 @@
 
 ## Principio central
 
-> El sistema no tiene archivos HTML por colegio. Un solo `index.html` lee la URL para saber qué datos mostrar.
+> El sistema no tiene archivos HTML por colegio en onboarding. Un solo `index.html` lee la URL para saber qué datos mostrar. En propuestas, se mantiene una estructura híbrida optimizada para máxima velocidad y conversión.
 
-Un solo HTML funciona para cualquier escuela/año porque **todo el contenido se define en los JSONs**. Agregar un nuevo brochure no requiere tocar código, solo agregar datos.
+Un solo HTML funciona para cualquier escuela/año en onboarding porque **todo el contenido se define en los JSONs**. En el brochure de propuestas (`/propuesta/`), se utiliza un modelo **híbrido** de alto desempeño.
 
 ---
 
@@ -32,6 +32,7 @@ Existen dos modalidades principales en la aplicación:
 │                   propuesta/index.html               │
 │  — Mantiene copy, FAQ, logística y tabla estática    │
 │  — Inyecta precios, escuela y año vía app.js         │
+│  — Diseño Mobile-First con variables CSS en :root    │
 │  — Enfocada en SEO, LLMs y carga veloz               │
 └─────────────────────────────────────────────────────┘
 ```
@@ -48,37 +49,51 @@ Existen dos modalidades principales en la aplicación:
 │                   ESTADO (lib/state.js)               │
 │  — Store centralizado en memoria                     │
 │  — Fuente de verdad en runtime                       │
-│  — Sin reactividad automática (simple a propósito)   │
+│  — Sin reactividad compleja                          │
 └──────────────────────┬──────────────────────────────┘
                        │ poblado por
 ┌──────────────────────▼──────────────────────────────┐
 │              PERSISTENCIA (lib/storage.js)            │
 │  — ÚNICO punto de acceso a datos externos            │
 │  — Adapter pattern: POST a Google Sheets & Discord   │
-│  — Fallback: solo logs (descarga local desactivada)  │
 └──────────────────────┬──────────────────────────────┘
                        │ lee / escribe
 ┌──────────────────────▼──────────────────────────────┐
 │                   DATOS & BACKEND                    │
 │  DATOS (JSON): escuelas, precios, secciones          │
 │  BACKEND: Google Sheets (DB) + Discord (Alertas)     │
-│  — Sin servidor propio (Serverless)                  │
 └─────────────────────────────────────────────────────┘
 ```
 
+---
+
+## 🎨 Sistema de Diseño CSS & Tokens (`propuesta/css/style.css`)
+Las propuestas utilizan un sistema de diseño mobile-first sustentado en variables CSS (`:root`):
+* **Tipografías Editoriales**: `Playfair Display` (serif estilizado para headings con itálicas expresivas) y `Outfit` (sans-serif moderno para lectura).
+* **Paleta Cálida Neutra**:
+  * `--color-paper-warm` (`#FBF9F6`) - Fondo orgánico y suave.
+  * `--color-accent` (`#C8622A`) - Terracota cálido de marca.
+  * `--color-accent-light` (`#F2E8E0`) - Fondo suave para áreas destacadas.
+  * `--color-ink` (`#2A2724`) - Negro carbón de gran contraste para lectura.
+* **Componentes Robustos**:
+  * **Tabla Comparativa**: Contenedor horizontal con scroll nativo (`.pricing-table-wrapper`) que no altera las filas, manteniendo visualización impecable sin desbordamientos de columnas en pantallas pequeñas.
+  * **Línea de Tiempo**: Bloques sencillos y limpios que mantienen su alineación y altura fluidamente.
+
+---
+
 ## 🏗️ Estructura del Core Unificado (`js/core/`)
 
-Para evitar duplicidad y asegurar que un cambio en la configuración (ej: webhook de Discord o WhatsApp) se refleje en todo el sitio, hemos centralizado la lógica en la raíz del proyecto:
+Para evitar duplicidad y asegurar que un cambio en la configuración (ej: endpoints o WhatsApp) se refleje en todo el sitio, hemos centralizado la lógica en la raíz del proyecto:
 
-- **`config.js`**: Única fuente de verdad para endpoints, feature flags y textos de marca. Usado por el website y los brochures.
-- **`state.js`**: Observable Store centralizado. 
-    - *Nota de compatibilidad*: Para permitir que los módulos de onboarding (legacy) funcionen sin cambios, los datos como `brochure`, `pricing`, `form` y `sections` residen en la raíz del estado. El estado del website está bajo el namespace `website`.
-- **`storage.js`**: Adaptador de persistencia y carga de JSONs con caché de memoria. Incluye métodos de negocio delegados (`saveSubmission`, `notifyDiscord`) para compatibilidad con los módulos existentes.
-- **`api.js`**: Hub de comunicaciones externas (Google Sheets Hub y Discord).
-    - *Optimización CORS*: Detecta si el destino es Google Apps Script para usar `text/plain` y evitar errores de preflight, mientras mantiene `application/json` para Discord.
-- **`validators.js`** / **`utils.js`**: Librerías de lógica pura compartidas y robustecidas.
+* **`config.js`**: Única fuente de verdad para endpoints, feature flags y textos de marca.
+* **`state.js`**: Observable Store centralizado.
+* **`storage.js`**: Adaptador de persistencia y carga de JSONs con caché de memoria.
+* **`api.js`**: Hub de comunicaciones externas (Google Sheets Hub y Discord).
+* **`validators.js`** / **`utils.js`**: Librerías de lógica pura compartidas.
 
-## 🔄 Flujo de Datos (Onboarding)
+---
+
+## 🔄 Flujo de Datos (Onboarding B2C)
 
 ```mermaid
 graph TD
@@ -98,7 +113,7 @@ graph TD
 
 **La UI nunca toca localStorage ni fetch directamente.**
 
-```js
+```javascript
 // ✅ CORRECTO — todo pasa por storage y api
 const precios = await storage.loadJSON('precios.json');
 await storage.saveSubmission(formData, metadata);
@@ -108,200 +123,14 @@ localStorage.setItem('data', JSON.stringify(data));
 const res = await fetch('/data/precios.json');
 ```
 
-Esta regla es lo que permite migrar de JSONs estáticos a una API real **sin reescribir un solo módulo de UI**.
-
 ---
 
-## Autoconfiguración del brochure
+## Inicialización de Google Analytics en Propuestas B2B
 
-URL: /onboarding/ebrv-26
-     │
-     ▼
-extractBrochureConfig()
-     │ location.pathname.match(/([a-z]{4})-(\d{2})/)
-     ▼
-{ code: 'ebrv', year: 26, id: 'ebrv-26' }
-     │
-     ▼
-escuelas.json → busca code === 'ebrv' && years.includes(26)
-     │
-     ▼
-state.set('brochure', { code, year, id, schoolName, gaId, estado })
-     │
-     ▼
-todos los módulos leen state.get('brochure')
+Para mantener la velocidad y optimizar la carga del brochure comercial, se implementó la etiqueta oficial de **Google Analytics 4 (GA4)** de forma estática y comentada en el HTML.
 
-**Implicación práctica:** no hay archivos HTML duplicados. El enrutamiento es dinámico basado en el slug de la URL.
-
-### Inyección Dinámica de Contenido
-Además de la configuración, el sistema inyecta strings dinámicos en el DOM durante `initBrochure()`:
-- **Hero Title**: `Fotografía escolar · [Escuela] · [Año]`
-- **Hero Proposal**: `Propuesta preparada para: [Escuela] [Año]` (debajo del subtítulo).
-- **Page Title**: `Mi Mejor Retrato — [Escuela] [Año]`
-
----
-
-## Estado global (state.js)
-
-El state tiene claves fijas y predecibles:
-
-```js
-state.get('brochure')  // { code, year, id, schoolName, gaId, estado }
-state.get('form')      // definición del formulario (formulario.json)
-state.get('pricing')   // precios por escuela (precios.json)
-state.get('sections')  // secciones activas (ebrv_secciones.json)
-state.get('schools')   // catálogo de colegios (escuelas.json)
-state.get('ui')        // { formLoading, pricingLoading, sectionsLoading }
-
-// ── Post-Onboarding (Fase 1: Discovery) ──
-state.get('student')       // datos del estudiante pre-cargados desde onboarding (incluye genero)
-state.get('questionnaire') // definición del cuestionario activo (cuestionario_kinder.json, cuestionario_sexto_m.json, etc.)
-
-// ── Gestión Operativa (Fase 2: Agenda) ──
-state.get('agendas')       // Mapa de configuraciones, breaks y asignaciones por salon_id
-state.get('currentContext') // ID del salón activo en la agenda (ej: clia_kinder)
-
-// ── Vistas Públicas ──
-// /agenda/:slug -> view.html (Consulta de horarios para padres)
-```
-
-Regla: **si un módulo necesita datos, los pide a `state`, no los carga él mismo**.
-
----
-
-## Flujo de inicialización
-
-```
-initApp()
-  ├── 1. initBrochure()    → carga escuelas.json, valida slug, setea state.brochure
-  ├── 2. loadAppData()     → carga formulario + precios + secciones en paralelo
-  ├── 3. seccionesModule.init()   → muestra/oculta secciones del DOM
-  ├── 4. Promise.all([            → renderizado paralelo
-  │       galeriasModule.init()
-  │       paquetesModule.render()
-  │       ubicacionModule.render()
-  │       formModule.init()
-  │     ])
-  ├── 5. initReveal()      → IntersectionObserver para animaciones
-  └── 6. initAnalytics()   → usa gaId de state.brochure, inicializa GA
-```
-
----
-
-## Configuración centralizada (`js/core/config.js`)
-
-Un único objeto `config` expone:
-
-| Sección | Qué contiene |
-|---------|-------------|
-| `config.isDev / isProd` | detección de ambiente |
-| `config.endpoints` | URLs del Google Apps Script Hub |
-| `config.whatsapp` | número y template de mensaje |
-| `config.analytics` | GA ID por defecto y nombres de eventos |
-| `config.ui` | duración de animaciones, thresholds |
-| `config.validation` | reglas de validación de campos |
-| `config.features` | feature flags (googleContacts, discord, etc.) |
-| `config.messages` | textos de error y éxito |
-
-**Regla:** cualquier string que pueda cambiar va en `config`, no hardcodeado.
-
----
-
-## JSONs de datos — responsabilidad de cada uno
-
-| Archivo | Editado cuándo |
-|---------|---------------|
-| `escuelas.json` | Al agregar un colegio nuevo o año activo (incluye ga_id) |
-| `precios.json` | Al cambiar precios o paquetes |
-| `formulario.json` | Al agregar/quitar campos del formulario |
-| `{code}_secciones.json` | Al activar/desactivar secciones (layout) por escuela |
-| `cuestionario_kinder.json` | Al cambiar preguntas del cuestionario pre-sesión (kinder/pre-k) |
-| `cuestionario_sexto_m.json` | Cuestionario pre-sesión enfocado a Varones de 6to grado |
-| `cuestionario_sexto_f.json` | Cuestionario pre-sesión enfocado a Niñas de 6to grado |
-| `cuestionario_config.json` | Al mapear qué salones usan qué tipo de cuestionario |
-
----
-
-## 🏛️ La Regla de Oro de Visibilidad
-
-Para evitar conflictos entre el diseño y la lógica de negocio, se ha dividido la autoridad:
-
-1.  **Layout (ON/OFF)** → Se controla en `*_secciones.json`. Si una sección como `faq` o `sobre_mike` debe desaparecer, se usa `activo: false` allí.
-2.  **Lógica de Paquetes (Precios)** → Se controla ÚNICAMENTE en `precios.json` mediante el campo `visibilidad`.
-    *   `publicar`: Todo visible.
-    *   `pendiente`: Muestra aviso de "coordinando precios".
-    *   `no_publicar`: Oculta la sección pero permite enviar el formulario con el paquete #1 preseleccionado.
-
-Esta separación garantiza que el `paquetes.js` pueda manejar lógica compleja de ventas sin interferir con el `secciones.js` que solo apaga interruptores.
-
----
-
-## Pipeline Post-Onboarding
-
-El sistema se extiende más allá del brochure/reserva con un pipeline de 4 fases, todas compartiendo el mismo `js/core/`:
-
-```
-FASE 0 (✅ HECHO)              FASE 1 (✅ HECHO)         FASE 2 (✅ HECHO)         FASE 3
-Onboarding                     Discovery                 Agenda & Horarios         Producción
-─────────────────              ──────────────            ──────────────            ──────────────
-Brochure URL-driven            Formulario pre-sesión     Dashboard local-first     PDF referencia
-  → Formulario reserva           personalizado por niño    → Gestión por salón       para el fotógrafo
-  → Links de WhatsApp          → **Links WA persistentes** → Sincronización Hub      Banner + QR code
-  → Persistencia en Hub        → Handshake con Hub       → Vista Pública Padres    para ID de fotos
-  → Recordatorio Discord       → Segmentado por Género   → Registro en Airtable    Python QR reader
-  → Google Contacts            → Respuestas a Sheets     → Detección de choques
-```
-
-### student_id — La clave universal
-
-Todos los módulos post-onboarding se conectan a través de un identificador único por estudiante:
-
-```
-student_id = {whatsapp_limpio}_{nombreEstudiante_slug}_{salon_slug}
-Ejemplo:    5076XXXXXXX_maria-antonia_kinder
-```
-
-Este ID se genera en el onboarding y se envía al Hub dentro del objeto `_meta` y también en la raíz del payload para asegurar su persistencia en Sheets y Airtable. Se usa como clave para:
-- Discovery pre-sesión (Fase 1) → URL personalizado con `?sid={student_id}`
-- Panel de horarios (Fase 2) → filtra slots por student_id
-- PDF + QR (Fase 3) → QR codifica el student_id
-
-### Discovery Pre-Sesión (Fase 1)
-
-El cuestionario utiliza un mecanismo de **"Handshake"** con el Hub para personalizar la experiencia del usuario y evitar errores de data-entry:
-
-```mermaid
-sequenceDiagram
-    participant User as Padre de Familia
-    participant Form as cuestionario.html
-    participant Hub as Apps Script Hub
-    participant DB as Google Sheet (Leads)
-
-    User->>Form: Abre link con ?sid=...
-    Form->>Hub: POST /exec?action=getStudent (Handshake vía POST para evitar CORS)
-    Hub->>DB: Busca SID en columna 'ID'
-    DB-->>Hub: Retorna fila del estudiante
-    Hub-->>Form: Response: { success: true, data: { nombre, colegio, salon, genero } }
-    Form->>Form: Inyecta datos en el UI y selecciona JSON de preguntas
-    Form-->>User: Muestra cuestionario personalizado
-```
-
-**Beneficios de este flujo:**
-1.  **Seguridad CORS**: Al usar `POST` con `text/plain`, se evitan los errores de preflight de Google Apps Script.
-2.  **Contexto Automático**: El sistema sabe qué tipo de cuestionario mostrar (Kinder vs 6to) y puede segmentar por `genero` (Varones vs Niñas) sin preguntar de nuevo al usuario.
-3.  **Integridad y CRM**: Las respuestas se guardan en Sheets ("Cuestionarios") y se marca el campo `Q_onboarding` (Checkbox) en Airtable para seguimiento.
-
----
-
-## Qué NO existe aquí (a propósito)
-
-| Ausente | Por qué |
-|---------|---------|
-| Build step / bundler | Fricción innecesaria para apps estáticas simples |
-| TypeScript | Overhead para un proyecto de un solo dev |
-| Framework (React/Vue) | El DOM manipulation manual es suficiente y más debuggeable |
-| Estado reactivo complejo | La inicialización secuencial es más predecible |
-| Testing automatizado | Complejidad no justificada para este escenario |
-| Base de datos SQL/NoSQL | Google Sheets + Airtable cubren el volumen actual y permiten gestión visual |
-
-La complejidad se agrega **cuando el problema lo exige**, no antes.
+### Flujo de Monitoreo Multi-Colegio
+El sistema consolida el rastreo mediante una sola propiedad GA4:
+1. El usuario navega a la URL específica del colegio (ej: `/propuesta/index.html?brochure=lasa-26`).
+2. La etiqueta de GA4 captura el `page_location` automáticamente.
+3. Se puede inyectar dinámicamente el parámetro `school_slug` en la llamada a `gtag` para crear dimensiones personalizadas que faciliten la analítica consolidada y reportes de conversión específicos por colegio de forma ágil y centralizada.

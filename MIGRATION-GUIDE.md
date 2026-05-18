@@ -1,76 +1,71 @@
-# Guía de Backend — Google Sheets + Airtable + Discord
+# Guía de Backend & Migración — Google Sheets + Airtable + Discord + Analytics
 
 ## Estado actual del sistema
 
-El sistema usa un **Google Apps Script Hub** como único receptor del formulario. El frontend envía un solo POST y el Hub distribuye a todos los destinos.
+El sistema usa un **Google Apps Script Hub** como único receptor del formulario. El frontend envía un solo POST y el Hub distribuye a todos los destinos de forma asíncrona.
 
 ```
 Frontend (Vercel)
     └── storage.js → postToAPI()
-            └── POST → Google Apps Script Hub
-                        ├── Google Sheets   (base de datos principal)
-                        ├── Google Contacts (agenda del fotógrafo)
+            └── POST → Google Apps Script Hub (v3.9)
+                        ├── Google Sheets   (base de datos principal y Logs)
+                        ├── Google Contacts (agenda de contactos del fotógrafo)
                         ├── Airtable        (CRM / pipeline)
-                        └── Discord         (webhook directo, independiente del Hub)
+                        └── Discord         (notificación directa de leads)
 ```
 
 ---
 
-## Migración de Arquitectura (Frontend)
+## Migración de Arquitectura & Mejoras de Diseño (Mayo 2026)
 
-El 14 de Mayo de 2026 se migró de una arquitectura basada en archivos individuales a una **URL-driven architecture** (B2C - Onboarding).
-Posteriormente, el 18 de Mayo de 2026, el módulo B2B (`/propuesta/`) evolucionó hacia un **Modelo Híbrido Estático/Dinámico**.
+### 1. Sistema de Tokens CSS & Diseño Editorial (18 de Mayo de 2026)
+Se migró el módulo de `/propuesta/` a un diseño premium mobile-first basado en **Tokens de Diseño** declarados en `:root`:
+* **Tipografías**: `Playfair Display` (serif elegante para headings y cursivas expresivas) y `Outfit` (sans-serif geométrica para lectura cómoda).
+* **Colores**: Paleta neutra cálida con fondo de papel orgánico (`#FBF9F6`), acento terracota cálido (`#C8622A`), texto principal (`#2A2724`) y acento claro (`#F2E8E0`).
+* **Estabilidad del Layout**: Se mantiene la tabla comparativa de precios y la línea de tiempo tradicionales en HTML estático para garantizar una presentación impecable en escritorio y un scroll fluido en móviles.
 
-### 1. Modelo Híbrido Estático/Dinámico (`/propuesta/`)
-- **Mejoras SEO & LLM**: El ~80% de la estructura de la propuesta (FAQ, logística común, copy principal, tabla de precios) está *hardcoded* en `index.html`.
-- **Inyección Ligera**: Solo datos altamente variables (valores de `$precio`, ubicaciones, nombres y colores de togas) se inyectan dinámicamente desde los JSONs mediante `app.js`.
-- **Fricción Cero**: Se eliminó el `<form>` interactivo y la integración a Discord en favor de un botón directo de WhatsApp.
-
-### 2. Extensión Post-Onboarding B2C (Fase 1+)
-La arquitectura URL-driven pura se mantiene para soportar flujos post-onboarding:
-- El formulario de reserva inicial generará un `student_id` único: `{whatsapp}_{nombre_slug}_{salon_slug}`
-- Airtable usa fórmulas para generar URLs dinámicas para el **Discovery Pre-Sesión**: `/onboarding/cuestionario?sid={student_id}`
-- **Fase 2: Agenda**: Se habilitó el dashboard `/agenda/` (admin) y la vista pública `/agenda/:slug` (padres) que centraliza la asignación de horarios.
+### 2. Integración de Analytics Multi-Propuesta
+Para medir las visitas y la interacción en múltiples propuestas comerciales activas (`/propuesta/lasa-26`, `/propuesta/clia-26`, etc.) se ha diseñado la siguiente estrategia de tracking:
+* **Código GA4 Estándar**: Insertado en los encabezados HTML de forma comentada para producción.
+* **Estrategia Multi-Propuesta**: 
+  * Se utiliza **una única propiedad GA4** con un solo ID de Medición `G-XXXXXXXXXX`.
+  * GA4 rastrea automáticamente el `page_location` y `page_title`, los cuales contienen el slug de la escuela (ej. `/propuesta/lasalletest.html`).
+  * **Dimensión Personalizada (Recomendada)**: Configurar un parámetro personalizado `school_slug` en la etiqueta de configuración global leyendo de la URL para facilitar filtros e informes consolidados en GA4.
 
 ---
 
 ## 1. Google Sheets (Base de Datos)
-Las submissions se escriben en la primera pestaña de la hoja vinculada al Apps Script. 
+Las reservas se escriben en la primera pestaña de la hoja de cálculo.
 **Pestañas Adicionales**:
-- `Cuestionarios`: Respuestas brutas del formulario pre-sesión.
-- `Agendas`: Configuración JSON de horarios por salón (`ID_Salon`, `Config_JSON`).
-
-**Columnas Requeridas en Leads**:
-13. `Link_WA_Discovery`: Link WhatsApp para el cuestionario.
-14. `Link_WA_Agenda`: Link WhatsApp para la agenda pública.
-15. `Fecha_Envio_Q`: Fecha sugerida (Hoy + 3 días).
-16. `Q_Enviado`: Marca de recordatorio enviado.
+* `Cuestionarios`: Respuestas en crudo del formulario de Discovery (Fase 1).
+* `Agendas`: Configuración JSON de horarios y slots por salón (`ID_Salon`, `Config_JSON`) (Fase 2).
+* `Logs`: Auditoría del estado de sincronización y envío a Airtable/Discord en tiempo real.
 
 ---
 
 ## 2. Airtable (Gestión CRM)
-- **Base ID:** `appVXT9GPLoKT15YJ`
-- **Tabla:** `Leads`
-- **Campos Clave**: 
-  - `ID`: student_id.
-  - `Colegio`: Código o nombre (usa `SEARCH` en Hub v3.9).
-  - `Salon`: Valor del salón (ej: `6to`).
-  - `Link_WhatsApp_Q`: Link generado por el Hub.
-  - `Link_WhatsApp_Agenda`: Link generado por el Hub.
-  - `Hora_Sesion`: Hora asignada.
-  - `Q_onboarding`: Checkbox de cuestionario recibido.
+* **Base ID:** `appVXT9GPLoKT15YJ`
+* **Tabla:** `Leads`
+* **Campos Clave**: 
+  * `ID`: student_id (Clave primaria universal: `{whatsapp_limpio}_{nombre_slug}_{salon_slug}`).
+  * `Colegio`: Código o nombre de la escuela.
+  * `Salon`: Valor del salón (ej: `Kinder`, `6to`).
+  * `Link_WhatsApp_Q` y `Link_WhatsApp_Agenda`: Generados automáticamente por el Hub.
+  * `Hora_Sesion`: Hora asignada en la agenda.
+  * `Q_onboarding`: Checkbox que indica si se recibió el cuestionario de Discovery.
 
 ---
 
-## 3. Google Contacts (Agenda)
-- **Formato nombre:** `Acudiente : Estudiante` (Nombre) ` - ESCUELA SALON` (Apellido)
+## 3. Google Contacts (Agenda de Contactos)
+* **Formato de Guardado Automático**: `Acudiente : Estudiante` (Nombre) ` - ESCUELA SALON` (Apellido) para facilitar la búsqueda en el celular del fotógrafo el día de la sesión.
 
 ---
 
-## 4. Discord (Notificaciones)
-Webhook directo desde el frontend configurado en `brochure-config.js`.
+## 4. Discord (Notificaciones B2B / B2C)
+El frontend se conecta al webhook de Discord configurado en `js/core/config.js` para enviar notificaciones push instantáneas cada vez que un lead completa el formulario de onboarding. (Deshabilitado en `/propuesta/` para priorizar WhatsApp directo).
 
 ---
 
-## Diagnóstico
-Si las filas no aparecen en Sheets, el POST no está llegando al Hub. Si aparecen en Sheets pero no en Airtable, el problema está en el Token o los nombres de las columnas en Airtable.
+## Diagnóstico y Soporte
+* Si la propuesta no carga correctamente, verifique que el slug esté declarado en `escuelas.json` y el año esté incluido en la lista de `years`.
+* Para depurar en caliente en localhost, abra la consola del navegador y ejecute `window.appState.debug()` para revisar el estado global de la aplicación.
