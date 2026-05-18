@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/propuesta/lasalletest", "destination": "/propuesta/lasalletest.html" },
     { "source": "/propuesta/:slug", "destination": "/propuesta/index.html" },
     { "source": "/onboarding/cuestionario", "destination": "/onboarding/cuestionario.html" },
     { "source": "/onboarding/:slug", "destination": "/onboarding/index.html" },

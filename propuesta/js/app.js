@@ -21,10 +21,6 @@ async function initPropuesta() {
 
   currentSchoolCode = slug.split('-')[0];
 
-  if (currentSchoolCode !== 'lasa') {
-    document.getElementById('content-wrapper').style.display = 'none';
-  }
-
   try {
     // 2. Cargar escuelas.json (reutilizando el del onboarding)
     const escRes = await fetch('../onboarding/data/escuelas.json');
