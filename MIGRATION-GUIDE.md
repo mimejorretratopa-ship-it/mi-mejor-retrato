@@ -38,6 +38,11 @@ Se unificaron y simplificaron los precios en el ecosistema:
 * **Esquema de Inclusiones Flexibles**: El objeto `tabla_comparativa` introducido en el JSON permite definir variables específicas del colegio de manera centralizada. Por ejemplo, el campo `fotos_familiares` (booleano) controla dinámicamente si la fila de fotos familiares se muestra como incluida (estudios independientes) o no (en horas de clase escolares) en ambos portales simultáneamente.
 * **Consolidación de Look & Feel**: El onboarding abandonó el diseño de "tarjeta individual" por el formato comparativo Premium, usando el mismo generador dinámico de celdas pero estilizado con los tokens del dark theme de la aplicación principal.
 
+### 4. Integración de CRM Local "Pulso" y Generación de Links (Fase 2 - 19 de Mayo)
+Se implementó el módulo externo **Pulso** (`herramientas/wassap-crm`) como motor oficial de *outreach*. 
+* **Generación de ID en Origen**: Pulso ahora es el responsable de generar la llave primaria `student_id` al combinar el número de WhatsApp, nombre y salón durante la creación de la campaña, mediante la variable adaptada `[link_onboarding]`.
+* Esto garantiza que los registros ingresen a Airtable sin errores tipográficos o duplicaciones.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)

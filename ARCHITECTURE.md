@@ -152,6 +152,16 @@ const res = await fetch('/data/precios.json');
 
 ---
 
+## 📱 Herramientas Locales: Pulso (WhatsApp CRM)
+
+El sistema incluye **Pulso** (`herramientas/wassap-crm`), un CRM local sin servidor que se encarga de la Fase inicial del embudo (Outreach). 
+
+*   **Generación de Claves (student_id)**: Pulso limpia los números de teléfono e inyecta dinámicamente un `student_id` único en su variable `[link_onboarding]`.
+*   **Persistencia Local**: Funciona exclusivamente con la File System Access API guardando estado en JSONs locales, garantizando la privacidad.
+*   **Flujo**: Pulso genera el link -> Acudiente abre el Onboarding -> Onboarding extrae `sid` -> Google Apps Script lo usa como Primary Key en Airtable.
+
+---
+
 ## Inicialización de Google Analytics en Propuestas B2B
 
 Para mantener la legibilidad de los reportes en Google Analytics 4 (GA4) y evitar que todas las propuestas registren el título genérico del HTML (`Propuesta — Mi Mejor Retrato`), el sistema utiliza una estrategia de **Disparo Asíncrono Retrasado**.

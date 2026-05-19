@@ -51,6 +51,11 @@ Ajusta la logística, fechas y el copy específico que leerá la directiva del c
 * **Brochure:** `http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}`
 * **Onboarding:** `http://127.0.0.1:5500/onboarding/index.html?brochure={code}-{yy}`
 
+### Paso 6: Lanzamiento (Outreach con Pulso)
+Usa **Pulso** (`herramientas/wassap-crm/index.html`) para crear campañas masivas de WhatsApp.
+* Importa el listado de alumnos y padres en formato CSV.
+* Usa la variable `[link_onboarding]` en tus plantillas. Pulso generará de forma automática el enlace a `onboarding/cuestionario.html` inyectando el `student_id` (para la sincronización limpia con Airtable).
+
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.
 * **Formulario Eliminado**: Se eliminó el formulario de contacto largo en favor de un botón directo de WhatsApp. El copy final `"Los niños cambian muy rápido..."` se inyecta directamente antes del botón de WhatsApp.

@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulso WhatsApp — Mi Mejor Retrato</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0e0e; --bg2: #161616; --bg3: #1e1e1e; --bg4: #252525;
+      --border: #2e2e2e; --border2: #3a3a3a;
+      --text: #e8e4dc; --text2: #9e9a94; --text3: #5e5c58;
+      --accent: #c8f060; --accent2: #a0c040; --orange: #f07840; --orange-bg: #2a1a10;
+      --sent: #40c080; --sent-bg: #0a2018; --error: #f07070; --error-bg: #1a0e0e;
+      --cierre: #6080f0; --cierre-bg: #10182a;
+      --radius: 8px; --radius-lg: 14px;
+      --font-body: 'Fraunces', Georgia, serif; --font-mono: 'DM Mono', 'Courier New', monospace;
+      --transition: 0.18s ease;
+    }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+
+    /* ── LAYOUT ── */
+    #app { min-height: 100vh; }
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; flex-direction: column; }
+
+    /* ── TOP BAR ── */
+    .topbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 1rem; position: sticky; top: 0; z-index: 100; }
+    .topbar-logo { font-family: var(--font-body); font-size: 1.2rem; font-weight: 600; color: var(--accent); letter-spacing: -0.02em; }
+    .topbar-breadcrumb { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); display: flex; align-items: center; gap: 0.5rem; }
+    .topbar-breadcrumb span { color: var(--text2); }
+    .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; }
+    .file-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); display: inline-block; }
+    .file-dot.connected { background: var(--sent); }
+    .save-indicator { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); display: flex; align-items: center; gap: 0.3rem; }
+    .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); flex-shrink: 0; transition: background 0.3s; }
+    .save-dot.saving { background: var(--orange); animation: blink 0.8s infinite; }
+    .save-dot.saved  { background: var(--sent); }
+    .save-dot.error  { background: var(--error); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    /* ws filters */
+    .ws-filters { display: flex; gap: 0.4rem; padding: 0.5rem 1.5rem; background: var(--bg2); border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+    .ws-filter-btn { font-family: var(--font-mono); font-size: 0.65rem; padding: 0.25rem 0.65rem; border-radius: 20px; border: 1px solid var(--border); background: none; color: var(--text3); cursor: pointer; transition: all var(--transition); }
+    .ws-filter-btn:hover { color: var(--text2); border-color: var(--border2); }
+    .ws-filter-btn.active { background: var(--accent); color: #0e0e0e; border-color: var(--accent); font-weight: 500; }
+    .ws-search { font-family: var(--font-mono); font-size: 0.68rem; background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 0.25rem 0.6rem; border-radius: var(--radius); width: 180px; }
+    .ws-search:focus { outline: none; border-color: var(--accent); }
+    .ws-filter-count { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-left: auto; }
+
+    /* ── BUTTONS ── */
+    .btn { font-family: var(--font-mono); font-size: 0.75rem; padding: 0.5rem 1rem; border-radius: var(--radius); border: 1px solid var(--border); background: none; color: var(--text2); cursor: pointer; transition: all var(--transition); }
+    .btn:hover { border-color: var(--border2); color: var(--text); background: var(--bg3); }
+    .btn-primary { background: var(--accent); color: #0e0e0e; border-color: var(--accent); font-weight: 500; }
+    .btn-primary:hover { background: var(--accent2); color: #0e0e0e; border-color: var(--accent2); }
+    .btn-ghost { background: none; border-color: var(--border); color: var(--text3); }
+    .btn-ghost:hover { color: var(--text2); border-color: var(--border2); background: var(--bg3); }
+    .btn-danger { color: var(--error); border-color: #2a1010; }
+    .btn-danger:hover { background: var(--error-bg); color: #ff9090; }
+    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.68rem; }
+    .btn-lg { padding: 0.8rem 1.75rem; font-size: 0.82rem; }
+    .btn-icon { padding: 0.4rem 0.6rem; border: none; background: none; color: var(--text3); cursor: pointer; font-size: 1rem; line-height: 1; border-radius: var(--radius); transition: all var(--transition); }
+    .btn-icon:hover { color: var(--text); background: var(--bg3); }
+
+    /* ── FORMS ── */
+    .field { margin-bottom: 1rem; }
+    .field-label { display: block; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.4rem; }
+    .field-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text); font-family: var(--font-mono); font-size: 0.8rem; padding: 0.6rem 0.75rem; border-radius: var(--radius); transition: border-color var(--transition); }
+    .field-input:focus { outline: none; border-color: var(--accent); }
+    textarea.field-input { resize: vertical; min-height: 80px; font-family: var(--font-body); font-size: 0.85rem; line-height: 1.6; }
+    .feedback { padding: 0.65rem 1rem; border-radius: var(--radius); font-family: var(--font-mono); font-size: 0.72rem; border: 1px solid var(--border); background: var(--bg3); color: var(--accent); margin-top: 0.75rem; }
+    .feedback.error { color: var(--error); border-color: var(--error-bg); background: var(--error-bg); }
+
+    /* ── BADGES ── */
+    .badge { font-size: 0.6rem; padding: 0.18rem 0.45rem; border-radius: 10px; font-family: var(--font-mono); display: inline-block; }
+    .badge-sent { background: var(--sent-bg); color: var(--sent); border: 1px solid var(--sent); }
+    .badge-pending { background: var(--orange-bg); color: var(--orange); border: 1px solid var(--orange); }
+    .badge-cierre { background: var(--cierre-bg); color: var(--cierre); border: 1px solid var(--cierre); }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; max-width: 520px; width: 92%; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 1.1rem; font-weight: 300; font-style: italic; margin-bottom: 1.25rem; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; }
+    .progress-fill.done { background: var(--sent); }
+
+    /* ────────────────────────────────────────────
+       SCREEN: HOME
+    ──────────────────────────────────────────── */
+    #screen-home { background: var(--bg); }
+    .home-wrap { flex: 1; display: flex; flex-direction: column; }
+    .home-hero { padding: 2.5rem 2rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .home-hero-title { font-size: 1.75rem; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.2; margin-bottom: 0.35rem; }
+    .home-hero-sub { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); }
+
+    .home-body { flex: 1; padding: 1.5rem 2rem; max-width: 960px; }
+    .home-section-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.75rem; }
+
+    .campaign-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 2rem; }
+    .campaign-row { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; transition: all var(--transition); }
+    .campaign-row:hover { border-color: var(--accent); background: var(--bg3); }
+    .campaign-row.done { opacity: 0.55; border-color: var(--sent); cursor: default; }
+    .campaign-row-info { flex: 1; min-width: 0; }
+    .campaign-row-name { font-size: 1rem; font-weight: 300; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .campaign-row-meta { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-top: 0.2rem; }
+    .campaign-row-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+    .campaign-row-stat { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); }
+    .campaign-row-stat.done { color: var(--sent); }
+    .campaign-row-progress { width: 80px; }
+
+    .home-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .action-card { flex: 1; min-width: 200px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; cursor: pointer; transition: all var(--transition); display: flex; align-items: center; gap: 0.75rem; }
+    .action-card:hover { border-color: var(--accent); background: var(--bg3); }
+    .action-card-icon { font-size: 1.5rem; line-height: 1; }
+    .action-card-label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text2); }
+    .action-card-sub { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-top: 0.15rem; }
+
+    .empty-home { text-align: center; padding: 4rem 2rem; color: var(--text3); }
+    .empty-home-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .empty-home-text { font-size: 1.1rem; font-style: italic; margin-bottom: 0.5rem; color: var(--text2); }
+
+    /* ────────────────────────────────────────────
+       SCREEN: WIZARD (nueva campaña)
+    ──────────────────────────────────────────── */
+    #screen-wizard { background: var(--bg); }
+    .wizard-wrap { flex: 1; display: flex; flex-direction: column; max-width: 680px; margin: 0 auto; width: 100%; padding: 2rem; }
+
+    .wizard-steps { display: flex; align-items: center; gap: 0; margin-bottom: 2.5rem; }
+    .wizard-step { display: flex; align-items: center; gap: 0.5rem; }
+    .wizard-step-num { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); transition: all var(--transition); flex-shrink: 0; }
+    .wizard-step.active .wizard-step-num { border-color: var(--accent); color: var(--accent); background: rgba(200,240,96,0.08); }
+    .wizard-step.done .wizard-step-num { border-color: var(--sent); color: var(--sent); background: var(--sent-bg); }
+    .wizard-step-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text3); }
+    .wizard-step.active .wizard-step-label { color: var(--text2); }
+    .wizard-step-line { flex: 1; height: 1px; background: var(--border); margin: 0 0.75rem; }
+
+    .wizard-panel { display: none; }
+    .wizard-panel.active { display: block; }
+    .wizard-title { font-size: 1.4rem; font-weight: 300; font-style: italic; margin-bottom: 0.35rem; }
+    .wizard-sub { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text3); margin-bottom: 1.75rem; }
+
+    .upload-zone { position: relative; border: 1.5px dashed var(--border2); border-radius: var(--radius-lg); padding: 2.5rem 2rem; text-align: center; transition: all var(--transition); cursor: pointer; margin-bottom: 0.75rem; }
+    .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(200,240,96,0.03); }
+    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-icon { font-size: 2rem; color: var(--text3); margin-bottom: 0.5rem; }
+    .upload-text { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text2); }
+    .upload-hint { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-top: 0.25rem; }
+
+    .csv-preview { margin: 0.75rem 0 1.25rem; max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+    .csv-preview table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.68rem; }
+    .csv-preview th { background: var(--bg4); color: var(--text3); padding: 0.35rem 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .csv-preview td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border); color: var(--text2); }
+
+    .template-select-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+    .template-option { background: var(--bg3); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1rem; cursor: pointer; transition: all var(--transition); display: flex; align-items: center; justify-content: space-between; }
+    .template-option:hover { border-color: var(--border2); }
+    .template-option.selected { border-color: var(--accent); background: rgba(200,240,96,0.05); }
+    .template-option-name { font-size: 0.9rem; font-style: italic; }
+    .template-option-meta { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-top: 0.15rem; }
+
+    .vars-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.35rem; padding: 0.65rem 0.85rem; background: var(--bg3); border-radius: var(--radius); margin-bottom: 1rem; }
+    .var-pill { font-family: var(--font-mono); font-size: 0.65rem; background: var(--bg4); color: var(--orange); padding: 0.12rem 0.4rem; border-radius: 4px; }
+
+    .tpl-msg-row { display: flex; gap: 0.65rem; align-items: flex-start; margin-bottom: 0.5rem; background: var(--bg3); padding: 0.65rem; border-radius: var(--radius); border: 1px solid transparent; }
+    .tpl-msg-row.cierre { border-color: var(--cierre); background: var(--cierre-bg); }
+    .tpl-msg-num { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text3); padding-top: 0.65rem; min-width: 1.2rem; }
+    .tpl-msg-content { flex: 1; }
+    .tpl-checkbox { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.65rem; color: var(--text2); cursor: pointer; }
+
+    .wizard-nav { display: flex; gap: 0.75rem; margin-top: 2rem; align-items: center; }
+
+    /* ────────────────────────────────────────────
+       SCREEN: WORKSPACE
+    ──────────────────────────────────────────── */
+    #screen-workspace { background: var(--bg); }
+    .workspace-wrap { flex: 1; display: flex; flex-direction: column; }
+
+    .ws-topbar { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 1rem; }
+    .ws-progress-info { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text2); }
+    .ws-progress-info strong { color: var(--accent); }
+    .ws-progress-bar { flex: 1; max-width: 200px; }
+    .ws-nav-btns { margin-left: auto; display: flex; gap: 0.5rem; }
+
+    .ws-body { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 2rem 1.5rem; }
+    .ws-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 100%; max-width: 600px; overflow: hidden; }
+
+    .ws-card-header { background: var(--bg3); padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .ws-card-name { font-size: 1.15rem; font-weight: 300; font-style: italic; }
+    .ws-card-meta { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-top: 0.2rem; }
+    .ws-card-status { flex-shrink: 0; }
+
+    .ws-messages { padding: 1rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .msg-block { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .msg-block.sent-block { opacity: 0.6; }
+    .msg-block.cierre-block { border-color: var(--cierre); }
+
+    .msg-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--text3); padding: 0.4rem 0.75rem; background: var(--bg3); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .msg-textarea { width: 100%; background: transparent; border: none; color: var(--text); font-family: var(--font-body); font-size: 0.88rem; padding: 0.75rem; resize: vertical; min-height: 70px; line-height: 1.6; }
+    .msg-textarea:focus { outline: none; background: var(--bg4); }
+    .msg-textarea:disabled { color: var(--text3); pointer-events: none; }
+    .msg-textarea.sent-text { background: var(--sent-bg); color: var(--text2); }
+    .msg-footer { padding: 0.5rem 0.75rem; background: var(--bg3); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+
+    .ws-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); background: var(--bg2); display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+    .ws-footer-left { display: flex; gap: 0.5rem; }
+
+    /* Done screen overlay */
+    .ws-done { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3rem; }
+    .ws-done-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .ws-done-title { font-size: 1.5rem; font-weight: 300; font-style: italic; color: var(--sent); margin-bottom: 0.5rem; }
+    .ws-done-sub { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text3); }
+
+    /* ────────────────────────────────────────────
+       SCREEN: RESOURCES
+    ──────────────────────────────────────────── */
+    #screen-resources { background: var(--bg); }
+    .resources-wrap { flex: 1; padding: 2rem; max-width: 960px; margin: 0 auto; width: 100%; }
+    .resources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem; }
+    .resource-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .resource-panel-header { background: var(--bg3); padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .resource-panel-title { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text2); }
+    .resource-item { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .resource-item:last-child { border-bottom: none; }
+    .resource-item-name { font-size: 0.88rem; font-style: italic; }
+    .resource-item-meta { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text3); margin-top: 0.15rem; }
+    .resource-item-actions { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+    .resource-empty { padding: 2rem 1.25rem; text-align: center; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); }
+
+    /* ────────────────────────────────────────────
+       SCREEN: TEMPLATE EDITOR
+    ──────────────────────────────────────────── */
+    #screen-template { background: var(--bg); }
+    .template-wrap { flex: 1; padding: 2rem; max-width: 720px; margin: 0 auto; width: 100%; }
+
+    /* ─── MISC ─── */
+    .separator { height: 1px; background: var(--border); margin: 1.5rem 0; }
+    .tag { font-family: var(--font-mono); font-size: 0.6rem; background: var(--bg4); color: var(--text3); padding: 0.15rem 0.4rem; border-radius: 4px; display: inline-block; }
+    .tag.green { background: var(--sent-bg); color: var(--sent); }
+    .tag.orange { background: var(--orange-bg); color: var(--orange); }
+
+    /* ── Contact list expander ── */
+    .res-list-item { border-bottom: 1px solid var(--border); }
+    .res-list-item:last-child { border-bottom: none; }
+    .res-list-header { padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; cursor: pointer; transition: background var(--transition); }
+    .res-list-header:hover { background: var(--bg3); }
+    .res-list-chevron { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); transition: transform 0.2s; }
+    .res-list-contacts { display: none; border-top: 1px solid var(--border); max-height: 320px; overflow-y: auto; }
+    .res-list-contacts.open { display: block; }
+    .contact-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.4rem; padding: 0.4rem 1.25rem; border-bottom: 1px solid var(--border); align-items: center; }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-row-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); padding: 0.25rem 0.5rem; background: var(--bg4); border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .contact-cell-input { font-family: var(--font-mono); font-size: 0.68rem; background: var(--bg3); border: 1px solid transparent; color: var(--text); padding: 0.25rem 0.5rem; border-radius: 4px; width: 100%; transition: border-color var(--transition); }
+    .contact-cell-input:focus { outline: none; border-color: var(--accent); background: var(--bg4); }
+    .contact-cell-save { font-family: var(--font-mono); font-size: 0.6rem; color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 4px; padding: 0.2rem 0.4rem; cursor: pointer; white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
+    .contact-row:focus-within .contact-cell-save { opacity: 1; }
+    .contacts-list-header-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.4rem; padding: 0.3rem 1.25rem; background: var(--bg4); border-bottom: 1px solid var(--border); }
+    .contacts-list-header-row span { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }
+
+    /* ── Template preview modal ── */
+    .preview-msg { background: var(--bg3); border-left: 3px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 0.85rem 1rem; margin-bottom: 0.75rem; font-family: var(--font-body); font-size: 0.9rem; line-height: 1.7; color: var(--text); white-space: pre-wrap; word-break: break-word; }
+    .preview-msg.cierre-preview { border-left-color: var(--cierre); }
+    .preview-msg-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.4rem; }
+
+    /* ── Campaign notes ── */
+    .camp-note-area { padding: 0 1.25rem 0.75rem; background: var(--bg2); }
+    .camp-note-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-family: var(--font-mono); font-size: 0.68rem; padding: 0.4rem 0.65rem; border-radius: var(--radius); resize: none; line-height: 1.5; }
+    .camp-note-input:focus { outline: none; border-color: var(--accent); color: var(--text); }
+    .camp-note-input::placeholder { color: var(--text3); }
+
+    /* ── Stats panel ── */
+    .stats-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin: 1.5rem; }
+    .stats-title { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 1rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .stat-box { background: var(--bg3); border-radius: var(--radius); padding: 0.85rem 1rem; text-align: center; }
+    .stat-num { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 500; color: var(--accent); line-height: 1; }
+    .stat-num.green { color: var(--sent); }
+    .stat-num.orange { color: var(--orange); }
+    .stat-num.blue { color: var(--cierre); }
+    .stat-label { font-family: var(--font-mono); font-size: 0.58rem; color: var(--text3); margin-top: 0.35rem; }
+    .stats-bar-wrap { margin-top: 1rem; }
+    .stats-bar-label { font-family: var(--font-mono); font-size: 0.62rem; color: var(--text3); margin-bottom: 0.3rem; display: flex; justify-content: space-between; }
+    .stats-bar { height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; display: flex; }
+    .stats-bar-seg { height: 100%; transition: width 0.5s ease; }
+    @media (max-width: 520px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+
+    /* ── Bulk mode (modo masivo) ── */
+    .bulk-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.72rem; }
+    .bulk-table th { background: var(--bg4); color: var(--text3); padding: 0.4rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; position: sticky; top: 0; }
+    .bulk-table td { padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: middle; }
+    .bulk-table tr:last-child td { border-bottom: none; }
+    .bulk-table tr.bulk-sent td { opacity: 0.45; }
+    .bulk-table tr.bulk-sent td:first-child { text-decoration: line-through; }
+    .bulk-row-name { color: var(--text); font-style: italic; }
+    .bulk-mode-wrap { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+    .bulk-mode-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+    .bulk-done-badge { font-family: var(--font-mono); font-size: 0.68rem; color: var(--sent); }
+
+    /* ── Conversation log ── */
+    .ws-log { border-top: 1px solid var(--border); padding: 0.75rem 1.5rem; background: var(--bg2); }
+    .ws-log-label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.4rem; display: flex; justify-content: space-between; align-items: center; }
+    .ws-log-entries { max-height: 120px; overflow-y: auto; margin-bottom: 0.5rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .log-entry { font-family: var(--font-mono); font-size: 0.67rem; color: var(--text2); background: var(--bg3); border-radius: 4px; padding: 0.3rem 0.6rem; display: flex; justify-content: space-between; gap: 0.5rem; }
+    .log-entry-date { color: var(--text3); white-space: nowrap; flex-shrink: 0; }
+    .ws-log-input-row { display: flex; gap: 0.4rem; }
+    .ws-log-input { flex: 1; font-family: var(--font-mono); font-size: 0.7rem; background: var(--bg3); border: 1px solid var(--border); color: var(--text); padding: 0.35rem 0.6rem; border-radius: var(--radius); }
+    .ws-log-input:focus { outline: none; border-color: var(--accent); }
+
+    /* ── No-response alerts ── */
+    .followup-banner { background: var(--orange-bg); border: 1px solid var(--orange); border-radius: var(--radius-lg); padding: 0.85rem 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; transition: background var(--transition); }
+    .followup-banner:hover { background: #3a2010; }
+    .followup-banner-text { font-family: var(--font-mono); font-size: 0.72rem; color: var(--orange); }
+    .followup-banner-detail { font-size: 0.62rem; color: var(--text3); margin-top: 0.2rem; }
+
+    @media (max-width: 680px) {
+      .resources-grid { grid-template-columns: 1fr; }
+      .home-actions { flex-direction: column; }
+      .ws-body { padding: 1rem; }
+      .wizard-wrap { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: HOME
+  ══════════════════════════════════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="topbar">
+      <div class="topbar-logo">Pulso <span style="font-weight:300;font-size:0.9rem;opacity:0.7;">WhatsApp</span></div>
+      <div class="topbar-actions">
+        <span id="fs-dot" class="file-dot" title="Modo localStorage"></span>
+        <button class="btn btn-sm" id="fs-btn" onclick="setupFileAccess()">Conectar archivos</button>
+        <div class="save-indicator" id="save-indicator" style="display:none;">
+          <div class="save-dot" id="save-dot"></div>
+          <span id="save-label">guardado</span>
+        </div>
+        <button class="btn btn-sm" onclick="exportData()">↓ Exportar</button>
+        <label class="btn btn-sm" style="cursor:pointer;">↑ Importar<input type="file" id="import-input" multiple accept=".json" style="display:none;" onchange="importData(this.files)"></label>
+      </div>
+    </div>
+    <div class="home-wrap">
+      <div class="home-hero">
+        <div class="home-hero-title">¿Con quién hablas hoy?</div>
+        <div class="home-hero-sub" id="home-sub">Cargando campañas...</div>
+      </div>
+      <div class="home-body">
+        <div id="home-followup-banner"></div>
+        <div id="home-campaigns-section">
+          <div class="home-section-label">Campañas activas</div>
+          <div class="campaign-list" id="home-campaigns"></div>
+        </div>
+        <div id="home-archived-section" style="display:none; margin-bottom: 1.5rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem; cursor:pointer;" onclick="toggleArchivedSection()">
+            <div class="home-section-label" style="margin-bottom:0;">Archivadas</div>
+            <span id="home-archived-chevron" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text3);">▶</span>
+          </div>
+          <div class="campaign-list" id="home-archived-campaigns" style="display:none;"></div>
+        </div>
+        <div id="home-empty" style="display:none;" class="empty-home">
+          <div class="empty-home-icon">◎</div>
+          <div class="empty-home-text">No hay campañas todavía</div>
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text3); margin-bottom: 1.5rem;">Crea una campaña para empezar a enviar mensajes</div>
+        </div>
+        <div class="home-actions">
+          <div class="action-card" onclick="startWizard()">
+            <div class="action-card-icon">+</div>
+            <div>
+              <div class="action-card-label">Nueva campaña</div>
+              <div class="action-card-sub">CSV → Template → Lanzar</div>
+            </div>
+          </div>
+          <div class="action-card" onclick="showScreen('resources')">
+            <div class="action-card-icon">◈</div>
+            <div>
+              <div class="action-card-label">Recursos</div>
+              <div class="action-card-sub">Listas y templates guardados</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: WIZARD (nueva campaña)
+  ══════════════════════════════════════════ -->
+  <div id="screen-wizard" class="screen">
+    <div class="topbar">
+      <div class="topbar-logo">Pulso <span style="font-weight:300;font-size:0.9rem;opacity:0.7;">WhatsApp</span></div>
+      <div class="topbar-breadcrumb">/ <span>Nueva campaña</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn-sm btn-ghost" onclick="showScreen('home')">✕ Cancelar</button>
+      </div>
+    </div>
+    <div class="wizard-wrap">
+      <!-- Steps indicator -->
+      <div class="wizard-steps">
+        <div class="wizard-step active" id="wstep-1">
+          <div class="wizard-step-num">1</div>
+          <div class="wizard-step-label">Contactos</div>
+        </div>
+        <div class="wizard-step-line"></div>
+        <div class="wizard-step" id="wstep-2">
+          <div class="wizard-step-num">2</div>
+          <div class="wizard-step-label">Mensaje</div>
+        </div>
+        <div class="wizard-step-line"></div>
+        <div class="wizard-step" id="wstep-3">
+          <div class="wizard-step-num">3</div>
+          <div class="wizard-step-label">Confirmar</div>
+        </div>
+      </div>
+
+      <!-- PASO 1: Contactos -->
+      <div class="wizard-panel active" id="wpanel-1">
+        <div class="wizard-title">¿A quién le escribes?</div>
+        <div class="wizard-sub">Arrastra el CSV de contactos o selecciónalo</div>
+
+        <div class="upload-zone" id="wiz-upload-zone">
+          <input type="file" id="wiz-csv-file" accept=".csv">
+          <div class="upload-icon">⇪</div>
+          <div class="upload-text">Arrastra el CSV aquí o haz clic</div>
+          <div class="upload-hint">Columnas: Acudiente, Relación, Teléfono, Estudiante, Salón, Escuela</div>
+        </div>
+
+        <div id="wiz-csv-preview" style="display:none;">
+          <div class="csv-preview" id="wiz-csv-table"></div>
+          <div id="wiz-csv-ok" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--sent); margin-top: 0.5rem;"></div>
+        </div>
+
+        <!-- Listas guardadas como alternativa -->
+        <div id="wiz-saved-lists-section" style="display:none;">
+          <div class="separator"></div>
+          <div class="home-section-label">O usar una lista guardada</div>
+          <div id="wiz-saved-lists" class="template-select-list"></div>
+        </div>
+
+        <div id="wiz-p1-feedback" class="feedback" style="display:none;"></div>
+        <div class="wizard-nav">
+          <button class="btn btn-primary btn-lg" onclick="wizardNext(1)">Siguiente →</button>
+          <button class="btn btn-ghost" onclick="showScreen('home')">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- PASO 2: Mensaje -->
+      <div class="wizard-panel" id="wpanel-2">
+        <div class="wizard-title">¿Qué mensaje envías?</div>
+        <div class="wizard-sub">Selecciona un template guardado o escribe uno nuevo</div>
+
+        <div id="wiz-templates-list" class="template-select-list"></div>
+
+        <div id="wiz-new-tpl-section" style="display:none;">
+          <div class="separator"></div>
+          <div class="home-section-label">Nuevo template rápido</div>
+          <div class="vars-bar">
+            <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text3); margin-right: 0.25rem;">Variables:</span>
+            <span class="var-pill">[saludo]</span><span class="var-pill">[tratamiento]</span><span class="var-pill">[cliente_nombre]</span><span class="var-pill">[hijo_nombre]</span><span class="var-pill">[link_fotos]</span><span class="var-pill">[link_onboarding]</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Nombre del template</label>
+            <input type="text" id="wiz-tpl-name" class="field-input" placeholder="ej. Aviso impresiones listas">
+          </div>
+          <div id="wiz-tpl-messages"></div>
+          <button class="btn btn-ghost btn-sm" onclick="wizAddMsgRow()" style="margin-bottom: 1rem;">+ Agregar mensaje</button>
+        </div>
+
+        <button class="btn btn-ghost btn-sm" onclick="toggleNewTplSection()" id="wiz-new-tpl-btn">+ Crear template nuevo</button>
+
+        <div id="wiz-p2-feedback" class="feedback" style="display:none;"></div>
+        <div class="wizard-nav">
+          <button class="btn btn-primary btn-lg" onclick="wizardNext(2)">Siguiente →</button>
+          <button class="btn btn-ghost" onclick="wizardBack(2)">← Atrás</button>
+        </div>
+      </div>
+
+      <!-- PASO 3: Confirmar -->
+      <div class="wizard-panel" id="wpanel-3">
+        <div class="wizard-title">Casi listo</div>
+        <div class="wizard-sub">Ponle nombre a esta campaña y lanza</div>
+
+        <div id="wiz-summary" style="background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text2); display: flex; flex-direction: column; gap: 0.4rem;"></div>
+
+        <div class="field">
+          <label class="field-label">Nombre de la campaña</label>
+          <input type="text" id="wiz-camp-name" class="field-input" placeholder="ej. Chiara Lubich — Permisos Portafolio 2025">
+        </div>
+
+        <div id="wiz-p3-feedback" class="feedback" style="display:none;"></div>
+        <div class="wizard-nav">
+          <button class="btn btn-primary btn-lg" onclick="launchCampaign()">🚀 Lanzar campaña</button>
+          <button class="btn btn-ghost" onclick="wizardBack(3)">← Atrás</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: WORKSPACE
+  ══════════════════════════════════════════ -->
+  <div id="screen-workspace" class="screen">
+    <div class="topbar">
+      <div class="topbar-logo">Pulso <span style="font-weight:300;font-size:0.9rem;opacity:0.7;">WhatsApp</span></div>
+      <div class="topbar-breadcrumb" id="ws-breadcrumb">/ <span>—</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn-sm btn-ghost" onclick="showScreen('home')">← Volver</button>
+      </div>
+    </div>
+
+    <div class="workspace-wrap">
+      <!-- Filter bar -->
+      <div class="ws-filters">
+        <input class="ws-search" id="ws-search" type="text" placeholder="Buscar contacto..." oninput="wsApplyFilter()">
+        <button class="ws-filter-btn active" id="wf-pendientes" onclick="wsSetFilter('pendientes')">Pendientes</button>
+        <button class="ws-filter-btn" id="wf-todos" onclick="wsSetFilter('todos')">Todos</button>
+        <button class="ws-filter-btn" id="wf-completados" onclick="wsSetFilter('completados')">Completados</button>
+        <button class="ws-filter-btn" id="wf-sin-respuesta" onclick="wsSetFilter('sin-respuesta')" style="border-color:var(--orange);color:var(--orange);">⏰ Sin respuesta</button>
+        <span class="ws-filter-count" id="ws-filter-count"></span>
+      </div>
+
+      <!-- Progress topbar -->
+      <div class="ws-topbar">
+        <div class="ws-progress-info" id="ws-progress-text">0 de 0 completados</div>
+        <div class="ws-progress-bar progress-bar">
+          <div class="progress-fill" id="ws-progress-fill" style="width:0%"></div>
+        </div>
+        <div class="ws-nav-btns">
+          <button class="btn btn-sm" id="ws-prev-btn" onclick="wsNavigate(-1)">← Anterior</button>
+          <button class="btn btn-sm" id="ws-next-btn" onclick="wsNavigate(1)">Siguiente →</button>
+          <button class="btn btn-sm btn-ghost" id="ws-bulk-btn" onclick="toggleBulkMode()" title="Modo masivo">☰ Masivo</button>
+        </div>
+      </div>
+
+      <!-- Bulk mode table -->
+      <div class="bulk-mode-wrap" id="ws-bulk-wrap" style="display:none;">
+        <div class="bulk-mode-header">
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text2);">
+            Modo masivo — un clic por contacto
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <span class="bulk-done-badge" id="bulk-done-count"></span>
+            <select id="bulk-msg-sel" class="field-input" style="font-size:0.7rem;padding:0.25rem 0.5rem;width:auto;">
+              <option value="0">Mensaje 1</option>
+            </select>
+          </div>
+        </div>
+        <table class="bulk-table">
+          <thead>
+            <tr>
+              <th>Acudiente</th><th>Estudiante</th><th>Salón</th><th>Teléfono</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="bulk-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Contact card -->
+      <div class="ws-body" id="ws-body">
+        <div class="ws-card" id="ws-card">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Done state -->
+      <div class="ws-done" id="ws-done" style="display:none;">
+        <div class="ws-done-icon">✓</div>
+        <div class="ws-done-title">Todos enviados</div>
+        <div class="ws-done-sub" id="ws-done-sub">Buen trabajo.</div>
+        <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+          <button class="btn btn-primary" onclick="showScreen('home')">← Volver</button>
+          <button class="btn btn-ghost" onclick="wsResetAndReview()">Revisar enviados</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: RESOURCES
+  ══════════════════════════════════════════ -->
+  <div id="screen-resources" class="screen">
+    <div class="topbar">
+      <div class="topbar-logo">Pulso <span style="font-weight:300;font-size:0.9rem;opacity:0.7;">WhatsApp</span></div>
+      <div class="topbar-breadcrumb">/ <span>Recursos</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn-sm" onclick="showScreen('home')">← Inicio</button>
+      </div>
+    </div>
+    <div class="resources-wrap">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+        <div style="font-size: 1.3rem; font-weight: 300; font-style: italic;">Recursos guardados</div>
+      </div>
+      <div style="font-family: var(--font-mono); font-size: 0.67rem; color: var(--text3);">Listas de contactos y templates de mensajes</div>
+      <div class="resources-grid">
+        <div class="resource-panel">
+          <div class="resource-panel-header">
+            <div class="resource-panel-title">Listas de contactos</div>
+            <button class="btn btn-sm" onclick="showImportModal()">+ Importar CSV</button>
+          </div>
+          <div id="res-lists"></div>
+        </div>
+        <div class="resource-panel">
+          <div class="resource-panel-header">
+            <div class="resource-panel-title">Templates</div>
+            <div style="display:flex;gap:0.4rem;">
+              <label class="btn btn-sm" style="cursor:pointer;" title="Importar template desde archivo .txt o .json">↑ Importar .txt<input type="file" id="tpl-import-file" accept=".txt,.json" style="display:none;" onchange="importTemplateFile(this)"></label>
+              <button class="btn btn-sm" onclick="showScreen('template')">+ Nuevo</button>
+            </div>
+          </div>
+          <div id="res-templates"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREEN: TEMPLATE EDITOR
+  ══════════════════════════════════════════ -->
+  <div id="screen-template" class="screen">
+    <div class="topbar">
+      <div class="topbar-logo">Pulso <span style="font-weight:300;font-size:0.9rem;opacity:0.7;">WhatsApp</span></div>
+      <div class="topbar-breadcrumb">/ <span>Nuevo template</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn-sm btn-ghost" onclick="showScreen('resources')">✕ Cancelar</button>
+      </div>
+    </div>
+    <div class="template-wrap">
+      <div style="font-size: 1.3rem; font-weight: 300; font-style: italic; margin-bottom: 0.35rem;">Nuevo template de mensajes</div>
+      <div style="font-family: var(--font-mono); font-size: 0.67rem; color: var(--text3); margin-bottom: 1.75rem;">Define los mensajes y marca cuáles son de cierre</div>
+
+      <div class="vars-bar" style="margin-bottom: 1.25rem;">
+        <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text3); margin-right: 0.25rem;">Variables:</span>
+        <span class="var-pill">[saludo]</span><span class="var-pill">[tratamiento]</span><span class="var-pill">[cliente_nombre]</span><span class="var-pill">[hijo_nombre]</span><span class="var-pill">[link_fotos]</span><span class="var-pill">[link_onboarding]</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Nombre del template</label>
+        <input type="text" id="tpl-name" class="field-input" placeholder="ej. Permiso portafolio">
+      </div>
+
+      <div style="background: var(--cierre-bg); border: 1px solid var(--cierre); border-radius: var(--radius); padding: 0.75rem 1rem; margin-bottom: 1rem; font-family: var(--font-mono); font-size: 0.68rem; color: var(--text2);">
+        <strong style="color: var(--cierre);">Mensajes de Cierre:</strong> Marca los mensajes que terminan la conversación (ej. respuesta negativa). Un contacto se completa cuando se envía cualquier mensaje de cierre.
+      </div>
+
+      <div id="tpl-messages"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addTemplateMessageRow()" style="margin-bottom: 1.5rem;">+ Agregar mensaje</button>
+
+      <div id="tpl-feedback" class="feedback" style="display:none;"></div>
+      <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+        <button class="btn btn-primary" onclick="saveTemplate()">Guardar template →</button>
+        <button class="btn btn-ghost" onclick="showScreen('resources')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ══════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════ -->
+
+<!-- Import CSV (standalone, from resources) -->
+<div id="modal-import" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">Importar lista de contactos</div>
+    <div class="field">
+      <label class="field-label">Nombre para esta lista</label>
+      <input type="text" id="modal-lista-nombre" class="field-input" placeholder="ej. Colegio San José — Kinder 2026">
+    </div>
+    <div class="upload-zone" id="modal-upload-zone">
+      <input type="file" id="modal-csv-file" accept=".csv">
+      <div class="upload-icon">⇪</div>
+      <div class="upload-text">Arrastra el CSV o haz clic</div>
+    </div>
+    <div id="modal-csv-preview" style="display:none;">
+      <div class="csv-preview" id="modal-csv-table"></div>
+      <div id="modal-csv-ok" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--sent); margin-top: 0.5rem;"></div>
+    </div>
+    <div id="modal-csv-feedback" class="feedback" style="display:none;"></div>
+    <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem;">
+      <button class="btn btn-ghost" onclick="hideModal('modal-import')">Cancelar</button>
+      <button class="btn btn-primary" id="modal-btn-guardar" onclick="guardarListaCSVModal()" style="display:none;">Guardar lista</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template preview modal -->
+<div id="modal-preview-tpl" class="modal-overlay">
+  <div class="modal" style="max-width:600px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div class="modal-title" style="margin-bottom:0;" id="preview-tpl-title">Vista previa</div>
+      <button class="btn btn-ghost btn-sm" onclick="hideModal('modal-preview-tpl')">✕</button>
+    </div>
+    <div style="background:var(--bg3);border-radius:var(--radius);padding:0.65rem 0.9rem;margin-bottom:1rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--text2);">
+      Contacto de ejemplo: <span id="preview-contact-info" style="color:var(--accent);"></span>
+      <span style="margin-left:0.75rem;color:var(--text3);">— cambia con el buscador de arriba</span>
+    </div>
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <input class="ws-search" id="preview-search" type="text" placeholder="Buscar contacto..." oninput="previewSearch()" style="width:200px;">
+      <select id="preview-lista-sel" class="field-input" style="font-size:0.72rem;padding:0.25rem 0.5rem;flex:1;" onchange="previewListaChange()">
+        <option value="">— Sin lista (datos genéricos) —</option>
+      </select>
+    </div>
+    <div id="preview-msgs"></div>
+  </div>
+</div>
+
+<!-- Campaign stats modal -->
+<div id="modal-stats" class="modal-overlay">
+  <div class="modal" style="max-width:560px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+      <div class="modal-title" style="margin-bottom:0;" id="stats-camp-name">Estadísticas</div>
+      <button class="btn btn-ghost btn-sm" onclick="hideModal('modal-stats')">✕</button>
+    </div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="stats-bar-wrap" id="stats-bar-wrap"></div>
+    <div id="stats-detail" style="margin-top:1.25rem;font-family:var(--font-mono);font-size:0.68rem;color:var(--text3);"></div>
+  </div>
+</div>
+
+<!-- Campaign notes modal -->
+<div id="modal-camp-note" class="modal-overlay">
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-title" id="modal-note-title">Notas de campaña</div>
+    <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text3);margin-bottom:1rem;">Notas internas: fecha de sesión, acuerdos, contacto del coordinador, etc.</p>
+    <textarea class="field-input" id="modal-note-text" rows="5" placeholder="ej. Sesión el 15/05 · Coordinadora: Luisa 6600-0000 · Paquetes confirmados con dirección"></textarea>
+    <div style="display:flex;justify-content:flex-end;gap:0.5rem;margin-top:1rem;">
+      <button class="btn btn-ghost" onclick="hideModal('modal-camp-note')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveCampaignNote()">Guardar nota →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template edit modal -->
+<div id="modal-edit-tpl" class="modal-overlay">
+  <div class="modal" style="max-width:640px;">
+    <div class="modal-title">Editar template</div>
+    <div class="vars-bar" style="margin-bottom:1rem;">
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text3);margin-right:0.25rem;">Variables:</span>
+      <span class="var-pill">[saludo]</span><span class="var-pill">[tratamiento]</span><span class="var-pill">[cliente_nombre]</span><span class="var-pill">[hijo_nombre]</span><span class="var-pill">[link_fotos]</span><span class="var-pill">[link_onboarding]</span>
+    </div>
+    <div class="field">
+      <label class="field-label">Nombre</label>
+      <input type="text" id="edit-tpl-name" class="field-input">
+    </div>
+    <div id="edit-tpl-messages" style="margin-bottom:0.5rem;"></div>
+    <button class="btn btn-ghost btn-sm" onclick="editTplAddRow()" style="margin-bottom:1rem;">+ Agregar mensaje</button>
+    <div id="edit-tpl-feedback" class="feedback" style="display:none;"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;">
+      <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--orange);">Si hay campañas activas usando este template, se creará una copia.</div>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="btn btn-ghost" onclick="hideModal('modal-edit-tpl')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveEditedTemplate()">Guardar →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm delete -->
+<div id="modal-confirm" class="modal-overlay">
+  <div class="modal" style="max-width: 400px;">
+    <div class="modal-title" id="modal-confirm-title" style="color: var(--error);">Confirmar</div>
+    <p id="modal-confirm-text" style="color: var(--text2); margin-bottom: 1.5rem; font-size: 0.9rem;"></p>
+    <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+      <button class="btn btn-ghost" onclick="hideModal('modal-confirm')">Cancelar</button>
+      <button class="btn btn-danger" id="modal-confirm-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════
+   DB — PERSISTENCE LAYER (idéntico al original)
+════════════════════════════════════════════ */
+const DB = {
+  data: { contactLists: [], templates: [], campaigns: [], state: {} },
+  directoryHandle: null,
+  useFileSystem: false,
+  tempCSVData: null,
+
+  async init() {
+    if ('showDirectoryPicker' in window) {
+      try {
+        const saved = await this.getSavedDirectoryHandle();
+        if (saved) {
+          const perm = await saved.queryPermission({ mode: 'readwrite' });
+          if (perm === 'granted') {
+            this.directoryHandle = saved;
+            this.useFileSystem = true;
+            await this.loadFromFiles();
+            return;
+          }
+        }
+      } catch(e) {}
+    }
+    this.loadFromLocalStorage();
+  },
+
+  async requestFolderAccess() {
+    if (!('showDirectoryPicker' in window)) { alert('Usa Chrome o Edge.'); return false; }
+    try {
+      this.directoryHandle = await window.showDirectoryPicker();
+      this.useFileSystem = true;
+      await this.saveDirectoryHandle(this.directoryHandle);
+      await this.loadFromFiles();
+      return true;
+    } catch(e) { return false; }
+  },
+
+  async saveDirectoryHandle(handle) {
+    return new Promise(resolve => {
+      const req = indexedDB.open('pulsoDB', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('handles', { keyPath: 'id' });
+      req.onsuccess = () => {
+        const tx = req.result.transaction('handles','readwrite');
+        tx.objectStore('handles').put({ id: 'dataFolder', handle });
+        tx.oncomplete = resolve;
+      };
+      req.onerror = () => resolve();
+    });
+  },
+
+  async getSavedDirectoryHandle() {
+    return new Promise(resolve => {
+      const req = indexedDB.open('pulsoDB', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('handles', { keyPath: 'id' });
+      req.onsuccess = () => {
+        const tx = req.result.transaction('handles','readonly');
+        const g = tx.objectStore('handles').get('dataFolder');
+        g.onsuccess = () => resolve(g.result?.handle || null);
+        g.onerror = () => resolve(null);
+      };
+      req.onerror = () => resolve(null);
+    });
+  },
+
+  async loadFromFiles() {
+    if (!this.directoryHandle) return;
+    for (const name of ['contactLists','templates','campaigns','state']) {
+      try {
+        const fh = await this.directoryHandle.getFileHandle(`${name}.json`, { create: true });
+        const text = await (await fh.getFile()).text();
+        this.data[name] = text.trim() ? JSON.parse(text) : (name === 'state' ? {} : []);
+      } catch(e) { this.data[name] = name === 'state' ? {} : []; }
+    }
+  },
+
+  async saveToFiles() {
+    if (!this.directoryHandle) return false;
+    try {
+      for (const [name, content] of Object.entries(this.data)) {
+        const fh = await this.directoryHandle.getFileHandle(`${name}.json`, { create: true });
+        const w = await fh.createWritable();
+        await w.write(JSON.stringify(content, null, 2));
+        await w.close();
+      }
+      return true;
+    } catch(e) { return false; }
+  },
+
+  loadFromLocalStorage() {
+    this.data.contactLists = JSON.parse(localStorage.getItem('pulso_contactLists')) || [];
+    this.data.templates    = JSON.parse(localStorage.getItem('pulso_templates'))    || [];
+    this.data.campaigns    = JSON.parse(localStorage.getItem('pulso_campaigns'))    || [];
+    this.data.state        = JSON.parse(localStorage.getItem('pulso_state'))        || {};
+  },
+
+  saveToLocalStorage() {
+    localStorage.setItem('pulso_contactLists', JSON.stringify(this.data.contactLists));
+    localStorage.setItem('pulso_templates',    JSON.stringify(this.data.templates));
+    localStorage.setItem('pulso_campaigns',    JSON.stringify(this.data.campaigns));
+    localStorage.setItem('pulso_state',        JSON.stringify(this.data.state));
+  },
+
+  async persist() {
+    setSaveStatus('saving');
+    let ok;
+    if (this.useFileSystem && this.directoryHandle) ok = await this.saveToFiles();
+    else { this.saveToLocalStorage(); ok = true; }
+    setSaveStatus(ok ? 'saved' : 'error');
+    return ok;
+  },
+
+  exportToDownloads() {
+    const ts = new Date().toISOString().split('T')[0];
+    Object.entries(this.data).forEach(([name, content]) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(content,null,2)],{type:'application/json'}));
+      a.download = `${name}_${ts}.json`; a.click();
+    });
+  },
+
+  async importFromFiles(fileList) {
+    for (const file of fileList) {
+      const name = file.name.replace('.json','').replace(/_\d{4}-\d{2}-\d{2}$/,'');
+      if (this.data.hasOwnProperty(name)) this.data[name] = JSON.parse(await file.text());
+    }
+    await this.persist();
+  },
+
+  getContactLists()        { return this.data.contactLists; },
+  getContactListById(id)   { return this.data.contactLists.find(l => l.id === id); },
+  saveContactList(l)       { this.data.contactLists.push(l); this.persist(); },
+  async deleteContactList(id) {
+    if (this.data.campaigns.some(c => c.lista_id === id)) return false;
+    this.data.contactLists = this.data.contactLists.filter(l => l.id !== id);
+    await this.persist(); return true;
+  },
+
+  getTemplates()           { return this.data.templates; },
+  getTemplateById(id)      { return this.data.templates.find(t => t.id === id); },
+  saveTemplate(t)          {
+    const i = this.data.templates.findIndex(x => x.id === t.id);
+    if (i >= 0) this.data.templates[i] = t; else this.data.templates.push(t);
+    this.persist();
+  },
+  async deleteTemplate(id) {
+    if (this.data.campaigns.some(c => c.template_id === id)) return false;
+    this.data.templates = this.data.templates.filter(t => t.id !== id);
+    await this.persist(); return true;
+  },
+
+  getCampaigns()           { return this.data.campaigns; },
+  getCampaignById(id)      { return this.data.campaigns.find(c => c.id === id); },
+  saveCampaign(c)          {
+    const i = this.data.campaigns.findIndex(x => x.id === c.id);
+    if (i >= 0) this.data.campaigns[i] = c; else this.data.campaigns.push(c);
+    this.persist();
+  },
+  async deleteCampaign(id) {
+    this.data.campaigns = this.data.campaigns.filter(c => c.id !== id);
+    delete this.data.state[id]; await this.persist(); return true;
+  },
+  async archiveCampaign(id) {
+    const c = this.getCampaignById(id);
+    if (c) { c.archivada = true; await this.persist(); }
+  },
+  async unarchiveCampaign(id) {
+    const c = this.getCampaignById(id);
+    if (c) { c.archivada = false; await this.persist(); }
+  },
+  resetCampaignState(id)   { delete this.data.state[id]; this.persist(); },
+
+  getClientState(campId, clientId) { return this.data.state[campId]?.[clientId] || null; },
+  setMessageSent(campId, clientId, msgIdx, textFinal, wasEdited) {
+    if (!this.data.state[campId]) this.data.state[campId] = {};
+    if (!this.data.state[campId][clientId]) this.data.state[campId][clientId] = { messages: {} };
+    this.data.state[campId][clientId].messages[msgIdx] = { textFinal, wasEdited, sentAt: new Date().toISOString() };
+    this.persist();
+  },
+  addContactLog(campId, contactId, text) {
+    if (!this.data.state[campId]) this.data.state[campId] = {};
+    if (!this.data.state[campId][contactId]) this.data.state[campId][contactId] = { messages: {}, log: [] };
+    if (!this.data.state[campId][contactId].log) this.data.state[campId][contactId].log = [];
+    this.data.state[campId][contactId].log.push({ text, date: new Date().toISOString() });
+    this.persist();
+  },
+
+  isClientCompleted(campId, clientId, template) {
+    const cs = this.data.state[campId]?.[clientId];
+    if (!cs || !cs.messages) return false;
+    const sent = Object.keys(cs.messages).map(Number);
+    const cierres = template.messages.map((m,i)=>({...m,i})).filter(m=>m.es_cierre);
+    if (cierres.length > 0) return cierres.some(m => sent.includes(m.i));
+    return sent.length === template.messages.length;
+  },
+
+  getCampaignProgress(campId) {
+    const campState = this.data.state[campId] || {};
+    const camp = this.getCampaignById(campId);
+    if (!camp) return { sent:0, total:0, completed:0, totalClients:0 };
+    const tpl  = this.getTemplateById(camp.template_id);
+    const lista = this.getContactListById(camp.lista_id);
+    if (!lista) return { sent:0, total:0, completed:0, totalClients:0 };
+    let totalMsgs=0, sentMsgs=0, completedClients=0;
+    lista.contacts.forEach(c => {
+      const cs = campState[c.id];
+      totalMsgs += tpl?.messages.length || 0;
+      sentMsgs  += Object.keys(cs?.messages||{}).length;
+      if (this.isClientCompleted(campId, c.id, tpl)) completedClients++;
+    });
+    return { sent:sentMsgs, total:totalMsgs, completed:completedClients, totalClients:lista.contacts.length };
+  }
+};
+
+/* ════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════ */
+function resolveMessage(tpl, ctx) {
+  return tpl
+    .replace(/\[saludo\]/g,         ctx.saludo||'')
+    .replace(/\[tratamiento\]/g,    ctx.tratamiento||'')
+    .replace(/\[cliente_nombre\]/g, ctx.cliente_nombre||'')
+    .replace(/\[hijo_nombre\]/g,    ctx.hijo_nombre||'')
+    .replace(/\[link_fotos\]/g,     ctx.link_fotos||'[link pendiente]')
+    .replace(/\[link_onboarding\]/g, ctx.link_onboarding||'');
+}
+
+function toSlug(str) {
+  return (str||'').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function buildContext(contact, campId) {
+  const h = new Date().getHours();
+  const saludo = h<12?'Buen día':h<19?'Buenas tardes':'Buenas noches';
+  const tratamiento = contact.relationship==='papá'?'Sr.':contact.relationship==='mamá'?'Sra.':'Sr.(a)';
+  
+  const phoneClean = contact.phone ? contact.phone.replace(/\D/g, '') : '';
+  const studentId = `${phoneClean}_${toSlug(contact.student)}_${toSlug(contact.classroom)}`;
+  const linkOnboarding = `https://mimejorretrato.com/onboarding/cuestionario.html?sid=${studentId}&n=${encodeURIComponent(contact.student)}`;
+
+  return {
+    saludo, tratamiento,
+    cliente_nombre: contact.name,
+    hijo_nombre:    contact.student,
+    link_fotos:     contact.link_fotos||'',
+    link_onboarding: linkOnboarding
+  };
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+  if (lines.length < 2) throw new Error('El CSV debe tener al menos una fila de datos.');
+  const sep = lines[0].includes('\t') ? '\t' : ',';
+  const parse = line => line.split(sep).map(c => c.trim().replace(/^"|"$/g,''));
+  const headers = parse(lines[0]);
+  const hL = headers.map(h=>h.toLowerCase());
+  const idx = {
+    name:         hL.findIndex(h=>h.includes('acudiente')||h.includes('nombre')||h.includes('name')),
+    relationship: hL.findIndex(h=>h.includes('relaci')||h.includes('parent')),
+    phone:        hL.findIndex(h=>h.includes('cel')||h.includes('tel')||h.includes('phone')),
+    student:      hL.findIndex(h=>h.includes('estudi')||h.includes('alumno')||h.includes('student')),
+    classroom:    hL.findIndex(h=>h.includes('sal')||h.includes('class')||h.includes('grado')),
+    school:       hL.findIndex(h=>h.includes('escuela')||h.includes('colegio')||h.includes('school')),
+    link_fotos:   hL.findIndex(h=>h.includes('link')||h.includes('foto')||h.includes('url')),
+  };
+  const contacts = [];
+  for (let i=1; i<lines.length; i++) {
+    const cols = parse(lines[i]);
+    if (cols.length < 4) continue;
+    const g = (key, fb) => { const j = idx[key]>=0?idx[key]:fb; return (cols[j]||'').trim(); };
+    const rawPhone = g('phone',2).replace(/\D/g,'');
+    const phone = rawPhone.startsWith('507') ? '+'+rawPhone : '+507'+rawPhone;
+    contacts.push({
+      id: 'cli_'+String(i).padStart(3,'0')+'_'+Date.now(),
+      name:         g('name',0),
+      relationship: g('relationship',1)||'acudiente',
+      phone,
+      student:      g('student',3),
+      classroom:    g('classroom',4),
+      school:       g('school',-1)||'',
+      link_fotos:   g('link_fotos',-1)||'',
+    });
+  }
+  if (contacts.length === 0) throw new Error('No se encontraron contactos válidos.');
+  return { headers, contacts, rawLines: lines };
+}
+
+function renderCSVPreview(headers, rawLines, tableEl, okEl, count) {
+  const sep = rawLines[0].includes('\t') ? '\t' : ',';
+  const parse = line => line.split(sep).map(c=>c.trim().replace(/^"|"$/g,''));
+  tableEl.innerHTML = `<table>
+    <tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr>
+    ${rawLines.slice(1,6).map(l=>`<tr>${parse(l).map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}
+    ${rawLines.length>6?`<tr><td colspan="${headers.length}" style="text-align:center;color:var(--text3)">... y ${rawLines.length-6} filas más</td></tr>`:''}
+  </table>`;
+  okEl.textContent = `✓ ${count} contactos listos`;
+}
+
+/* ════════════════════════════════════════════
+   SCREEN NAVIGATION
+════════════════════════════════════════════ */
+let _saveTimer = null;
+function setSaveStatus(status) {
+  const ind = document.getElementById('save-indicator');
+  const dot = document.getElementById('save-dot');
+  const lbl = document.getElementById('save-label');
+  if (!ind) return;
+  ind.style.display = 'flex';
+  dot.className = 'save-dot ' + status;
+  lbl.textContent = status === 'saving' ? 'guardando...' : status === 'saved' ? 'guardado' : '⚠ error al guardar';
+  if (_saveTimer) clearTimeout(_saveTimer);
+  if (status === 'saved') {
+    _saveTimer = setTimeout(() => { ind.style.display = 'none'; }, 3000);
+  }
+}
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+  if (name === 'home') loadHome();
+  if (name === 'resources') loadResources();
+  if (name === 'template') initTemplateEditor();
+}
+
+/* ════════════════════════════════════════════
+   HOME
+════════════════════════════════════════════ */
+function loadHome() {
+  const allCampaigns = DB.getCampaigns();
+  const campaigns = allCampaigns.filter(c => !c.archivada);
+  const archived  = allCampaigns.filter(c => c.archivada);
+
+  const dot = document.getElementById('fs-dot');
+  const fsbtn = document.getElementById('fs-btn');
+  if (DB.useFileSystem) { dot.className = 'file-dot connected'; fsbtn.style.display = 'none'; }
+
+  const sub = document.getElementById('home-sub');
+  const section = document.getElementById('home-campaigns-section');
+  const empty = document.getElementById('home-empty');
+  const container = document.getElementById('home-campaigns');
+
+  if (campaigns.length === 0 && archived.length === 0) {
+    section.style.display = 'none';
+    empty.style.display = 'block';
+    sub.textContent = 'Sin campañas activas';
+  } else {
+    section.style.display = 'block';
+    empty.style.display = 'none';
+
+    const active = campaigns.filter(c => {
+      const p = DB.getCampaignProgress(c.id);
+      return p.completed < p.totalClients || p.totalClients === 0;
+    });
+    sub.textContent = active.length > 0
+      ? `${active.length} campaña${active.length>1?'s':''} con mensajes pendientes`
+      : campaigns.length > 0 ? 'Todas las campañas completadas' : 'Sin campañas activas';
+
+    container.innerHTML = campaigns.map(camp => renderCampaignRow(camp, false)).join('');
+  }
+
+  // Archived section
+  const arcSec = document.getElementById('home-archived-section');
+  const arcContainer = document.getElementById('home-archived-campaigns');
+  if (archived.length > 0) {
+    arcSec.style.display = 'block';
+    arcContainer.innerHTML = archived.map(camp => renderCampaignRow(camp, true)).join('');
+  } else {
+    arcSec.style.display = 'none';
+  }
+
+  // Follow-up banner
+  renderFollowUpBanner();
+}
+
+function renderCampaignRow(camp, isArchived) {
+  const prog = DB.getCampaignProgress(camp.id);
+  const isDone = prog.completed >= prog.totalClients && prog.totalClients > 0;
+  const pct = prog.totalClients > 0 ? Math.round((prog.completed/prog.totalClients)*100) : 0;
+  const tpl = DB.getTemplateById(camp.template_id);
+  const lista = DB.getContactListById(camp.lista_id);
+  const hasNote = camp.nota && camp.nota.trim();
+  const notePreview = hasNote ? camp.nota.split('\n')[0].slice(0,60) + (camp.nota.length>60?'…':'') : '';
+
+  return `
+    <div class="campaign-row ${isDone||isArchived?'done':''}">
+      <div class="campaign-row-info" style="cursor:${isArchived?'default':'pointer'};" onclick="${!isArchived?`openWorkspace('${camp.id}')`:''}" >
+        <div class="campaign-row-name">${camp.nombre}</div>
+        <div class="campaign-row-meta">
+          ${lista?.nombre||'—'} · ${tpl?.nombre||'—'} · ${camp.fecha_creacion||''}
+          ${hasNote ? `<span style="color:var(--orange);margin-left:0.4rem;" title="${camp.nota.replace(/"/g,"'")}">📝 ${notePreview}</span>` : ''}
+        </div>
+      </div>
+      <div class="campaign-row-right">
+        <div class="campaign-row-stat ${isDone?'done':''}">${prog.completed}/${prog.totalClients}</div>
+        <div class="campaign-row-progress progress-bar">
+          <div class="progress-fill ${isDone?'done':''}" style="width:${pct}%"></div>
+        </div>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openCampNote('${camp.id}')" title="Notas">📝</button>
+        <button class="btn btn-sm btn-ghost" onclick="event.stopPropagation();openStats('${camp.id}')" title="Estadísticas">◑</button>
+        ${isArchived
+          ? `<button class="btn btn-sm btn-ghost" onclick="unarchiveCampaign('${camp.id}')">↑ Restaurar</button>`
+          : isDone
+            ? `<button class="btn btn-sm btn-ghost" onclick="archiveCampaign('${camp.id}')">Archivar</button>`
+            : `<button class="btn btn-primary btn-sm" onclick="openWorkspace('${camp.id}')">Enviar →</button>`
+        }
+        <button class="btn btn-sm" onclick="event.stopPropagation();confirmDeleteCampaign('${camp.id}')" title="Borrar" style="color:var(--text3);padding:0.3rem 0.4rem;">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleArchivedSection() {
+  const list = document.getElementById('home-archived-campaigns');
+  const chevron = document.getElementById('home-archived-chevron');
+  const isOpen = list.style.display !== 'none';
+  list.style.display = isOpen ? 'none' : 'flex';
+  chevron.textContent = isOpen ? '▶' : '▼';
+}
+
+async function archiveCampaign(id) {
+  await DB.archiveCampaign(id); loadHome();
+}
+async function unarchiveCampaign(id) {
+  await DB.unarchiveCampaign(id); loadHome();
+}
+
+/* ════════════════════════════════════════════
+   WIZARD STATE
+════════════════════════════════════════════ */
+const WIZ = {
+  step: 1,
+  listaId: null,         // id of existing list, if chosen
+  tempContacts: null,    // parsed contacts from CSV drop
+  tempListName: null,
+  templateId: null,      // id of existing template, if chosen
+  tempTemplate: null,    // newly created template object
+  wizTplMsgCount: 0,
+};
+
+function startWizard() {
+  WIZ.step = 1;
+  WIZ.listaId = null;
+  WIZ.tempContacts = null;
+  WIZ.tempListName = null;
+  WIZ.templateId = null;
+  WIZ.tempTemplate = null;
+
+  // Reset panels
+  document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('wpanel-1').classList.add('active');
+  updateWizSteps(1);
+
+  // Reset upload zone
+  document.getElementById('wiz-csv-preview').style.display = 'none';
+  document.getElementById('wiz-p1-feedback').style.display = 'none';
+  document.getElementById('wiz-csv-file').value = '';
+
+  // Load saved lists
+  const savedLists = DB.getContactLists();
+  const sec = document.getElementById('wiz-saved-lists-section');
+  const listEl = document.getElementById('wiz-saved-lists');
+  if (savedLists.length > 0) {
+    sec.style.display = 'block';
+    listEl.innerHTML = savedLists.map(l => `
+      <div class="template-option" id="wiz-list-${l.id}" onclick="selectWizList('${l.id}')">
+        <div>
+          <div class="template-option-name">${l.nombre}</div>
+          <div class="template-option-meta">${l.contacts.length} contactos · ${l.fecha_creacion}</div>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    sec.style.display = 'none';
+  }
+
+  showScreen('wizard');
+}
+
+function selectWizList(id) {
+  WIZ.listaId = id;
+  WIZ.tempContacts = null;
+  document.querySelectorAll('#wiz-saved-lists .template-option').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`wiz-list-${id}`).classList.add('selected');
+  // Clear CSV upload state
+  document.getElementById('wiz-csv-preview').style.display = 'none';
+}
+
+function updateWizSteps(current) {
+  for (let i=1; i<=3; i++) {
+    const el = document.getElementById(`wstep-${i}`);
+    el.classList.remove('active','done');
+    if (i < current) el.classList.add('done');
+    else if (i === current) el.classList.add('active');
+  }
+}
+
+function wizardNext(from) {
+  const fb = document.getElementById(`wiz-p${from}-feedback`);
+  fb.style.display = 'none';
+
+  if (from === 1) {
+    if (!WIZ.listaId && !WIZ.tempContacts) {
+      fb.style.display = 'block'; fb.className = 'feedback error';
+      fb.textContent = '✗ Sube un CSV o selecciona una lista guardada.'; return;
+    }
+    // Load step 2
+    loadWizTemplates();
+    WIZ.step = 2;
+  } else if (from === 2) {
+    // Check selection
+    if (!WIZ.templateId && !WIZ.tempTemplate) {
+      // Try to save quick template
+      const tplNameEl = document.getElementById('wiz-tpl-name');
+      const tplName = tplNameEl ? tplNameEl.value.trim() : '';
+      const newTplSection = document.getElementById('wiz-new-tpl-section');
+      if (newTplSection.style.display !== 'none' && tplName) {
+        const tpl = buildTemplateFromWizForm();
+        if (!tpl) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ Agrega al menos un mensaje.'; return; }
+        WIZ.tempTemplate = tpl;
+      } else {
+        fb.style.display='block'; fb.className='feedback error';
+        fb.textContent='✗ Selecciona un template o crea uno nuevo.'; return;
+      }
+    }
+    // Load step 3
+    loadWizSummary();
+    WIZ.step = 3;
+  }
+
+  document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`wpanel-${WIZ.step}`).classList.add('active');
+  updateWizSteps(WIZ.step);
+}
+
+function wizardBack(from) {
+  WIZ.step = from - 1;
+  document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`wpanel-${WIZ.step}`).classList.add('active');
+  updateWizSteps(WIZ.step);
+}
+
+function loadWizTemplates() {
+  const templates = DB.getTemplates();
+  const listEl = document.getElementById('wiz-templates-list');
+  const newTplSec = document.getElementById('wiz-new-tpl-section');
+  const newTplBtn = document.getElementById('wiz-new-tpl-btn');
+  document.getElementById('wiz-p2-feedback').style.display = 'none';
+  WIZ.templateId = null;
+
+  if (templates.length === 0) {
+    listEl.innerHTML = '';
+    // No saved templates — show the creation form immediately, hide the toggle button
+    newTplSec.style.display = 'block';
+    newTplBtn.style.display = 'none';
+    initWizTplMessages();
+  } else {
+    // Show saved templates with a clear label and checkmark indicator
+    listEl.innerHTML = `
+      <div class="home-section-label" style="margin-bottom: 0.5rem;">Selecciona un template guardado</div>
+      ${templates.map(t => {
+        const nc = t.messages.filter(m=>m.es_cierre).length;
+        return `<div class="template-option" id="wiz-tpl-${t.id}" onclick="selectWizTemplate('${t.id}')">
+          <div>
+            <div class="template-option-name">${t.nombre}</div>
+            <div class="template-option-meta">${t.messages.length} mensaje${t.messages.length>1?'s':''}${nc>0?` · ${nc} de cierre`:''}</div>
+          </div>
+          <span id="wiz-tpl-check-${t.id}" style="display:none; color:var(--accent); font-size:1.1rem;">✓</span>
+        </div>`;
+      }).join('')}
+    `;
+    // Keep creation form hidden, show toggle button
+    newTplSec.style.display = 'none';
+    newTplBtn.style.display = 'inline-block';
+    newTplBtn.textContent = '+ Crear template nuevo';
+  }
+}
+
+function selectWizTemplate(id) {
+  WIZ.templateId = id;
+  WIZ.tempTemplate = null;
+  document.querySelectorAll('#wiz-templates-list .template-option').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('[id^="wiz-tpl-check-"]').forEach(el => el.style.display = 'none');
+  document.getElementById(`wiz-tpl-${id}`).classList.add('selected');
+  const check = document.getElementById(`wiz-tpl-check-${id}`);
+  if (check) check.style.display = 'inline';
+  // Collapse new-template form if open
+  document.getElementById('wiz-new-tpl-section').style.display = 'none';
+  document.getElementById('wiz-new-tpl-btn').textContent = '+ Crear template nuevo';
+}
+
+function toggleNewTplSection() {
+  const sec = document.getElementById('wiz-new-tpl-section');
+  const btn = document.getElementById('wiz-new-tpl-btn');
+  const visible = sec.style.display !== 'none';
+  sec.style.display = visible ? 'none' : 'block';
+  btn.textContent = visible ? '+ Crear template nuevo' : '— Ocultar';
+  if (!visible) initWizTplMessages();
+}
+
+let wizTplMsgCount = 0;
+function initWizTplMessages() {
+  wizTplMsgCount = 0;
+  document.getElementById('wiz-tpl-messages').innerHTML = '';
+  wizAddMsgRow();
+}
+
+function wizAddMsgRow() {
+  wizTplMsgCount++;
+  const n = wizTplMsgCount;
+  const container = document.getElementById('wiz-tpl-messages');
+  const row = document.createElement('div');
+  row.className = 'tpl-msg-row';
+  row.id = `wiz-row-${n}`;
+  row.innerHTML = `
+    <span class="tpl-msg-num">${n}</span>
+    <div class="tpl-msg-content">
+      <textarea class="field-input" id="wiz-text-${n}" rows="2" placeholder="Mensaje ${n}..."></textarea>
+      <label class="tpl-checkbox">
+        <input type="checkbox" id="wiz-cierre-${n}" onchange="toggleWizCierre(${n})">
+        Mensaje de cierre
+      </label>
+    </div>
+    <button class="btn-icon" onclick="this.parentElement.remove()">✕</button>
+  `;
+  container.appendChild(row);
+}
+
+function toggleWizCierre(n) {
+  const row = document.getElementById(`wiz-row-${n}`);
+  row.classList.toggle('cierre', document.getElementById(`wiz-cierre-${n}`).checked);
+}
+
+function buildTemplateFromWizForm() {
+  const rows = document.querySelectorAll('#wiz-tpl-messages .tpl-msg-row');
+  const messages = [];
+  let order = 0;
+  rows.forEach(row => {
+    const text = row.querySelector('textarea')?.value?.trim();
+    const cierre = row.querySelector('input[type="checkbox"]')?.checked || false;
+    if (text) messages.push({ id:`msg_${String(++order).padStart(2,'0')}`, orden:order, texto:text, es_cierre:cierre });
+  });
+  if (messages.length === 0) return null;
+  const name = document.getElementById('wiz-tpl-name')?.value?.trim() || 'Template rápido';
+  return { id:'tpl_'+Date.now(), nombre:name, messages };
+}
+
+function loadWizSummary() {
+  const lista = WIZ.listaId ? DB.getContactListById(WIZ.listaId) : null;
+  const tpl   = WIZ.templateId ? DB.getTemplateById(WIZ.templateId) : WIZ.tempTemplate;
+  const contactCount = lista ? lista.contacts.length : WIZ.tempContacts?.length || 0;
+  const listName = lista ? lista.nombre : WIZ.tempListName || 'Nueva lista';
+  document.getElementById('wiz-summary').innerHTML = `
+    <div>📋 <strong>${listName}</strong> — ${contactCount} contacto${contactCount>1?'s':''}</div>
+    <div>📝 <strong>${tpl?.nombre||'—'}</strong> — ${tpl?.messages?.length||0} mensaje${(tpl?.messages?.length||0)>1?'s':''}</div>
+  `;
+  const listaStr = lista ? lista.nombre : WIZ.tempListName || 'Contactos';
+  document.getElementById('wiz-camp-name').value = listaStr;
+}
+
+async function launchCampaign() {
+  const fb = document.getElementById('wiz-p3-feedback');
+  const campName = document.getElementById('wiz-camp-name').value.trim();
+  if (!campName) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ Escribe un nombre para la campaña.'; return; }
+
+  // Save temp contacts as list if needed
+  let listaId = WIZ.listaId;
+  if (!listaId && WIZ.tempContacts) {
+    const l = { id:'lista_'+Date.now(), nombre:WIZ.tempListName||campName, fecha_creacion:new Date().toISOString().split('T')[0], contacts:WIZ.tempContacts };
+    DB.saveContactList(l);
+    listaId = l.id;
+  }
+
+  // Save temp template if needed
+  let tplId = WIZ.templateId;
+  if (!tplId && WIZ.tempTemplate) {
+    DB.saveTemplate(WIZ.tempTemplate);
+    tplId = WIZ.tempTemplate.id;
+  }
+
+  const camp = { id:'camp_'+Date.now(), lista_id:listaId, template_id:tplId, nombre:campName, fecha_creacion:new Date().toISOString().split('T')[0] };
+  DB.saveCampaign(camp);
+
+  openWorkspace(camp.id);
+}
+
+/* ── CSV Upload in Wizard ── */
+document.addEventListener('DOMContentLoaded', () => {
+  const wizFile = document.getElementById('wiz-csv-file');
+  const wizZone = document.getElementById('wiz-upload-zone');
+
+  wizFile.addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (file) await handleWizCSV(file);
+  });
+  wizZone.addEventListener('dragover', e => { e.preventDefault(); wizZone.classList.add('drag'); });
+  wizZone.addEventListener('dragleave', () => wizZone.classList.remove('drag'));
+  wizZone.addEventListener('drop', async e => {
+    e.preventDefault(); wizZone.classList.remove('drag');
+    const file = e.dataTransfer.files[0];
+    if (file) await handleWizCSV(file);
+  });
+});
+
+async function handleWizCSV(file) {
+  const fb = document.getElementById('wiz-p1-feedback');
+  try {
+    const text = await file.text();
+    const { headers, contacts, rawLines } = parseCSV(text);
+    WIZ.tempContacts = contacts;
+    WIZ.tempListName = file.name.replace('.csv','');
+    WIZ.listaId = null;
+    // Clear selected list
+    document.querySelectorAll('#wiz-saved-lists .template-option').forEach(el => el.classList.remove('selected'));
+    // Show preview
+    const prevEl = document.getElementById('wiz-csv-preview');
+    prevEl.style.display = 'block';
+    renderCSVPreview(headers, rawLines, document.getElementById('wiz-csv-table'), document.getElementById('wiz-csv-ok'), contacts.length);
+    fb.style.display = 'none';
+  } catch(err) {
+    fb.style.display = 'block'; fb.className = 'feedback error';
+    fb.textContent = '✗ '+err.message;
+  }
+}
+
+/* ════════════════════════════════════════════
+   WORKSPACE
+════════════════════════════════════════════ */
+let WS = { campId: null, contacts: [], currentIdx: 0, filter: 'pendientes', filteredContacts: [] };
+
+function openWorkspace(campId) {
+  const camp = DB.getCampaignById(campId);
+  const tpl  = DB.getTemplateById(camp.template_id);
+  const lista = DB.getContactListById(camp.lista_id);
+  if (!lista) { alert('Lista no encontrada'); return; }
+
+  WS.campId   = campId;
+  WS.contacts = lista.contacts;
+  WS.tpl      = tpl;
+  WS.filter   = 'pendientes';
+  _bulkMode   = false;
+  const bulkWrap = document.getElementById('ws-bulk-wrap');
+  const bulkBtn  = document.getElementById('ws-bulk-btn');
+  if (bulkWrap) bulkWrap.style.display = 'none';
+  if (bulkBtn)  { bulkBtn.textContent = '☰ Masivo'; bulkBtn.classList.remove('btn-primary'); }
+
+  document.getElementById('ws-search').value = '';
+  wsApplyFilter();
+
+  // Find first incomplete in filtered set
+  const firstPending = WS.filteredContacts.findIndex(c => !DB.isClientCompleted(campId, c.id, tpl));
+  WS.currentIdx = firstPending >= 0 ? firstPending : 0;
+
+  document.getElementById('ws-breadcrumb').innerHTML = `/ <span>${camp.nombre}</span>`;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-workspace').classList.add('active');
+  renderWsCard();
+  updateWsProgress();
+}
+
+function wsSetFilter(f) {
+  WS.filter = f;
+  document.querySelectorAll('.ws-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`wf-${f}`)?.classList.add('active');
+  wsApplyFilter();
+  WS.currentIdx = 0;
+  renderWsCard();
+}
+
+function wsApplyFilter() {
+  const q = (document.getElementById('ws-search')?.value || '').toLowerCase();
+  const tpl = WS.tpl;
+  const DAYS = 3;
+  const cutoff = DAYS * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+
+  WS.filteredContacts = WS.contacts.filter(c => {
+    const completed = DB.isClientCompleted(WS.campId, c.id, tpl);
+    const cs = DB.getClientState(WS.campId, c.id);
+    const matchQ = !q || c.name.toLowerCase().includes(q) || c.student.toLowerCase().includes(q);
+    if (!matchQ) return false;
+    if (WS.filter === 'pendientes')      return !completed;
+    if (WS.filter === 'completados')     return completed;
+    if (WS.filter === 'sin-respuesta') {
+      if (completed) return false;
+      const msgs = cs?.messages || {};
+      if (Object.keys(msgs).length === 0) return false;
+      const dates = Object.values(msgs).filter(m=>m.sentAt).map(m=>new Date(m.sentAt).getTime());
+      return dates.length > 0 && (now - Math.min(...dates)) > cutoff;
+    }
+    return true;
+  });
+  const countEl = document.getElementById('ws-filter-count');
+  if (countEl) countEl.textContent = `${WS.filteredContacts.length} de ${WS.contacts.length}`;
+}
+
+function renderWsCard() {
+  const tpl  = WS.tpl;
+  const contacts = WS.filteredContacts.length > 0 ? WS.filteredContacts : WS.contacts;
+  const idx  = Math.min(WS.currentIdx, contacts.length - 1);
+  const total = contacts.length;
+
+  const bodyEl = document.getElementById('ws-body');
+  const doneEl = document.getElementById('ws-done');
+
+  if (total === 0) {
+    bodyEl.style.display = 'none';
+    doneEl.style.display = 'flex';
+    document.getElementById('ws-done-sub').textContent = WS.filter !== 'todos'
+      ? 'No hay contactos que coincidan con el filtro.'
+      : 'No hay contactos en esta campaña.';
+    return;
+  }
+
+  // Check if all original contacts done (for true completion screen)
+  const allDone = WS.contacts.every(c => DB.isClientCompleted(WS.campId, c.id, tpl));
+  if (allDone && WS.filter === 'pendientes') {
+    bodyEl.style.display = 'none';
+    doneEl.style.display = 'flex';
+    document.getElementById('ws-done-sub').textContent = `${WS.contacts.length} contacto${WS.contacts.length>1?'s':''} completados.`;
+    return;
+  }
+  bodyEl.style.display = 'flex';
+  doneEl.style.display = 'none';
+
+  const contact = contacts[idx];
+  const cs = DB.getClientState(WS.campId, contact.id) || { messages: {} };
+  const ctx = buildContext(contact, WS.campId);
+  const msgs = tpl.messages;
+  const isCompleted = DB.isClientCompleted(WS.campId, contact.id, tpl);
+  const phone = contact.phone.replace(/\D/g,'').replace(/^\+/,'');
+
+  // Nav buttons
+  document.getElementById('ws-prev-btn').disabled = idx === 0;
+  document.getElementById('ws-next-btn').disabled = idx === total - 1;
+
+  document.getElementById('ws-card').innerHTML = `
+    <div class="ws-card-header">
+      <div>
+        <div class="ws-card-name" ${isCompleted?'style="text-decoration:line-through;opacity:0.6;"':''}>${contact.name}</div>
+        <div class="ws-card-meta">
+          ${contact.student} · ${contact.classroom}${contact.school?' · <span class="tag">' + contact.school + '</span>':''}
+          <span style="color:var(--text3);">${idx+1} de ${total}</span>
+        </div>
+      </div>
+      <div class="ws-card-status">
+        ${isCompleted ? '<span class="badge badge-sent">✓ Completado</span>' : '<span class="badge badge-pending">Pendiente</span>'}
+      </div>
+    </div>
+
+    <div class="ws-messages">
+      ${msgs.map((msg, i) => {
+        const saved = cs.messages[i];
+        const isSent = saved !== undefined;
+        const text = saved ? saved.textFinal : resolveMessage(msg.texto, ctx);
+        const taId = `wta-${WS.campId}-${contact.id}-${i}`;
+        const esCierre = msg.es_cierre;
+
+        if (isSent) {
+          return `<div class="msg-block sent-block ${esCierre?'cierre-block':''}">
+            <div class="msg-label"><span>${esCierre?'CIERRE':'Mensaje '+(i+1)}</span><span class="badge badge-sent">✓ Enviado${saved.wasEdited?' (editado)':''}</span></div>
+            <textarea class="msg-textarea" disabled rows="4">${text}</textarea>
+          </div>`;
+        } else {
+          return `<div class="msg-block ${esCierre?'cierre-block':''}">
+            <div class="msg-label">
+              <span>${esCierre?'CIERRE':'Mensaje '+(i+1)}</span>
+              ${esCierre?'<span class="badge badge-cierre">Finaliza conversación</span>':''}
+            </div>
+            <textarea class="msg-textarea" id="${taId}" rows="4" oninput="updateWsLink('${taId}','${phone}','${WS.campId}','${contact.id}',${i})">${text}</textarea>
+            <div class="msg-footer">
+              <span id="edited-${taId}" style="font-size:0.62rem;color:var(--text3);display:none;">✎ editado</span>
+              <a id="wlink-${taId}" href="whatsapp://send?phone=${phone}&text=${encodeURIComponent(text)}"
+                 onclick="markSent('${WS.campId}','${contact.id}',${i},'${taId}')"
+                 class="btn btn-primary btn-sm" style="text-decoration:none;color:#0e0e0e;">
+                ↗ ${esCierre?'Enviar cierre':'Enviar'}
+              </a>
+            </div>
+          </div>`;
+        }
+      }).join('')}
+    </div>
+
+    <div class="ws-footer">
+      <div class="ws-footer-left">
+        ${isCompleted ? `<button class="btn btn-sm btn-ghost" onclick="resetContact('${contact.id}')">↺ Reiniciar</button>` : ''}
+      </div>
+      <button class="btn btn-sm btn-primary" onclick="wsNavigate(1)" ${idx===total-1?'disabled':''}>
+        ${isCompleted ? 'Siguiente →' : 'Saltar →'}
+      </button>
+    </div>
+
+    <div class="ws-log">
+      <div class="ws-log-label">
+        <span>Log de conversación</span>
+        ${(cs.log||[]).length > 0 ? `<span style="color:var(--text3);">${(cs.log||[]).length} nota${(cs.log||[]).length>1?'s':''}</span>` : ''}
+      </div>
+      ${(cs.log||[]).length > 0 ? `
+        <div class="ws-log-entries">
+          ${(cs.log||[]).slice().reverse().map(e=>`
+            <div class="log-entry">
+              <span>${escHtml(e.text)}</span>
+              <span class="log-entry-date">${new Date(e.date).toLocaleDateString('es',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : `<div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);margin-bottom:0.5rem;">Sin notas aún</div>`}
+      <div class="ws-log-input-row">
+        <input class="ws-log-input" id="ws-log-input-${contact.id}" type="text" placeholder="Ej: Respondió que sí · Número incorrecto · Llamar después..." onkeydown="if(event.key==='Enter')addLogEntry('${WS.campId}','${contact.id}')">
+        <button class="btn btn-sm btn-ghost" onclick="addLogEntry('${WS.campId}','${contact.id}')">+ Nota</button>
+      </div>
+    </div>
+  `;
+}
+
+function updateWsProgress() {
+  const prog = DB.getCampaignProgress(WS.campId);
+  const pct  = prog.totalClients > 0 ? Math.round((prog.completed/prog.totalClients)*100) : 0;
+  document.getElementById('ws-progress-text').innerHTML = `<strong>${prog.completed}</strong> de <strong>${prog.totalClients}</strong> completados`;
+  const fill = document.getElementById('ws-progress-fill');
+  fill.style.width = pct + '%';
+  fill.className = 'progress-fill' + (pct === 100 ? ' done' : '');
+}
+
+function wsNavigate(dir) {
+  const total = (WS.filteredContacts.length > 0 ? WS.filteredContacts : WS.contacts).length;
+  WS.currentIdx = Math.max(0, Math.min(total-1, WS.currentIdx + dir));
+  renderWsCard();
+}
+
+function wsResetAndReview() {
+  WS.currentIdx = 0;
+  wsSetFilter('todos');
+}
+
+function updateWsLink(taId, phone, campId, clientId, msgIdx) {
+  const ta = document.getElementById(taId);
+  const link = document.getElementById(`wlink-${taId}`);
+  const edited = document.getElementById(`edited-${taId}`);
+  if (ta && link) {
+    link.href = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(ta.value)}`;
+    edited.style.display = 'inline';
+  }
+}
+
+function markSent(campId, clientId, msgIdx, taId) {
+  const ta = document.getElementById(taId);
+  const text = ta?.value || '';
+  const tpl = WS.tpl;
+  const contact = WS.contacts.find(c => c.id === clientId);
+  const ctx = buildContext(contact, campId);
+  const original = resolveMessage(tpl.messages[msgIdx]?.texto||'', ctx);
+  DB.setMessageSent(campId, clientId, msgIdx, text, text !== original);
+  setTimeout(() => {
+    wsApplyFilter();
+    renderWsCard();
+    updateWsProgress();
+    if (DB.isClientCompleted(campId, clientId, tpl)) {
+      const filtered = WS.filteredContacts.length > 0 ? WS.filteredContacts : WS.contacts;
+      const nextPending = filtered.findIndex((c,i) => i > WS.currentIdx && !DB.isClientCompleted(campId, c.id, tpl));
+      if (nextPending >= 0) {
+        setTimeout(() => { WS.currentIdx = nextPending; wsApplyFilter(); renderWsCard(); }, 600);
+      }
+    }
+  }, 400);
+}
+
+function resetContact(contactId) {
+  const cs = DB.data.state[WS.campId];
+  if (cs && cs[contactId]) { cs[contactId] = { messages: {} }; DB.persist(); }
+  renderWsCard(); updateWsProgress();
+}
+
+/* ════════════════════════════════════════════
+   RESOURCES
+════════════════════════════════════════════ */
+function loadResources() {
+  // Lists — expandable with inline contact editing
+  const lists = DB.getContactLists();
+  const listsEl = document.getElementById('res-lists');
+  if (lists.length === 0) {
+    listsEl.innerHTML = '<div class="resource-empty">No hay listas importadas</div>';
+  } else {
+    listsEl.innerHTML = lists.map(l => {
+      const inUse = DB.getCampaigns().some(c => c.lista_id === l.id);
+      return `<div class="res-list-item" id="res-list-item-${l.id}">
+        <div class="res-list-header" onclick="toggleContactList('${l.id}')">
+          <div>
+            <div class="resource-item-name">${l.nombre}</div>
+            <div class="resource-item-meta">${l.contacts.length} contactos · ${l.fecha_creacion}${inUse?` · <span class="tag orange">en uso</span>`:''}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;">
+            ${!inUse ? `<button class="btn btn-sm btn-danger" onclick="event.stopPropagation();confirmDeleteList('${l.id}')">✕</button>` : ''}
+            <span class="res-list-chevron" id="chevron-${l.id}">▶</span>
+          </div>
+        </div>
+        <div class="res-list-contacts" id="contacts-${l.id}">
+          <div class="contacts-list-header-row">
+            <span>Acudiente</span><span>Teléfono</span><span>Estudiante · Salón</span><span></span>
+          </div>
+          ${l.contacts.map((c,i) => `
+            <div class="contact-row" id="crow-${l.id}-${i}">
+              <input class="contact-cell-input" value="${c.name}" placeholder="Nombre"
+                onchange="updateContact('${l.id}',${i},'name',this.value)"
+                oninput="showContactSave('${l.id}',${i})">
+              <input class="contact-cell-input" value="${c.phone}" placeholder="Teléfono"
+                onchange="updateContact('${l.id}',${i},'phone',this.value)"
+                oninput="showContactSave('${l.id}',${i})">
+              <input class="contact-cell-input" value="${c.student}${c.classroom?' · '+c.classroom:''}" placeholder="Estudiante"
+                onchange="updateContactStudentCell('${l.id}',${i},this.value)"
+                oninput="showContactSave('${l.id}',${i})">
+              <button class="contact-cell-save" id="csave-${l.id}-${i}" onclick="persistContactEdit('${l.id}')">✓</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Templates — with preview button added
+  const tpls = DB.getTemplates();
+  const tplEl = document.getElementById('res-templates');
+  if (tpls.length === 0) {
+    tplEl.innerHTML = '<div class="resource-empty">No hay templates creados</div>';
+  } else {
+    tplEl.innerHTML = tpls.map(t => {
+      const nc = t.messages.filter(m=>m.es_cierre).length;
+      const inUse = DB.getCampaigns().some(c => c.template_id === t.id);
+      return `<div class="resource-item">
+        <div>
+          <div class="resource-item-name">${t.nombre}</div>
+          <div class="resource-item-meta">${t.messages.length} msgs${nc>0?` · ${nc} cierre`:''}${inUse?' · <span class="tag orange">en uso</span>':''}</div>
+        </div>
+        <div class="resource-item-actions">
+          <button class="btn btn-sm btn-ghost" onclick="openTemplatePreview('${t.id}')" title="Vista previa">👁</button>
+          <button class="btn btn-sm btn-ghost" onclick="openEditTemplate('${t.id}')" title="Editar">✎</button>
+          <button class="btn btn-sm btn-ghost" onclick="duplicateTemplate('${t.id}')" title="Duplicar">⎘</button>
+          ${!inUse ? `<button class="btn btn-sm btn-danger" onclick="confirmDeleteTemplate('${t.id}')">✕</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* Template edit */
+let _editTplId = null;
+let _editTplRowCount = 0;
+
+function openEditTemplate(id) {
+  const t = DB.getTemplateById(id);
+  _editTplId = id;
+  _editTplRowCount = 0;
+  document.getElementById('edit-tpl-name').value = t.nombre;
+  document.getElementById('edit-tpl-feedback').style.display = 'none';
+  const container = document.getElementById('edit-tpl-messages');
+  container.innerHTML = '';
+  t.messages.forEach(msg => {
+    _editTplRowCount++;
+    const n = _editTplRowCount;
+    const row = document.createElement('div');
+    row.className = 'tpl-msg-row' + (msg.es_cierre ? ' cierre' : '');
+    row.id = `edit-row-${n}`;
+    row.innerHTML = `
+      <span class="tpl-msg-num">${n}</span>
+      <div class="tpl-msg-content">
+        <textarea class="field-input" id="edit-text-${n}" rows="2">${msg.texto}</textarea>
+        <label class="tpl-checkbox">
+          <input type="checkbox" id="edit-cierre-${n}" ${msg.es_cierre?'checked':''} onchange="document.getElementById('edit-row-${n}').classList.toggle('cierre',this.checked)">
+          Mensaje de cierre
+        </label>
+      </div>
+      <button class="btn-icon" onclick="this.parentElement.remove()">✕</button>
+    `;
+    container.appendChild(row);
+  });
+  showModal('modal-edit-tpl');
+}
+
+function editTplAddRow() {
+  _editTplRowCount++;
+  const n = _editTplRowCount;
+  const row = document.createElement('div');
+  row.className = 'tpl-msg-row';
+  row.id = `edit-row-${n}`;
+  row.innerHTML = `
+    <span class="tpl-msg-num">${n}</span>
+    <div class="tpl-msg-content">
+      <textarea class="field-input" id="edit-text-${n}" rows="2" placeholder="Mensaje nuevo..."></textarea>
+      <label class="tpl-checkbox">
+        <input type="checkbox" id="edit-cierre-${n}" onchange="document.getElementById('edit-row-${n}').classList.toggle('cierre',this.checked)">
+        Mensaje de cierre
+      </label>
+    </div>
+    <button class="btn-icon" onclick="this.parentElement.remove()">✕</button>
+  `;
+  document.getElementById('edit-tpl-messages').appendChild(row);
+}
+
+function saveEditedTemplate() {
+  const name = document.getElementById('edit-tpl-name').value.trim();
+  const fb = document.getElementById('edit-tpl-feedback');
+  if (!name) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ Escribe un nombre.'; return; }
+  const messages = [];
+  let order = 0;
+  document.querySelectorAll('#edit-tpl-messages .tpl-msg-row').forEach(row => {
+    const text = row.querySelector('textarea')?.value?.trim();
+    const cierre = row.querySelector('input[type="checkbox"]')?.checked || false;
+    if (text) messages.push({ id:`msg_${String(++order).padStart(2,'0')}`, orden:order, texto:text, es_cierre:cierre });
+  });
+  if (messages.length === 0) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ Agrega al menos un mensaje.'; return; }
+  const inUse = DB.getCampaigns().some(c => c.template_id === _editTplId);
+  if (inUse) {
+    const copy = { id:'tpl_'+Date.now(), nombre:name+' (editado)', messages };
+    DB.saveTemplate(copy);
+    fb.style.display='block'; fb.className='feedback'; fb.textContent=`✓ Guardado como copia "${copy.nombre}" (el original está en uso).`;
+  } else {
+    DB.saveTemplate({ id:_editTplId, nombre:name, messages });
+    fb.style.display='block'; fb.className='feedback'; fb.textContent='✓ Template actualizado.';
+  }
+  setTimeout(() => { hideModal('modal-edit-tpl'); loadResources(); }, 1000);
+}
+
+function duplicateTemplate(id) {
+  const t = DB.getTemplateById(id);
+  const copy = { ...JSON.parse(JSON.stringify(t)), id:'tpl_'+Date.now(), nombre:t.nombre+' (copia)' };
+  DB.saveTemplate(copy);
+  loadResources();
+}
+
+/* ════════════════════════════════════════════
+   CONTACT LIST — EXPANDABLE INLINE EDIT
+════════════════════════════════════════════ */
+function toggleContactList(listId) {
+  const panel = document.getElementById(`contacts-${listId}`);
+  const chevron = document.getElementById(`chevron-${listId}`);
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  chevron.textContent = isOpen ? '▶' : '▼';
+}
+
+function showContactSave(listId, idx) {
+  const btn = document.getElementById(`csave-${listId}-${idx}`);
+  if (btn) btn.style.opacity = '1';
+}
+
+function updateContact(listId, idx, field, value) {
+  const l = DB.getContactListById(listId);
+  if (!l) return;
+  l.contacts[idx][field] = value.trim();
+}
+
+function updateContactStudentCell(listId, idx, value) {
+  const l = DB.getContactListById(listId);
+  if (!l) return;
+  // Value may be "Estudiante · Salón" or just "Estudiante"
+  const parts = value.split('·').map(s => s.trim());
+  l.contacts[idx].student   = parts[0] || '';
+  l.contacts[idx].classroom = parts[1] || '';
+}
+
+function persistContactEdit(listId) {
+  DB.persist();
+  // Briefly flash all save buttons green
+  document.querySelectorAll(`[id^="csave-${listId}-"]`).forEach(btn => {
+    btn.textContent = '✓ ok';
+    btn.style.color = 'var(--sent)';
+    btn.style.borderColor = 'var(--sent)';
+    setTimeout(() => { btn.textContent = '✓'; btn.style.color = ''; btn.style.borderColor = ''; btn.style.opacity = '0'; }, 1500);
+  });
+}
+
+/* ════════════════════════════════════════════
+   TEMPLATE PREVIEW
+════════════════════════════════════════════ */
+let _previewTplId = null;
+let _previewContactIdx = 0;
+let _previewListaContacts = [];
+
+function openTemplatePreview(tplId) {
+  _previewTplId = tplId;
+  _previewContactIdx = 0;
+
+  const tpl = DB.getTemplateById(tplId);
+  document.getElementById('preview-tpl-title').textContent = `Vista previa — ${tpl.nombre}`;
+
+  // Populate lista selector
+  const sel = document.getElementById('preview-lista-sel');
+  const lists = DB.getContactLists();
+  sel.innerHTML = `<option value="">— Sin lista (datos genéricos) —</option>` +
+    lists.map(l => `<option value="${l.id}">${l.nombre} (${l.contacts.length})</option>`).join('');
+
+  // Default to first list that exists, for instant useful preview
+  if (lists.length > 0) {
+    sel.value = lists[0].id;
+    _previewListaContacts = lists[0].contacts;
+  } else {
+    _previewListaContacts = [];
+  }
+
+  document.getElementById('preview-search').value = '';
+  renderTemplatePreview();
+  showModal('modal-preview-tpl');
+}
+
+function previewListaChange() {
+  const sel = document.getElementById('preview-lista-sel');
+  const listId = sel.value;
+  if (listId) {
+    const l = DB.getContactListById(listId);
+    _previewListaContacts = l?.contacts || [];
+  } else {
+    _previewListaContacts = [];
+  }
+  _previewContactIdx = 0;
+  document.getElementById('preview-search').value = '';
+  renderTemplatePreview();
+}
+
+function previewSearch() {
+  const q = document.getElementById('preview-search').value.toLowerCase().trim();
+  if (!q || _previewListaContacts.length === 0) { _previewContactIdx = 0; renderTemplatePreview(); return; }
+  const idx = _previewListaContacts.findIndex(c =>
+    c.name.toLowerCase().includes(q) || c.student.toLowerCase().includes(q)
+  );
+  if (idx >= 0) { _previewContactIdx = idx; renderTemplatePreview(); }
+}
+
+function renderTemplatePreview() {
+  const tpl = DB.getTemplateById(_previewTplId);
+  const contact = _previewListaContacts[_previewContactIdx] || null;
+  const ctx = contact ? buildContext(contact, null) : {
+    saludo: 'Buen día', tratamiento: 'Sr.(a)',
+    cliente_nombre: 'María García', hijo_nombre: 'Ana García',
+    link_fotos: 'https://galeria.example.com/ana',
+  };
+
+  const infoEl = document.getElementById('preview-contact-info');
+  infoEl.textContent = contact
+    ? `${contact.name} · ${contact.student} · ${contact.classroom}`
+    : 'Datos genéricos de ejemplo';
+
+  const msgsEl = document.getElementById('preview-msgs');
+  msgsEl.innerHTML = tpl.messages.map((msg, i) => `
+    <div>
+      <div class="preview-msg-label">${msg.es_cierre ? 'CIERRE' : `Mensaje ${i+1}`}</div>
+      <div class="preview-msg ${msg.es_cierre?'cierre-preview':''}">${escHtml(resolveMessage(msg.texto, ctx))}</div>
+    </div>
+  `).join('');
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ════════════════════════════════════════════
+   CAMPAIGN NOTES
+════════════════════════════════════════════ */
+let _noteCampId = null;
+function openCampNote(campId) {
+  _noteCampId = campId;
+  const camp = DB.getCampaignById(campId);
+  document.getElementById('modal-note-title').textContent = `Notas — ${camp.nombre}`;
+  document.getElementById('modal-note-text').value = camp.nota || '';
+  showModal('modal-camp-note');
+}
+function saveCampaignNote() {
+  const camp = DB.getCampaignById(_noteCampId);
+  if (!camp) return;
+  camp.nota = document.getElementById('modal-note-text').value.trim();
+  DB.saveCampaign(camp);
+  hideModal('modal-camp-note');
+  loadHome();
+}
+
+/* ════════════════════════════════════════════
+   CAMPAIGN STATS
+════════════════════════════════════════════ */
+function openStats(campId) {
+  const camp  = DB.getCampaignById(campId);
+  const tpl   = DB.getTemplateById(camp.template_id);
+  const lista = DB.getContactListById(camp.lista_id);
+  if (!lista) return;
+
+  const campState = DB.data.state[campId] || {};
+  let completed=0, cierres=0, pendientes=0;
+  const sentCounts = [];
+  const fechas = [];
+
+  lista.contacts.forEach(c => {
+    const cs = campState[c.id] || { messages:{} };
+    const isCompleted = DB.isClientCompleted(campId, c.id, tpl);
+    if (isCompleted) completed++; else pendientes++;
+    const sentKeys = Object.keys(cs.messages || {}).map(Number);
+    sentCounts.push(sentKeys.length);
+    if (isCompleted && tpl) {
+      const cierreIdxs = tpl.messages.map((m,i)=>m.es_cierre?i:-1).filter(i=>i>=0);
+      if (cierreIdxs.some(i => sentKeys.includes(i))) cierres++;
+    }
+    Object.values(cs.messages||{}).forEach(m => { if (m.sentAt) fechas.push(m.sentAt); });
+  });
+
+  const total = lista.contacts.length;
+  const pctDone = total ? Math.round((completed/total)*100) : 0;
+  const msgsEnviados = sentCounts.reduce((a,b)=>a+b,0);
+  fechas.sort();
+  const firstDate = fechas[0] ? new Date(fechas[0]).toLocaleDateString('es',{day:'numeric',month:'short'}) : '—';
+  const lastDate  = fechas[fechas.length-1] ? new Date(fechas[fechas.length-1]).toLocaleDateString('es',{day:'numeric',month:'short'}) : '—';
+
+  document.getElementById('stats-camp-name').textContent = camp.nombre;
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">Contactos total</div></div>
+    <div class="stat-box"><div class="stat-num green">${completed}</div><div class="stat-label">Completados</div></div>
+    <div class="stat-box"><div class="stat-num orange">${pendientes}</div><div class="stat-label">Pendientes</div></div>
+    <div class="stat-box"><div class="stat-num blue">${msgsEnviados}</div><div class="stat-label">Msgs enviados</div></div>
+  `;
+
+  const pctCierres = completed ? Math.round((cierres/completed)*100) : 0;
+
+  document.getElementById('stats-bar-wrap').innerHTML = `
+    <div class="stats-bar-wrap">
+      <div class="stats-bar-label"><span>Progreso general</span><span>${pctDone}%</span></div>
+      <div class="stats-bar">
+        <div class="stats-bar-seg" style="width:${pctDone}%;background:var(--sent);"></div>
+        <div class="stats-bar-seg" style="width:${100-pctDone}%;background:var(--border2);"></div>
+      </div>
+    </div>
+    ${completed > 0 ? `
+    <div class="stats-bar-wrap" style="margin-top:0.75rem;">
+      <div class="stats-bar-label"><span>Completados con mensaje de cierre</span><span>${cierres} de ${completed} (${pctCierres}%)</span></div>
+      <div class="stats-bar">
+        <div class="stats-bar-seg" style="width:${pctCierres}%;background:var(--cierre);"></div>
+        <div class="stats-bar-seg" style="width:${100-pctCierres}%;background:var(--border2);"></div>
+      </div>
+    </div>` : ''}
+  `;
+
+  document.getElementById('stats-detail').innerHTML = `
+    ${fechas.length > 0 ? `Primer envío: ${firstDate} · Último envío: ${lastDate} · ` : ''}
+    Promedio de mensajes por contacto completado: ${completed ? (msgsEnviados/completed).toFixed(1) : '—'}
+    ${camp.fecha_creacion ? ` · Creada: ${camp.fecha_creacion}` : ''}
+  `;
+
+  showModal('modal-stats');
+}
+
+/* Import template from .txt or .json file */
+async function importTemplateFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const text = await file.text();
+  const baseName = file.name.replace(/\.(txt|json)$/i, '');
+
+  let tpl;
+
+  if (file.name.endsWith('.json')) {
+    // Try to parse as a Pulso template export
+    try {
+      const parsed = JSON.parse(text);
+      // If it's already a valid template object, use it directly (re-id it)
+      if (parsed.nombre && Array.isArray(parsed.messages)) {
+        tpl = { ...parsed, id: 'tpl_' + Date.now() };
+      } else {
+        alert('El JSON no tiene el formato de template esperado (necesita "nombre" y "messages").');
+        input.value = ''; return;
+      }
+    } catch(e) {
+      alert('No se pudo parsear el JSON.'); input.value = ''; return;
+    }
+  } else {
+    // Parse .txt: split by blank lines into blocks → each block = one message
+    // Last block that looks like a "no" response is marked as cierre
+    const blocks = text.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+    if (blocks.length === 0) { alert('El archivo está vacío.'); input.value = ''; return; }
+
+    const cierreKeywords = /no hay ningún problema|lo entiendo|no autoriza|no procede|queda solo para ustedes/i;
+    const messages = blocks.map((block, i) => ({
+      id: `msg_${String(i+1).padStart(2,'0')}`,
+      orden: i + 1,
+      texto: block,
+      es_cierre: cierreKeywords.test(block)
+    }));
+
+    tpl = {
+      id: 'tpl_' + Date.now(),
+      nombre: baseName,
+      messages,
+    };
+  }
+
+  DB.saveTemplate(tpl);
+  input.value = '';
+  loadResources();
+
+  // Brief confirmation
+  const tplEl = document.getElementById('res-templates');
+  const notice = document.createElement('div');
+  notice.style.cssText = 'padding:0.5rem 1.25rem; font-family:var(--font-mono); font-size:0.72rem; color:var(--sent);';
+  notice.textContent = `✓ Template "${tpl.nombre}" importado con ${tpl.messages.length} mensaje(s).`;
+  tplEl.prepend(notice);
+  setTimeout(() => notice.remove(), 3000);
+}
+
+/* Import CSV modal (standalone from resources) */
+function showImportModal() {
+  document.getElementById('modal-lista-nombre').value = '';
+  document.getElementById('modal-csv-preview').style.display = 'none';
+  document.getElementById('modal-csv-feedback').style.display = 'none';
+  document.getElementById('modal-btn-guardar').style.display = 'none';
+  document.getElementById('modal-csv-file').value = '';
+  DB.tempCSVData = null;
+  showModal('modal-import');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const mFile = document.getElementById('modal-csv-file');
+  const mZone = document.getElementById('modal-upload-zone');
+  mFile.addEventListener('change', async e => { if (e.target.files[0]) await handleModalCSV(e.target.files[0]); });
+  mZone.addEventListener('dragover', e => { e.preventDefault(); mZone.classList.add('drag'); });
+  mZone.addEventListener('dragleave', () => mZone.classList.remove('drag'));
+  mZone.addEventListener('drop', async e => {
+    e.preventDefault(); mZone.classList.remove('drag');
+    if (e.dataTransfer.files[0]) await handleModalCSV(e.dataTransfer.files[0]);
+  });
+});
+
+async function handleModalCSV(file) {
+  const fb = document.getElementById('modal-csv-feedback');
+  try {
+    const { headers, contacts, rawLines } = parseCSV(await file.text());
+    DB.tempCSVData = contacts;
+    document.getElementById('modal-csv-preview').style.display = 'block';
+    renderCSVPreview(headers, rawLines, document.getElementById('modal-csv-table'), document.getElementById('modal-csv-ok'), contacts.length);
+    document.getElementById('modal-btn-guardar').style.display = 'inline-block';
+    fb.style.display = 'none';
+  } catch(err) {
+    fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ '+err.message;
+    document.getElementById('modal-btn-guardar').style.display='none';
+  }
+}
+
+async function guardarListaCSVModal() {
+  const nombre = document.getElementById('modal-lista-nombre').value.trim();
+  const fb = document.getElementById('modal-csv-feedback');
+  if (!nombre) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ Escribe un nombre para la lista.'; return; }
+  if (!DB.tempCSVData || DB.tempCSVData.length === 0) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ No hay datos.'; return; }
+  DB.saveContactList({ id:'lista_'+Date.now(), nombre, fecha_creacion:new Date().toISOString().split('T')[0], contacts:DB.tempCSVData });
+  fb.style.display='block'; fb.className='feedback'; fb.textContent=`✓ Lista "${nombre}" guardada.`;
+  setTimeout(() => { hideModal('modal-import'); loadResources(); }, 1200);
+}
+
+/* ════════════════════════════════════════════
+   TEMPLATE EDITOR (standalone)
+════════════════════════════════════════════ */
+let tplMsgCount = 0;
+function initTemplateEditor() {
+  tplMsgCount = 0;
+  document.getElementById('tpl-messages').innerHTML = '';
+  document.getElementById('tpl-name').value = '';
+  document.getElementById('tpl-feedback').style.display = 'none';
+  addTemplateMessageRow();
+}
+
+function addTemplateMessageRow() {
+  tplMsgCount++;
+  const n = tplMsgCount;
+  const row = document.createElement('div');
+  row.className = 'tpl-msg-row';
+  row.id = `tpl-row-${n}`;
+  row.innerHTML = `
+    <span class="tpl-msg-num">${n}</span>
+    <div class="tpl-msg-content">
+      <textarea class="field-input" id="tpl-text-${n}" rows="2" placeholder="Mensaje ${n}..."></textarea>
+      <label class="tpl-checkbox">
+        <input type="checkbox" id="tpl-cierre-${n}" onchange="document.getElementById('tpl-row-${n}').classList.toggle('cierre',this.checked)">
+        Este es un mensaje de cierre
+      </label>
+    </div>
+    <button class="btn-icon" onclick="this.parentElement.remove()">✕</button>
+  `;
+  document.getElementById('tpl-messages').appendChild(row);
+}
+
+function saveTemplate() {
+  const name = document.getElementById('tpl-name').value.trim();
+  const fb = document.getElementById('tpl-feedback');
+  if (!name) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ Escribe un nombre.'; return; }
+  const messages = [];
+  let order = 0;
+  document.querySelectorAll('#tpl-messages .tpl-msg-row').forEach(row => {
+    const text = row.querySelector('textarea')?.value?.trim();
+    const cierre = row.querySelector('input[type="checkbox"]')?.checked||false;
+    if (text) messages.push({ id:`msg_${String(++order).padStart(2,'0')}`, orden:order, texto:text, es_cierre:cierre });
+  });
+  if (messages.length === 0) { fb.style.display='block'; fb.className='feedback error'; fb.textContent='✗ Agrega al menos un mensaje.'; return; }
+  DB.saveTemplate({ id:'tpl_'+Date.now(), nombre:name, messages });
+  fb.style.display='block'; fb.className='feedback'; fb.textContent=`✓ Template "${name}" guardado.`;
+  setTimeout(() => showScreen('resources'), 1000);
+}
+
+/* ════════════════════════════════════════════
+   CONFIRMS & MODALS
+════════════════════════════════════════════ */
+function showModal(id) { document.getElementById(id).classList.add('active'); }
+function hideModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function confirmDeleteCampaign(id) {
+  const camp = DB.getCampaignById(id);
+  document.getElementById('modal-confirm-title').textContent = '⚠ Borrar campaña';
+  document.getElementById('modal-confirm-text').textContent = `¿Borrar la campaña "${camp.nombre}"? Se perderán todos los registros de envíos.`;
+  document.getElementById('modal-confirm-btn').onclick = async () => { await DB.deleteCampaign(id); hideModal('modal-confirm'); loadHome(); };
+  showModal('modal-confirm');
+}
+
+function confirmDeleteList(id) {
+  const l = DB.getContactListById(id);
+  document.getElementById('modal-confirm-title').textContent = '⚠ Borrar lista';
+  document.getElementById('modal-confirm-text').textContent = `¿Borrar la lista "${l.nombre}" con ${l.contacts.length} contactos?`;
+  document.getElementById('modal-confirm-btn').onclick = async () => {
+    const ok = await DB.deleteContactList(id);
+    hideModal('modal-confirm');
+    if (ok) loadResources(); else alert('No se puede borrar: está en uso por una campaña.');
+  };
+  showModal('modal-confirm');
+}
+
+function confirmDeleteTemplate(id) {
+  const t = DB.getTemplateById(id);
+  document.getElementById('modal-confirm-title').textContent = '⚠ Borrar template';
+  document.getElementById('modal-confirm-text').textContent = `¿Borrar el template "${t.nombre}"?`;
+  document.getElementById('modal-confirm-btn').onclick = async () => {
+    const ok = await DB.deleteTemplate(id);
+    hideModal('modal-confirm');
+    if (ok) loadResources(); else alert('No se puede borrar: está en uso por una campaña.');
+  };
+  showModal('modal-confirm');
+}
+
+/* ════════════════════════════════════════════
+   FOLLOW-UP BANNER (no respondidos)
+════════════════════════════════════════════ */
+function renderFollowUpBanner() {
+  const DAYS = 3;
+  const now = Date.now();
+  const cutoff = DAYS * 24 * 60 * 60 * 1000;
+  const byCamp = {};
+
+  DB.getCampaigns().filter(c => !c.archivada).forEach(camp => {
+    const tpl   = DB.getTemplateById(camp.template_id);
+    const lista = DB.getContactListById(camp.lista_id);
+    if (!tpl || !lista) return;
+    const campState = DB.data.state[camp.id] || {};
+    lista.contacts.forEach(c => {
+      if (DB.isClientCompleted(camp.id, c.id, tpl)) return;
+      const cs = campState[c.id];
+      if (!cs || !cs.messages || Object.keys(cs.messages).length === 0) return;
+      const dates = Object.values(cs.messages).filter(m=>m.sentAt).map(m=>new Date(m.sentAt).getTime());
+      if (!dates.length) return;
+      if (now - Math.min(...dates) > cutoff) {
+        if (!byCamp[camp.id]) byCamp[camp.id] = { camp, contacts: [] };
+        byCamp[camp.id].contacts.push(c);
+      }
+    });
+  });
+
+  const bannerEl = document.getElementById('home-followup-banner');
+  if (!bannerEl) return;
+  const groups = Object.values(byCamp);
+  if (groups.length === 0) { bannerEl.innerHTML = ''; return; }
+
+  bannerEl.innerHTML = groups.map(g => `
+    <div class="followup-banner" onclick="openWorkspaceFollowUp('${g.camp.id}')">
+      <div>
+        <div class="followup-banner-text">⏰ ${g.contacts.length} contacto${g.contacts.length>1?'s':''} sin respuesta hace +${DAYS} días — ${g.camp.nombre}</div>
+        <div class="followup-banner-detail">${g.contacts.slice(0,4).map(c=>c.name).join(' · ')}${g.contacts.length>4?' …':''}</div>
+      </div>
+      <span class="btn btn-sm" style="pointer-events:none;border-color:var(--orange);color:var(--orange);flex-shrink:0;">Ver →</span>
+    </div>
+  `).join('');
+}
+
+function openWorkspaceFollowUp(campId) {
+  openWorkspace(campId);
+  setTimeout(() => wsSetFilter('sin-respuesta'), 150);
+}
+
+/* ════════════════════════════════════════════
+   BULK MODE (modo masivo)
+════════════════════════════════════════════ */
+let _bulkMode = false;
+
+function toggleBulkMode() {
+  _bulkMode = !_bulkMode;
+  const bulkWrap = document.getElementById('ws-bulk-wrap');
+  const wsBody   = document.getElementById('ws-body');
+  const wsDone   = document.getElementById('ws-done');
+  const btn      = document.getElementById('ws-bulk-btn');
+
+  if (_bulkMode) {
+    bulkWrap.style.display = 'block';
+    wsBody.style.display   = 'none';
+    wsDone.style.display   = 'none';
+    btn.textContent = '☰ Normal';
+    btn.classList.add('btn-primary');
+    renderBulkTable();
+  } else {
+    bulkWrap.style.display = 'none';
+    btn.textContent = '☰ Masivo';
+    btn.classList.remove('btn-primary');
+    renderWsCard();
+  }
+}
+
+function renderBulkTable() {
+  const tpl = WS.tpl;
+  const contacts = WS.filteredContacts.length > 0 ? WS.filteredContacts : WS.contacts;
+
+  // Populate message selector — preserve current selection across re-renders
+  const sel = document.getElementById('bulk-msg-sel');
+  const prevVal = sel.value;
+  sel.innerHTML = tpl.messages.map((m,i) =>
+    `<option value="${i}">${m.es_cierre?'CIERRE':'Mensaje '+(i+1)} — ${m.texto.slice(0,40)}${m.texto.length>40?'…':''}</option>`
+  ).join('');
+  if (prevVal !== '' && sel.querySelector(`option[value="${prevVal}"]`)) sel.value = prevVal;
+  sel.onchange = renderBulkTable;
+
+  const msgIdx = parseInt(sel.value) || 0;
+  const completedCount = contacts.filter(c => DB.isClientCompleted(WS.campId, c.id, tpl)).length;
+  document.getElementById('bulk-done-count').textContent = `${completedCount}/${contacts.length} completados`;
+
+  const tbody = document.getElementById('bulk-tbody');
+  tbody.innerHTML = contacts.map(c => {
+    const cs = DB.getClientState(WS.campId, c.id) || { messages:{} };
+    const isCompleted = DB.isClientCompleted(WS.campId, c.id, tpl);
+    // FIX: only check if THIS specific message index was sent, never use isCompleted as proxy
+    const msgSent = cs.messages[msgIdx] !== undefined;
+    const ctx = buildContext(c, WS.campId);
+    const msgText = resolveMessage(tpl.messages[msgIdx]?.texto || '', ctx);
+    const phone = c.phone.replace(/\D/g,'').replace(/^\+/,'');
+    const taId = `bulk-ta-${c.id}-${msgIdx}`;
+
+    // Row styling: dim if completed, but still show accurate per-message state
+    return `<tr class="${isCompleted?'bulk-sent':''}" id="bulk-row-${c.id}">
+      <td class="bulk-row-name">${c.name}</td>
+      <td>${c.student}</td>
+      <td>${c.classroom}</td>
+      <td style="font-family:var(--font-mono);font-size:0.65rem;">${c.phone}</td>
+      <td style="text-align:right;">
+        ${msgSent
+          ? `<span style="font-family:var(--font-mono);font-size:0.62rem;color:var(--sent);">✓ enviado</span>`
+          : isCompleted
+            ? `<span style="font-family:var(--font-mono);font-size:0.62rem;color:var(--text3);">— completado</span>`
+            : `<a href="whatsapp://send?phone=${phone}&text=${encodeURIComponent(msgText)}"
+                 onclick="bulkMarkSent('${c.id}',${msgIdx})"
+                 class="btn btn-primary btn-sm" style="text-decoration:none;color:#0e0e0e;white-space:nowrap;">
+                 ↗ Enviar
+               </a>`
+        }
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function bulkMarkSent(contactId, msgIdx) {
+  const contact = WS.contacts.find(c => c.id === contactId);
+  const tpl = WS.tpl;
+  const ctx = buildContext(contact, WS.campId);
+  const text = resolveMessage(tpl.messages[msgIdx]?.texto || '', ctx);
+  DB.setMessageSent(WS.campId, contactId, msgIdx, text, false);
+  setTimeout(() => { updateWsProgress(); renderBulkTable(); }, 300);
+}
+
+/* ════════════════════════════════════════════
+   CONVERSATION LOG
+════════════════════════════════════════════ */
+function addLogEntry(campId, contactId) {
+  const input = document.getElementById(`ws-log-input-${contactId}`);
+  const text = input?.value?.trim();
+  if (!text) return;
+  DB.addContactLog(campId, contactId, text);
+  input.value = '';
+  renderWsCard();
+}
+
+/* ════════════════════════════════════════════
+   GLOBAL UTILS
+════════════════════════════════════════════ */
+async function setupFileAccess() {
+  const ok = await DB.requestFolderAccess();
+  if (ok) { loadHome(); }
+}
+function exportData() { DB.exportToDownloads(); }
+async function importData(files) { await DB.importFromFiles(files); loadHome(); }
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', async () => {
+  await DB.init();
+  loadHome();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "camp_1777700511615": {
+    "cli_001_1777700163482": {
+      "messages": {
+        "0": {
+          "textFinal": "Buen día, Sr.(a) Amada. Le escribe Mike Morelos, el fotógrafo de Mi Mejor Retrato. 📸\nEl año pasado tuve el gusto de fotografiar a Soheil Andrea.",
+          "wasEdited": false,
+          "sentAt": "2026-05-02T05:45:06.071Z"
+        },
+        "1": {
+          "textFinal": "Le escribo porque estoy actualizando mi portafolio que son las fotos que muestro en Instagram y en mi página web para que otras familias conozcan el trabajo.",
+          "wasEdited": false,
+          "sentAt": "2026-05-02T05:45:12.532Z"
+        },
+        "2": {
+          "textFinal": "Me gustaría usar algunas de las fotos de Soheil Andrea.  Solo las que salieron especialmente bonitas, y siempre con respeto y buen gusto — nunca nada que los exponga de forma incómoda.",
+          "wasEdited": false,
+          "sentAt": "2026-05-02T05:45:17.382Z"
+        },
+        "3": {
+          "textFinal": "¿Me daría su autorización para publicarlas? Con un simple \"sí\" es suficiente. Y si prefiere que no, también lo entiendo perfectamente — no hay problema. 🙏",
+          "wasEdited": false,
+          "sentAt": "2026-05-02T05:45:30.826Z"
+        }
+      }
+    },
+    "cli_002_1777700163482": {
+      "messages": {
+        "0": {
+          "textFinal": "Buen día, Sr.(a) Amalia. Le escribe Mike Morelos, el fotógrafo de Mi Mejor Retrato. 📸\nEl año pasado tuve el gusto de fotografiar a Luna Amalia.",
+          "wasEdited": false,
+          "sentAt": "2026-05-02T05:46:00.752Z"
+        }
+      }
+    },
+    "cli_003_1777700163482": {
+      "messages": {
+        "0": {
+          "textFinal": "Buenas tardes, Sr.(a) Cristina. Le escribe Mike Morelos, el fotógrafo de Mi Mejor Retrato. 📸\nEl año pasado tuve el gusto de fotografiar a Sebastián Antonio.",
+          "wasEdited": false,
+          "sentAt": "2026-05-02T19:23:57.150Z"
+        }
+      }
+    }
+  }
+}

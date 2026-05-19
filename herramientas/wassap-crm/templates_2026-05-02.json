@@ -1,0 +1,45 @@
+[
+  {
+    "id": "tpl_1777700216631",
+    "nombre": "template 260502",
+    "messages": [
+      {
+        "id": "msg_01",
+        "orden": 1,
+        "texto": "[saludo], [tratamiento] [cliente_nombre]. Le escribe Mike Morelos, el fotógrafo de Mi Mejor Retrato. 📸\nEl año pasado tuve el gusto de fotografiar a [hijo_nombre].",
+        "es_cierre": false
+      },
+      {
+        "id": "msg_02",
+        "orden": 2,
+        "texto": "Le escribo porque estoy actualizando mi portafolio que son las fotos que muestro en Instagram y en mi página web para que otras familias conozcan el trabajo.",
+        "es_cierre": false
+      },
+      {
+        "id": "msg_03",
+        "orden": 3,
+        "texto": "Me gustaría usar algunas de las fotos de [hijo_nombre].  Solo las que salieron especialmente bonitas, y siempre con respeto y buen gusto — nunca nada que los exponga de forma incómoda.",
+        "es_cierre": false
+      },
+      {
+        "id": "msg_04",
+        "orden": 4,
+        "texto": "¿Me daría su autorización para publicarlas? Con un simple \"sí\" es suficiente. Y si prefiere que no, también lo entiendo perfectamente — no hay problema. 🙏",
+        "es_cierre": false
+      },
+      {
+        "id": "msg_05",
+        "orden": 5,
+        "texto": "Muchas gracias.",
+        "es_cierre": true
+      },
+      {
+        "id": "msg_06",
+        "orden": 6,
+        "texto": "No hay ningún problema, lo entiendo completamente. Las fotos de [hijo_nombre] quedan solo para ustedes, como siempre ha sido.\nLe agradezco que me haya respondido. Fue un placer trabajar con [hijo_nombre] el año pasado — ojalá tengamos la oportunidad de hacer otra sesión cuando llegue el momento. Que estén muy bien. 😊",
+        "es_cierre": true
+      }
+    ],
+    "mensaje_especial": null
+  }
+]

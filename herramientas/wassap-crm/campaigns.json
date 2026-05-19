@@ -1,0 +1,32 @@
+[
+  {
+    "id": "camp_1778231795993",
+    "lista_id": "lista_1778231584949",
+    "template_id": "tpl_1778231715102",
+    "nombre": "dolores_permisos_25",
+    "fecha_creacion": "2026-05-08",
+    "archivada": true,
+    "nota": "Todos dijeron que sí"
+  },
+  {
+    "id": "camp_1778232585563",
+    "lista_id": "lista_1778232523242",
+    "template_id": "tpl_1778231715102",
+    "nombre": "pba_permisos_25",
+    "fecha_creacion": "2026-05-08"
+  },
+  {
+    "id": "camp_1778235198973",
+    "lista_id": "lista_1777700188193",
+    "template_id": "tpl_1778231715102",
+    "nombre": "clia_permisos_25",
+    "fecha_creacion": "2026-05-08"
+  },
+  {
+    "id": "camp_1779204002819",
+    "lista_id": "lista_1778231584949",
+    "template_id": "tpl_1779203862309",
+    "nombre": "test link cuesntionario",
+    "fecha_creacion": "2026-05-19"
+  }
+]

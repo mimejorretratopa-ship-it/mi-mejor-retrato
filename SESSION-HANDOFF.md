@@ -38,6 +38,10 @@ Se implementaron en JSON las propuestas específicas y genéricas requeridas y s
 * **Refactorización de Loaders**: Actualizamos todas las llamadas de la aplicación (`propuesta/js/app.js`, `onboarding/index.html`, `onboarding/cuestionario.html`, `agenda/agenda.js`, `agenda/view.js`) para que lean de la fuente unificada.
 * **Dashboard Enriquecido**: Agregamos campos editables en el panel de control local de `/admin/` para gestionar de forma fluida el nombre comercial, los años activos y el ID de Google Analytics de cada colegio.
 
+### 7. Integración de Pulso (WhatsApp CRM) y Generación Automática de Links (Fase 2)
+* **Adopción de CRM Local**: Integramos el módulo externo `wassap-crm` (Pulso) dentro de `/herramientas/`.
+* **Generador de Links y `student_id`**: Modificamos Pulso para soportar la variable dinámica `[link_onboarding]`. Esta actualización permite automatizar el `student_id` seguro y pre-rellenar la URL del cuestionario, consolidando la automatización de la Fase 2 sin necesidad de crear una app desde cero.
+
 ---
 
 ## 📂 Archivos Modificados e Integridad
@@ -52,6 +56,6 @@ Se implementaron en JSON las propuestas específicas y genéricas requeridas y s
 ---
 
 ## 🛠️ Siguientes Pasos (Fase 3: Producción)
-1. **Verificación de Envíos**: Probar el comportamiento de submit en los formularios de onboarding con las escuelas migradas.
-2. **Generador de Hojas de Ruta PDF**: Crear la herramienta para exportar la agenda de cada salón en formato imprimible.
-3. **Módulo de Códigos QR**: Configurar la generación de etiquetas QR por estudiante para automatizar la catalogación en Lightroom.
+1. **Generador de Hojas de Ruta PDF**: Crear la herramienta local (`herramientas/generador_pdf.html`) para exportar la agenda de cada salón en formato imprimible con layout 8.5x11.
+2. **Módulo de Códigos QR**: Integrar códigos QR gigantes en el PDF anterior (conteniendo el `student_id` exacto, escuela, salón, nombre) para la identificación ágil en Lightroom.
+3. **Verificación de Envíos**: Probar el comportamiento general de submit y sincronización con Airtable usando el nuevo esquema.
