@@ -53,8 +53,9 @@ Ajusta la logística, fechas y el copy específico que leerá la directiva del c
 
 ### Paso 6: Lanzamiento (Outreach con Pulso)
 Usa **Pulso** (`herramientas/wassap-crm/index.html`) para crear campañas masivas de WhatsApp.
-* Importa el listado de alumnos y padres en formato CSV.
-* Usa la variable `[link_onboarding]` en tus plantillas. Pulso generará de forma automática el enlace a `onboarding/cuestionario.html` inyectando el `student_id` (para la sincronización limpia con Airtable).
+* **Exporta los leads:** En tu Google Sheets, ve a `Mi Mejor Retrato > 📤 Exportar para Pulso`. Selecciona el colegio y salón, y descarga el archivo.
+* **Importa:** Arrastra el archivo CSV descargado a la sección de Listas en Pulso.
+* **Envía:** Crea una campaña y usa la variable `[link_onboarding]` en tus plantillas. Pulso generará de forma automática el enlace a `onboarding/cuestionario.html` inyectando el `student_id` (para la sincronización limpia con Airtable).
 
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.

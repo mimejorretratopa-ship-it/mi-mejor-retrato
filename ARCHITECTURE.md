@@ -158,7 +158,8 @@ El sistema incluye **Pulso** (`herramientas/wassap-crm`), un CRM local sin servi
 
 *   **Generación de Claves (student_id)**: Pulso limpia los números de teléfono e inyecta dinámicamente un `student_id` único en su variable `[link_onboarding]`.
 *   **Persistencia Local**: Funciona exclusivamente con la File System Access API guardando estado en JSONs locales, garantizando la privacidad.
-*   **Flujo**: Pulso genera el link -> Acudiente abre el Onboarding -> Onboarding extrae `sid` -> Google Apps Script lo usa como Primary Key en Airtable.
+*   **Exportador CSV Nativo**: Se integró un menú personalizado en Google Sheets (`📤 Exportar para Pulso`) dentro del Google Apps Script Hub que formatea, mapea y descarga los leads directamente en el formato exacto de importación requerido por Pulso (Acudiente, Relación, Teléfono, Estudiante, Salón, Escuela).
+*   **Flujo**: Onboarding recibe Leads -> Sheets agrupa y exporta CSV por Salón -> Pulso genera el link y campaña -> Acudiente abre el cuestionario de Discovery y luego selecciona Agenda.
 
 ---
 

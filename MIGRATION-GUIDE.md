@@ -39,9 +39,10 @@ Se unificaron y simplificaron los precios en el ecosistema:
 * **Consolidación de Look & Feel**: El onboarding abandonó el diseño de "tarjeta individual" por el formato comparativo Premium, usando el mismo generador dinámico de celdas pero estilizado con los tokens del dark theme de la aplicación principal.
 
 ### 4. Integración de CRM Local "Pulso" y Generación de Links (Fase 2 - 19 de Mayo)
-Se implementó el módulo externo **Pulso** (`herramientas/wassap-crm`) como motor oficial de *outreach*. 
+Se implementó el módulo externo **Pulso** (`herramientas/wassap-crm`) como motor oficial de *outreach* y se completó su integración total mediante un **Exportador CSV en Google Apps Script**:
+* **Puente Automatizado**: El Hub de Google Apps Script cuenta ahora con un UI de exportación que filtra las reservas del Google Sheet por Colegio y Salón, y devuelve un CSV formateado específicamente para Pulso.
 * **Generación de ID en Origen**: Pulso ahora es el responsable de generar la llave primaria `student_id` al combinar el número de WhatsApp, nombre y salón durante la creación de la campaña, mediante la variable adaptada `[link_onboarding]`.
-* Esto garantiza que los registros ingresen a Airtable sin errores tipográficos o duplicaciones.
+* Esto garantiza que los registros ingresen a Airtable sin errores tipográficos o duplicaciones, **marcando la finalización oficial de la Fase 2 de automatización**.
 
 ---
 

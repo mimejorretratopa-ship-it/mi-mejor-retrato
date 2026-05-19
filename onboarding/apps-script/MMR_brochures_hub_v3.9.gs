@@ -178,3 +178,156 @@ function setupDailyTrigger() {
   ScriptApp.getProjectTriggers().forEach(function(t) { if (t.getHandlerFunction() === 'dailyDiscoveryReminder') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('dailyDiscoveryReminder').timeBased().everyDays(1).atHour(8).create();
 }
+
+// =======================================================================
+// EXPORTADOR CSV PARA PULSO CRM
+// =======================================================================
+
+/**
+ * Crea el menú personalizado al abrir la hoja
+ */
+function onOpen() {
+  var ui = SpreadsheetApp.getUi();
+  ui.createMenu('Mi Mejor Retrato')
+      .addItem('📤 Exportar para Pulso', 'abrirExportadorPulso')
+      .addToUi();
+}
+
+/**
+ * Abre el diálogo de exportación
+ */
+function abrirExportadorPulso() {
+  var html = HtmlService.createHtmlOutputFromFile('pulso_export_ui')
+      .setWidth(400)
+      .setHeight(350);
+  SpreadsheetApp.getUi().showModalDialog(html, 'Exportar CSV para Pulso');
+}
+
+/**
+ * Lee la hoja principal ("Respuestas" o Sheet1) y extrae Colegios y Salones únicos
+ * para poblar los selectores del UI.
+ */
+function getOpcionesFiltro() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  
+  var colColegio = headers.indexOf('Colegio');
+  var colSalon = headers.indexOf('Salón');
+  
+  if (colColegio === -1 || colSalon === -1) {
+    throw new Error('No se encontraron las columnas "Colegio" o "Salón".');
+  }
+  
+  var colegios = {};
+  
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var col = row[colColegio];
+    var sal = row[colSalon];
+    
+    if (!col) continue; // Saltar filas vacías
+    
+    col = String(col).trim();
+    sal = String(sal).trim() || 'Sin Salón';
+    
+    if (!colegios[col]) {
+      colegios[col] = [];
+    }
+    
+    if (colegios[col].indexOf(sal) === -1) {
+      colegios[col].push(sal);
+    }
+  }
+  
+  // Ordenar salones alfabéticamente
+  for (var key in colegios) {
+    colegios[key].sort();
+  }
+  
+  return colegios;
+}
+
+/**
+ * Genera el string CSV basado en los filtros y lo devuelve al frontend para descargar
+ */
+function generarCSVPulso(filtroColegio, filtroSalon) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  
+  // Índices de columnas
+  var idx = {
+    acudiente: headers.indexOf('Acudiente'),
+    relacion: headers.indexOf('Relación'),
+    whatsapp: headers.indexOf('WhatsApp'),
+    estudiante: headers.indexOf('Estudiante'),
+    salon: headers.indexOf('Salón'),
+    colegio: headers.indexOf('Colegio')
+  };
+  
+  // Validar
+  if (idx.acudiente === -1 || idx.whatsapp === -1 || idx.estudiante === -1) {
+    throw new Error('Faltan columnas obligatorias (Acudiente, WhatsApp, Estudiante).');
+  }
+  
+  var csvData = [];
+  // Encabezado exacto para Pulso
+  csvData.push(['Acudiente', 'Relación', 'Teléfono', 'Estudiante', 'Salón', 'Escuela', 'Link_Fotos'].join(','));
+  
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    
+    var colVal = String(row[idx.colegio] || '').trim();
+    var salVal = String(row[idx.salon] || '').trim();
+    var phoneVal = String(row[idx.whatsapp] || '').trim();
+    
+    // Filtros
+    if (!phoneVal) continue; // Ignorar sin teléfono
+    if (filtroColegio && colVal !== filtroColegio) continue;
+    if (filtroSalon && filtroSalon !== 'TODOS' && salVal !== filtroSalon) continue;
+    
+    // Formateo
+    var acudiente = String(row[idx.acudiente] || '').trim();
+    var relacion = String(row[idx.relacion] || 'acudiente').trim();
+    var estudiante = String(row[idx.estudiante] || '').trim();
+    
+    // Pulso espera el teléfono con +, se lo ponemos si es solo números
+    var telefono = phoneVal;
+    if (/^\d+$/.test(telefono)) {
+      telefono = '+' + telefono;
+    }
+    
+    // Quitar año del colegio (ej: "lasa-26" -> "lasa")
+    var escuelaLimpia = colVal.split('-')[0];
+    
+    // Escapar comas en los textos para CSV
+    var wrapStr = function(str) { return '"' + str.replace(/"/g, '""') + '"'; };
+    
+    var fila = [
+      wrapStr(acudiente),
+      wrapStr(relacion),
+      wrapStr(telefono),
+      wrapStr(estudiante),
+      wrapStr(salVal),
+      wrapStr(escuelaLimpia),
+      '' // Link_Fotos vacío por defecto
+    ];
+    
+    csvData.push(fila.join(','));
+  }
+  
+  // Crear nombre de archivo
+  var d = new Date();
+  var fechaStr = d.getFullYear() + ('0' + (d.getMonth() + 1)).slice(-2) + ('0' + d.getDate()).slice(-2);
+  var colSlug = (filtroColegio || 'todos').split('-')[0];
+  var salSlug = (filtroSalon || 'todos').replace(/\s+/g, '-').toLowerCase();
+  
+  var fileName = colSlug + '_' + salSlug + '_' + fechaStr + '.csv';
+  
+  return {
+    filename: fileName,
+    content: csvData.join('\n'),
+    count: csvData.length - 1 // Restar encabezado
+  };
+}

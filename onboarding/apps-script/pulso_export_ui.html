@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #333; }
+      h2 { margin-top: 0; font-size: 18px; color: #C8622A; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+      .field { margin-bottom: 15px; }
+      label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #666; text-transform: uppercase; }
+      select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+      .btn { background: #C8622A; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+      .btn:hover { background: #b05423; }
+      .btn:disabled { background: #ccc; cursor: not-allowed; }
+      #status { margin-top: 15px; font-size: 13px; color: #666; text-align: center; }
+      .loader { display: none; margin: 0 auto; border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #C8622A; width: 20px; height: 20px; animation: spin 1s linear infinite; }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <h2>Exportar lista para Pulso</h2>
+    
+    <div id="loading" style="text-align: center; margin-top: 30px;">
+      <div class="loader" style="display: block; margin-bottom: 10px;"></div>
+      Cargando colegios...
+    </div>
+
+    <div id="form-content" style="display: none;">
+      <div class="field">
+        <label>Colegio</label>
+        <select id="colegio" onchange="updateSalones()"></select>
+      </div>
+      
+      <div class="field">
+        <label>Salón</label>
+        <select id="salon"></select>
+      </div>
+      
+      <button id="btn-export" class="btn" onclick="exportar()">Descargar CSV</button>
+      <div id="status"></div>
+    </div>
+
+    <script>
+      var dataCache = {};
+
+      window.onload = function() {
+        google.script.run
+          .withSuccessHandler(function(data) {
+            dataCache = data;
+            var colSelect = document.getElementById('colegio');
+            
+            // Llenar colegios
+            var options = [];
+            for (var col in data) { options.push(col); }
+            options.sort();
+            
+            if (options.length === 0) {
+              document.getElementById('loading').innerHTML = 'No se encontraron datos en la hoja.';
+              return;
+            }
+            
+            options.forEach(function(col) {
+              var opt = document.createElement('option');
+              opt.value = col;
+              opt.text = col;
+              colSelect.appendChild(opt);
+            });
+            
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('form-content').style.display = 'block';
+            updateSalones();
+          })
+          .withFailureHandler(function(error) {
+            document.getElementById('loading').innerHTML = '<span style="color:red">Error: ' + error.message + '</span>';
+          })
+          .getOpcionesFiltro();
+      };
+
+      function updateSalones() {
+        var col = document.getElementById('colegio').value;
+        var salSelect = document.getElementById('salon');
+        salSelect.innerHTML = '<option value="TODOS">— Todos los salones —</option>';
+        
+        if (dataCache[col]) {
+          dataCache[col].forEach(function(sal) {
+            var opt = document.createElement('option');
+            opt.value = sal;
+            opt.text = sal;
+            salSelect.appendChild(opt);
+          });
+        }
+      }
+
+      function exportar() {
+        var btn = document.getElementById('btn-export');
+        var status = document.getElementById('status');
+        var col = document.getElementById('colegio').value;
+        var sal = document.getElementById('salon').value;
+        
+        btn.disabled = true;
+        btn.innerHTML = 'Generando...';
+        status.innerHTML = '';
+        
+        google.script.run
+          .withSuccessHandler(function(result) {
+            btn.disabled = false;
+            btn.innerHTML = 'Descargar CSV';
+            
+            if (result.count === 0) {
+              status.innerHTML = '<span style="color:red">No hay contactos con WhatsApp para este filtro.</span>';
+              return;
+            }
+            
+            // Descargar archivo vía Blob
+            var blob = new Blob([result.content], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement("a");
+            if (link.download !== undefined) {
+              var url = URL.createObjectURL(blob);
+              link.setAttribute("href", url);
+              link.setAttribute("download", result.filename);
+              link.style.visibility = 'hidden';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }
+            
+            status.innerHTML = '<span style="color:green">✓ Exportados ' + result.count + ' contactos.</span>';
+            setTimeout(function() { google.script.host.close(); }, 2000);
+          })
+          .withFailureHandler(function(error) {
+            btn.disabled = false;
+            btn.innerHTML = 'Descargar CSV';
+            status.innerHTML = '<span style="color:red">Error: ' + error.message + '</span>';
+          })
+          .generarCSVPulso(col, sal);
+      }
+    </script>
+  </body>
+</html>

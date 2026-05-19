@@ -40,7 +40,8 @@ Se implementaron en JSON las propuestas específicas y genéricas requeridas y s
 
 ### 7. Integración de Pulso (WhatsApp CRM) y Generación Automática de Links (Fase 2)
 * **Adopción de CRM Local**: Integramos el módulo externo `wassap-crm` (Pulso) dentro de `/herramientas/`.
-* **Generador de Links y `student_id`**: Modificamos Pulso para soportar la variable dinámica `[link_onboarding]`. Esta actualización permite automatizar el `student_id` seguro y pre-rellenar la URL del cuestionario, consolidando la automatización de la Fase 2 sin necesidad de crear una app desde cero.
+* **Exportador CSV Nativo**: Se desarrolló un UI dentro del Google Apps Script Hub para extraer reservas agrupadas por colegio y salón en formato compatible 100% con Pulso.
+* **Generador de Links y `student_id`**: Modificamos Pulso para soportar la variable dinámica `[link_onboarding]`. Esta actualización automatiza el `student_id` seguro y pre-rellena la URL del cuestionario, consolidando la automatización de la Fase 2 sin necesidad de flujos intermedios ni apps externas.
 
 ---
 

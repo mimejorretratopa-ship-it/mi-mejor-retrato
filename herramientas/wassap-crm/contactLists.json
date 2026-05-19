@@ -391,5 +391,22 @@
         "nota_especial": null
       }
     ]
+  },
+  {
+    "id": "lista_1779211701846",
+    "nombre": "test ebrv",
+    "fecha_creacion": "2026-05-19",
+    "contacts": [
+      {
+        "id": "cli_001_1779211685203",
+        "name": "zzzqwert",
+        "relationship": "papa",
+        "phone": "+50712345678",
+        "student": "alina segunda",
+        "classroom": "6to",
+        "school": "ebrv",
+        "link_fotos": ""
+      }
+    ]
   }
 ]
