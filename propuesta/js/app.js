@@ -51,13 +51,13 @@ async function initPropuesta() {
     if (!propRes.ok) throw new Error("Aún no hay una propuesta configurada para esta institución.");
     const propuesta = await propRes.json();
 
-    if (propuesta.metadata) {
-      if (propuesta.metadata.titulo_principal) {
-        document.getElementById('propuesta-title').textContent = propuesta.metadata.titulo_principal;
-      }
-      if (propuesta.metadata.fecha_actualizacion) {
-        document.getElementById('doc-date').textContent = "Última actualización: " + propuesta.metadata.fecha_actualizacion;
-      }
+    if (propuesta.metadata && propuesta.metadata.titulo_principal) {
+      document.getElementById('propuesta-title').textContent = propuesta.metadata.titulo_principal;
+    } else {
+      document.getElementById('propuesta-title').textContent = "Propuesta Fotográfica";
+    }
+    if (propuesta.metadata && propuesta.metadata.fecha_actualizacion) {
+      document.getElementById('doc-date').textContent = "Última actualización: " + propuesta.metadata.fecha_actualizacion;
     }
 
     // 4. Renderizar (schoolData ya contiene los precios y paquetes)
@@ -73,6 +73,8 @@ async function initPropuesta() {
     
     // Formulario de contacto eliminado a favor del botón de WhatsApp directo.
     document.getElementById('content-wrapper').style.display = 'block';
+    const cta = document.querySelector('.cta-section');
+    if (cta) cta.style.display = 'block';
 
   } catch (err) {
     console.error(err);
