@@ -173,7 +173,7 @@
         {
           "id": "paquete_1",
           "nombre": "Esencial",
-          "precio": 12,
+          "precio": 19,
           "descripcion": "4 fotos digitales en galería online",
           "tabla_comparativa": {
             "fotos_digitales": 4,
@@ -204,7 +204,7 @@
         {
           "id": "paquete_2",
           "nombre": "Familiar",
-          "precio": 26,
+          "precio": 36,
           "descripcion": "6 fotos: digital + impresas",
           "tabla_comparativa": {
             "fotos_digitales": 6,
@@ -240,7 +240,7 @@
         {
           "id": "paquete_3",
           "nombre": "Premium",
-          "precio": 41,
+          "precio": 57,
           "descripcion": "12 fotos: digital + impresas + enmarcadas",
           "tabla_comparativa": {
             "fotos_digitales": 12,
