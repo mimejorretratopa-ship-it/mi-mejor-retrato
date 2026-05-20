@@ -24,21 +24,24 @@ La pestaña **Entregables** muestra el flujo de producción de cada set de fotos
 
 **DE DÓNDE VIENEN LOS DATOS**
 
-El dashboard no captura datos por sí solo. Se alimenta desde afuera a través del proceso de importación.
+El dashboard no captura datos manuales por sí solo en frío. Se conecta directamente a la base de datos central en tu **Google Sheets** a través del Google Apps Script Hub.
 
-La fuente de datos es el `estudiantes.json` que genera la herramienta `json_a_csv.html`. Ese archivo se produce cuando procesas las submissions del brochure — los formularios que llenaron los papás en la página web. El `estudiantes.json` contiene la información de cada cliente: nombre del acudiente, relación, WhatsApp, nombre del estudiante, salón, escuela, paquete escogido, y precio.
+El Hub expone el endpoint `getStudents` que extrae los datos de todas las respuestas del onboarding completadas por los padres. Estos datos se descargan en formato JSON en tiempo real e incluyen toda la información del cliente: nombre del acudiente, relación, WhatsApp, nombre del estudiante, salón, escuela, paquete escogido y precio.
 
 ---
 
-**CÓMO IMPORTAR DATOS NUEVOS**
+**CÓMO SINCRONIZAR DATOS NUEVOS**
 
-Haces clic en el botón **Importar** en la esquina superior derecha. Seleccionas el `estudiantes.json` que generaste con el conversor.
+En la esquina superior derecha del dashboard verás un selector de colegio y el botón **↻ Sincronizar**:
 
-El dashboard hace un merge — no sobreescribe. Compara cada `student_id` del archivo entrante contra los que ya existen en memoria. Los estudiantes que ya están registrados se ignoran completamente: sus pagos y estados de entregables no se tocan. Solo se agregan los que son nuevos. El toast te confirma cuántos se agregaron y cuántos ya existían.
+1. Selecciona un colegio específico (ej: "Colegio La Salle") o elige "Sincronizar Todo".
+2. Haz clic en **Sincronizar**. El dashboard realizará una llamada segura al Hub en la nube.
+3. El dashboard realiza un **Merge inteligente** en memoria: compara el `student_id` de cada registro descargado contra los que ya tienes guardados localmente.
+   - **Estudiantes nuevos**: Se añaden a la lista.
+   - **Estudiantes existentes**: Se conservan intactos. Sus pagos registrados y su progreso de entregables **no se sobrescriben ni se pierden**.
+4. Tras la sincronización, el banner de advertencia te avisará que tienes cambios pendientes de guardar. Haz clic en **Guardar** para persistir los nuevos alumnos en el `localStorage` de tu navegador.
 
-Esto significa que puedes importar un `estudiantes.json` nuevo cada vez que llegan submissions sin miedo a perder el historial de pagos o los estados de producción que ya registraste.
-
-Si importas el mismo archivo dos veces, el dashboard detecta que todos los `student_id` ya existen y muestra "Sin cambios — X ya existían". Nada se modifica.
+Esto te permite presionar "Sincronizar" en cualquier momento para descargar tarde-onboardings de forma segura y fluida.
 
 ---
 
@@ -120,10 +123,10 @@ Cuando haces clic en Exportar, el archivo descargado tiene esta estructura:
 
 **CON CUÁLES MÓDULOS SE CONECTA**
 
-El dashboard se conecta con dos módulos:
+El dashboard se conecta dinámicamente con la arquitectura unificada:
 
-**Módulo Conversor (`json_a_csv.html`)** — es su única fuente de datos de entrada. El conversor procesa las submissions del brochure y produce el `estudiantes.json` que el dashboard importa. Sin el conversor no hay forma de agregar estudiantes al dashboard salvo editando un JSON a mano.
+**Google Apps Script Hub (`MMR_brochures_hub_v3.9.gs`)** — es su fuente directa de datos en tiempo real. Cuando sincronizas desde la UI, el dashboard consume el endpoint seguro del Hub, eliminando la necesidad de archivos intermediarios, convertidores o descargas manuales de submissions.
 
-**Módulo Brochure (los HTMLs en Netlify)** — es la fuente original de todo. Los papás llenan el formulario en el brochure, eso genera una submission, tú la descargas de Netlify Blobs, la procesas en el conversor, y de ahí llega al dashboard. El brochure no se comunica directamente con el dashboard — siempre pasa por el conversor en el medio.
+**Módulo de Precios y Configuración (`precios.json`)** — el dashboard consume este archivo local para poblar la lista de escuelas de forma automática, garantizando que puedas filtrar y sincronizar exactamente las campañas activas definidas en el catálogo.
 
-El dashboard no tiene conexión con el Módulo WhatsApp. El CSV para WhatsApp lo genera el conversor de forma independiente. Son dos outputs distintos del mismo proceso de conversión — el CSV va a WhatsApp, el JSON viene al dashboard.
+**Módulo WhatsApp (Pulso CRM)** — Trabaja en paralelo. Mientras Google Sheets almacena las reservas del Onboarding, el Exportador CSV de Pulso CRM nativo en la hoja de cálculo gestiona los batches de comunicación, y el Dashboard lee la misma fuente unificada para hacer el seguimiento financiero y operativo de las entregas físicas en la escuela.

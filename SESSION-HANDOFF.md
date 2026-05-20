@@ -43,6 +43,11 @@ Se implementaron en JSON las propuestas específicas y genéricas requeridas y s
 * **Exportador CSV Nativo**: Se desarrolló un UI dentro del Google Apps Script Hub para extraer reservas agrupadas por colegio y salón en formato compatible 100% con Pulso.
 * **Generador de Links y `student_id`**: Modificamos Pulso para soportar la variable dinámica `[link_onboarding]`. Esta actualización automatiza el `student_id` seguro y pre-rellena la URL del cuestionario, consolidando la automatización de la Fase 2 sin necesidad de flujos intermedios ni apps externas.
 
+### 8. Refactorización Integral del Dashboard Local (Dashboard v2.0)
+* **Sincronización Directa desde Sheets**: El dashboard local (`herramientas/dashboard.html`) ahora se conecta dinámicamente con el Google Apps Script Hub mediante la nueva acción `getStudents`, eliminando la necesidad de cargar manualmente archivos intermedios de leads.
+* **Población Automática desde precios.json**: El selector de colegio se alimenta en caliente desde el catálogo unificado `precios.json`, haciendo la interfaz rápida y libre de mantenimiento manual.
+* **Eliminación de Herramientas Obsoletas**: Retiramos físicamente `json_a_csv.html` y su manual de uso, simplificando el ecosistema y consolidando a Google Sheets como la única fuente de verdad transaccional.
+
 ---
 
 ## 📂 Archivos Modificados e Integridad
@@ -52,6 +57,9 @@ Se implementaron en JSON las propuestas específicas y genéricas requeridas y s
 * `onboarding/index.html` & `onboarding/cuestionario.html` — Actualizados para consumir la estructura unificada de colegios.
 * `agenda/agenda.js` & `agenda/view.js` — Actualizados para consumir colegios de la fuente consolidada.
 * `admin/index.html` & `admin/js/admin.js` — Enriquecidos con los nuevos controles interactivos de identidad comercial.
+* `herramientas/dashboard.html` & `herramientas/dashboard_que es.md` — Refactorizado a la versión v2.0 con sincronización directa desde Sheets, alimentación desde precios.json y manual de uso actualizado.
+* `herramientas/json_a_csv.html` & `herramientas/json_a_csv_que es.md` — **Eliminados** físicamente al quedar obsoletos bajo el flujo unificado.
+* `onboarding/apps-script/MMR_brochures_hub_v3.9.gs` — Añadido el endpoint seguro `getStudents` para nutrir en tiempo real al Dashboard.
 * `ARCHITECTURE.md`, `DEVELOPMENT.md`, `MIGRATION-GUIDE.md`, `SESSION-HANDOFF.md` — Documentación completamente actualizada.
 
 ---

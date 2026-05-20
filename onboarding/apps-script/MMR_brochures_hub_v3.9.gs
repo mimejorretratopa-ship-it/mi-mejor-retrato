@@ -32,6 +32,8 @@ function buildWhatsAppAgendaLink(phone, nombreEstudiante, schoolCode, salonValue
 function doGet(e) {
   var action = e.parameter.action;
   var sid = e.parameter.sid;
+
+  // ── GET STUDENT (individual, para cuestionario) ────────────
   if (action === 'getStudent' && sid) {
     try {
       var data = SpreadsheetApp.openById(SHEET_ID).getSheets()[0].getDataRange().getValues();
@@ -44,6 +46,86 @@ function doGet(e) {
       }
     } catch (e) {}
   }
+
+  // ── GET STUDENTS (para Dashboard local) ───────────────────
+  if (action === 'getStudents') {
+    try {
+      var ss = SpreadsheetApp.openById(SHEET_ID);
+      var sheet = ss.getSheets()[0];
+      var rows = sheet.getDataRange().getValues();
+      var headers = rows[0];
+
+      var idx = {
+        fecha:      headers.indexOf('Fecha'),
+        colegio:    headers.indexOf('Colegio'),
+        acudiente:  headers.indexOf('Acudiente'),
+        relacion:   headers.indexOf('Relación'),
+        estudiante: headers.indexOf('Estudiante'),
+        salon:      headers.indexOf('Salón'),
+        whatsapp:   headers.indexOf('WhatsApp'),
+        paquete:    headers.indexOf('Paquete'),
+        precio:     headers.indexOf('Precio'),
+        email:      headers.indexOf('Email'),
+        id:         headers.indexOf('ID')
+      };
+
+      var result = [];
+      var filterSchool = e.parameter.school || 'TODOS';
+
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var idVal = String(row[idx.id] || '').trim();
+        var schoolVal = String(row[idx.colegio] || '').trim();
+
+        if (!idVal || idVal === 'N/A' || idVal === '') continue; // Saltar vacíos y fantasmas
+
+        if (filterSchool && filterSchool !== 'TODOS') {
+          var cleanFilter = filterSchool.toLowerCase().split('-')[0];
+          var cleanSchool = schoolVal.toLowerCase().split('-')[0];
+          if (cleanSchool !== cleanFilter) continue;
+        }
+
+        var dateVal = row[idx.fecha];
+        var timestamp = (dateVal instanceof Date) ? dateVal.toISOString() : new Date().toISOString();
+
+        var phoneVal = String(row[idx.whatsapp] || '').trim();
+        var celular = phoneVal;
+        if (phoneVal.indexOf('507') === 0) celular = phoneVal.substring(3);
+        else if (phoneVal.indexOf('+507') === 0) celular = phoneVal.substring(4);
+
+        var schoolCode = schoolVal.split('-')[0];
+
+        result.push({
+          student_id: idVal,
+          acudiente: {
+            nombre:   String(row[idx.acudiente] || '').trim(),
+            relacion: String(row[idx.relacion]  || '').trim(),
+            whatsapp: phoneVal,
+            codigoPais: '+507',
+            celular:  celular,
+            email:    String(row[idx.email] || '').trim()
+          },
+          estudiante: {
+            nombre:        String(row[idx.estudiante] || '').trim(),
+            salon:         String(row[idx.salon]      || '').trim(),
+            escuela_code:  schoolCode,
+            escuela_nombre: schoolCode.toUpperCase()
+          },
+          reserva: {
+            propuesta: schoolVal,
+            paquete:   String(row[idx.paquete] || '').trim(),
+            precio:    parseFloat(row[idx.precio]) || 0,
+            timestamp: timestamp
+          }
+        });
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({ success: true, estudiantes: result })).setMimeType(ContentService.MimeType.JSON);
+    } catch (err) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
   return ContentService.createTextOutput(JSON.stringify({ success: false })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -126,6 +208,85 @@ function doPost(e) {
       var qSheet = ss.getSheetByName('Cuestionarios') || ss.insertSheet('Cuestionarios');
       qSheet.appendRow([new Date(), studentId, meta.nombre_estudiante, meta.escuela, meta.salon, JSON.stringify(data)]);
       return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // ── GET STUDENTS (FOR DASHBOARD) ──────────────────────────
+    if (action === 'getStudents') {
+      var sheet = ss.getSheets()[0];
+      var rows = sheet.getDataRange().getValues();
+      var headers = rows[0];
+      
+      var idx = {
+        fecha: headers.indexOf('Fecha'),
+        colegio: headers.indexOf('Colegio'),
+        acudiente: headers.indexOf('Acudiente'),
+        relacion: headers.indexOf('Relación'),
+        estudiante: headers.indexOf('Estudiante'),
+        salon: headers.indexOf('Salón'),
+        whatsapp: headers.indexOf('WhatsApp'),
+        paquete: headers.indexOf('Paquete'),
+        precio: headers.indexOf('Precio'),
+        email: headers.indexOf('Email'),
+        id: headers.indexOf('ID')
+      };
+      
+      var result = [];
+      var filterSchool = data.school; // Opcional (ej: "lasa-26" o "lasa")
+      
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var idVal = String(row[idx.id] || '').trim();
+        var schoolVal = String(row[idx.colegio] || '').trim();
+        
+        if (!idVal) continue; // Saltar vacíos
+        
+        // El filtro de colegio puede ser exacto o parcial (ej: "lasa" coincide con "lasa-26")
+        if (filterSchool && filterSchool !== 'TODOS') {
+          var cleanFilter = filterSchool.toLowerCase().split('-')[0];
+          var cleanSchool = schoolVal.toLowerCase().split('-')[0];
+          if (cleanSchool !== cleanFilter) continue;
+        }
+        
+        var dateVal = row[idx.fecha];
+        var timestamp = (dateVal instanceof Date) ? dateVal.toISOString() : new Date().toISOString();
+        
+        var phoneVal = String(row[idx.whatsapp] || '').trim();
+        var codigoPais = "+507";
+        var celular = phoneVal;
+        if (phoneVal.indexOf('507') === 0) {
+          celular = phoneVal.substring(3);
+        } else if (phoneVal.indexOf('+507') === 0) {
+          celular = phoneVal.substring(4);
+        }
+        
+        var schoolCode = schoolVal.split('-')[0];
+        
+        result.push({
+          student_id: idVal,
+          acudiente: {
+            nombre: String(row[idx.acudiente] || '').trim(),
+            relacion: String(row[idx.relacion] || '').trim(),
+            whatsapp: phoneVal,
+            codigoPais: codigoPais,
+            celular: celular,
+            email: String(row[idx.email] || '').trim()
+          },
+          estudiante: {
+            nombre: String(row[idx.estudiante] || '').trim(),
+            salon: String(row[idx.salon] || '').trim(),
+            escuela_code: schoolCode,
+            escuela_nombre: schoolCode.toUpperCase()
+          },
+          reserva: {
+            propuesta: schoolVal,
+            paquete: String(row[idx.paquete] || '').trim(),
+            precio: parseFloat(row[idx.precio]) || 0,
+            timestamp: timestamp
+          }
+        });
+      }
+      
+      return ContentService.createTextOutput(JSON.stringify({ success: true, estudiantes: result })).setMimeType(ContentService.MimeType.JSON);
     }
 
     // ── SAVE LEAD (ONBOARDING) ────────────────────────────────

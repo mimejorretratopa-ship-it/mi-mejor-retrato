@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MMR · Dashboard</title>
+<script src="../js/core/config.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
 
@@ -486,9 +487,14 @@
   </div>
 
   <div class="header-actions">
-    <button class="btn btn-muted" onclick="document.getElementById('importFile').click()">↑ Importar</button>
+    <select class="filter-select" id="sync-school" style="background: var(--surface); color: var(--text); border: 1px solid var(--border); padding: 5px 10px; font-size: 11px;">
+      <option value="TODOS">— Sincronizar Todo —</option>
+    </select>
+    <button class="btn btn-accent" id="btn-sync" onclick="sincronizarDesdeSheets()">↻ Sincronizar</button>
+    <span style="color:var(--border2); margin: 0 4px;">|</span>
+    <button class="btn btn-muted" onclick="document.getElementById('importFile').click()" title="Restaurar backup completo de pagos/estados">Backup</button>
     <input type="file" id="importFile" accept=".json" onchange="importarDatos(this)">
-    <button class="btn btn-surface" onclick="exportarDatos()">↓ Exportar</button>
+    <button class="btn btn-surface" onclick="exportarDatos()" title="Descargar backup de pagos/estados">Exportar</button>
     <button class="btn btn-green" onclick="guardarDatos()" id="btn-guardar">Guardar</button>
   </div>
 </header>
@@ -498,8 +504,8 @@
 <div id="empty-state">
   <div class="empty-icon">📋</div>
   <div class="empty-title">Sin datos cargados</div>
-  <div class="empty-sub">Importa un archivo estudiantes.json para comenzar</div>
-  <button class="btn btn-accent" onclick="document.getElementById('importFile').click()">↑ Cargar estudiantes.json</button>
+  <div class="empty-sub">Sincroniza los estudiantes de Sheets o restaura un backup para comenzar</div>
+  <button class="btn btn-accent" onclick="sincronizarDesdeSheets()">↻ Sincronizar desde Google Sheets</button>
 </div>
 
 <!-- ══ FINANZAS ══════════════════════════════════════════════ -->
@@ -1081,6 +1087,109 @@ function toast(msg, tipo='') {
 }
 
 // ═══════════════════════════════════════════════════════════
+// SINCRONIZACIÓN DESDE GOOGLE SHEETS
+// ═══════════════════════════════════════════════════════════
+async function sincronizarDesdeSheets() {
+  const syncBtn = document.getElementById('btn-sync');
+  const schoolSelect = document.getElementById('sync-school');
+  const chosenSchool = schoolSelect.value;
+  
+  const HUB_BASE = (window.config && window.config.endpoints && window.config.endpoints.onboardingHub) || 
+    'https://script.google.com/macros/s/AKfycbw1jWdPTcixFqhQc46GVesnB2qAyk9HS7qblUDljk9nywIC7yYQhLGbWsKyEoKbns07/exec';
+  
+  // Usamos GET con parámetros para que Google Apps Script lo maneje via doGet().
+  // Esto evita que el cuerpo del POST sea parseado como un lead nuevo (saveLead fallback).
+  const HUB_URL = HUB_BASE + '?action=getStudents&school=' + encodeURIComponent(chosenSchool);
+    
+  syncBtn.disabled = true;
+  const originalText = syncBtn.textContent;
+  syncBtn.textContent = 'Sincronizando...';
+  
+  try {
+    const response = await fetch(HUB_URL, {
+      method: 'GET',
+      mode: 'cors'
+    });
+    
+    const result = await response.json();
+    
+    if (result.success && result.estudiantes) {
+      const data = result.estudiantes;
+      
+      const idsExistentes = new Set(estudiantes.map(e => e.student_id));
+      const nuevos = data.filter(e => !idsExistentes.has(e.student_id));
+      const ignorados = data.length - nuevos.length;
+      
+      estudiantes = [...estudiantes, ...nuevos];
+      
+      // Inicializar estados vacíos para estudiantes nuevos
+      estudiantes.forEach(e => {
+        const id = e.student_id;
+        if (!estadoFinanz[id]) estadoFinanz[id] = { pagos: [] };
+        if (!estadoCRM[id])    estadoCRM[id]    = { filtrado:false, retocado:false, preparado:false, impreso:false, online:false, notas:'' };
+      });
+      
+      poblarFiltros();
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('panel-finanzas').style.display = tabActual === 'finanzas' ? 'block' : 'none';
+      document.getElementById('panel-crm').style.display      = tabActual === 'crm'      ? 'block' : 'none';
+      renderFinanzas();
+      renderCRM();
+      marcarPendiente(true); // Requiere guardar
+      
+      const msg = nuevos.length === 0
+        ? `Sin cambios — ${ignorados} ya existían en local`
+        : ignorados > 0
+          ? `${nuevos.length} nuevos · ${ignorados} ya existían`
+          : `${nuevos.length} estudiantes descargados`;
+          
+      toast(msg, nuevos.length > 0 ? 'ok' : 'warn');
+      log(`Sincronización Sheets: +${nuevos.length} nuevos, ${ignorados} ignorados`);
+    } else {
+      toast('Error: El Hub no devolvió datos válidos', 'err');
+    }
+  } catch (error) {
+    console.error('Error al sincronizar:', error);
+    toast('Error de conexión con el Hub', 'err');
+  } finally {
+    syncBtn.disabled = false;
+    syncBtn.textContent = originalText;
+  }
+}
+
+function cargarColegiosConfig() {
+  // Usamos XMLHttpRequest en lugar de fetch() porque funciona tanto con Live Server
+  // como cuando el archivo se abre directamente desde file:// sin servidor.
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', '../onboarding/data/precios.json', true);
+  xhr.onload = function() {
+    if (xhr.status === 200 || xhr.status === 0) { // status 0 = file:// success
+      try {
+        const configData = JSON.parse(xhr.responseText);
+        if (configData && configData.escuelas) {
+          const select = document.getElementById('sync-school');
+          const escuelasOrdenadas = configData.escuelas.sort((a, b) => a.name.localeCompare(b.name));
+          escuelasOrdenadas.forEach(esc => {
+            if (esc.code) {
+              const opt = document.createElement('option');
+              opt.value = esc.code;
+              opt.textContent = esc.name;
+              select.appendChild(opt);
+            }
+          });
+        }
+      } catch(e) {
+        console.warn('[MMR Dashboard] Error parseando precios.json', e);
+      }
+    }
+  };
+  xhr.onerror = function() {
+    console.warn('[MMR Dashboard] No se pudo cargar precios.json. El selector mostrará solo "Sincronizar Todo".');
+  };
+  xhr.send();
+}
+
+// ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
 window.addEventListener('beforeunload', e => {
@@ -1091,6 +1200,7 @@ window.addEventListener('beforeunload', e => {
 });
 
 cargarDesdeStorage();
+cargarColegiosConfig();
 </script>
 </body>
 </html>
