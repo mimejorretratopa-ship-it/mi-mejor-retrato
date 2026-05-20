@@ -85,6 +85,8 @@ function showErrorState(message) {
   document.getElementById('school-name').textContent = message;
   document.getElementById('doc-date').style.display = 'none';
   document.getElementById('content-wrapper').style.display = 'none';
+  const cta = document.querySelector('.cta-section');
+  if (cta) cta.style.display = 'none';
 }
 
 function setSafeText(id, text) {
