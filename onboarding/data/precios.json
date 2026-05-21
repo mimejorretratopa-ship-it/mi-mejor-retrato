@@ -1072,7 +1072,7 @@
     },
     {
       "code": "pana",
-      "name": "Propuesta Panamá",
+      "name": "Colegios en Panamá",
       "years": [
         26
       ],
@@ -1082,14 +1082,14 @@
         {
           "id": "paquete_1",
           "nombre": "Esencial",
-          "precio": 12,
-          "descripcion": "3 Fotos únicamente en galería online",
+          "precio": 19,
+          "descripcion": "4 Fotos únicamente en galería online",
           "tabla_comparativa": {
-            "fotos_digitales": 3,
+            "fotos_digitales": 4,
             "foto_grupal": true,
             "impresiones": null,
             "foto_enmarcada": null,
-            "fotos_familiares": false,
+            "fotos_familiares": true,
             "ideal_para": "Un recuerdo digital sencillo"
           },
           "entregables": {
@@ -1113,14 +1113,14 @@
         {
           "id": "paquete_2",
           "nombre": "Familiar",
-          "precio": 21,
-          "descripcion": "6 Fotos impresas y en galería online",
+          "precio": 36,
+          "descripcion": "8 Fotos impresas y en galería online",
           "tabla_comparativa": {
-            "fotos_digitales": 5,
+            "fotos_digitales": 7,
             "foto_grupal": true,
-            "impresiones": "1 gr. + 3 peq.",
+            "impresiones": "1 gr. + 4 peq.",
             "foto_enmarcada": null,
-            "fotos_familiares": false,
+            "fotos_familiares": true,
             "ideal_para": "Variedad con foto impresa"
           },
           "entregables": {
@@ -1149,14 +1149,14 @@
         {
           "id": "paquete_3",
           "nombre": "Premium",
-          "precio": 34,
+          "precio": 57,
           "descripcion": "12 Fotos impresas y en galería online",
           "tabla_comparativa": {
-            "fotos_digitales": 9,
+            "fotos_digitales": 12,
             "foto_grupal": true,
-            "impresiones": "1 gr. + 7 peq.",
-            "foto_enmarcada": "La grande",
-            "fotos_familiares": false,
+            "impresiones": "2 gr. + 7 peq.",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": true,
             "ideal_para": "La experiencia completa"
           },
           "entregables": {
