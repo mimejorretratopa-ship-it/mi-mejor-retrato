@@ -89,16 +89,18 @@ Para medir de forma individualizada el comportamiento en las múltiples propuest
 
 ---
 
-## 3. Configuración del Tracker B2B (una sola vez)
+## 3. Configuración del Hub v4.0 y Airtable
 
-Antes de usar el tracker, asegúrate de:
+Antes de usar el tracker y el guardado de leads, asegúrate de:
 1. Haber reemplazado las tres constantes en `MMR_brochures_hub_v4.0.gs`:
    * `SHEET_ID` — ID de tu Google Sheet (extraer de la URL).
    * `AT_TOKEN` — Token de Airtable (en Airtable Account Settings).
    * `DISCORD_WEBHOOK` — URL del webhook del canal donde llegan las alertas.
-2. Copiar el contenido del archivo al editor de Apps Script y guardar.
-3. Ejecutar `setupPropostasSheet()` — crea la pestaña `Propuestas` con todo el formato.
-4. Ejecutar `setupTrackerTrigger()` — activa el trigger diario a las 8am.
+2. Asegurarte de que la primera pestaña de Google Sheets contemple al menos 16 columnas para mapear los datos B2C (la última para "Ubicación/Estudio").
+3. Verificar que tu tabla `Leads` en Airtable incluya los campos: `Estudio`, `Relacion`, `Paquete`, `Precio`, `Genero` y el checkbox `Q_onboarding`.
+4. Copiar el contenido del archivo al editor de Apps Script y guardar (re-desplegar Nueva Versión siempre).
+5. Ejecutar `setupPropostasSheet()` — crea la pestaña `Propuestas` con todo el formato.
+6. Ejecutar `setupTrackerTrigger()` — activa el trigger diario a las 8am.
 
 > ⚠️ Estas funciones deben ejecutarse desde el **editor de Apps Script**, no desde el menú de la hoja (ya que el menú usa `getUi()` que no está disponible en ese contexto). La función `marcarEnviadaHoy()` sí debe ejecutarse **desde el menú de Google Sheets**.
 

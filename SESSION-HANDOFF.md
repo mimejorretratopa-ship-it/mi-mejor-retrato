@@ -25,6 +25,13 @@ Se completaron los paquetes y se activó la visibilidad (`publicar`) en `precios
 ### 3. Limpieza de Textos Genéricos
 * El portafolio `lasa` fue renombrado de _"Nuestro trabajo en La Salle"_ a **"Nuestro trabajo previo"** en `propuesta/portafolios/lasa/manifest.json` para que sirva como portafolio genérico reutilizable por otros colegios.
 
+### 4. Resolución de Bugs Críticos en Onboarding B2C
+* **Visibilidad del campo Ubicación**: Se corrigió el valor `estado` a `"colegio"` en la configuración de secciones para los colegios con sesiones presenciales (`lasa`, `ofxd`, `oxbg`, `pana`, `port`, `sagu`), ocultando el selector de estudio que aparecía por error. El validador en `form-renderer.js` fue ajustado para remover el campo dinámicamente si no aplica y no bloquear el envío.
+* **Payload Completo en Airtable**: Se modificó `MMR_brochures_hub_v4.0.gs` para incluir los 5 campos omitidos en la creación del lead: `Relacion`, `Paquete`, `Precio`, `Genero`, y `Q_onboarding`.
+* **Registro de Logs**: Se implementó el llamado a `logSheet.appendRow()` dentro de `saveLead` en el Hub para registrar correctamente cada transacción en la pestaña `Logs`.
+* **Tracking de Estudio Seleccionado**: Se integró el seguimiento del campo condicional `ubicacion` (para sesiones independientes como `indp` y `chor`) enviándolo a la columna 16 de Google Sheets, al campo `Estudio` en Airtable y a la notificación de Discord.
+* **Fix de Google Analytics**: Se resolvió un error fatal que detenía la ejecución del script tras enviar el formulario, debido a la referencia inexistente `config.analytics.events.formSubmit`, reemplazándola por `'form_submit'`.
+
 ---
 
 ## ✅ Logros Técnicos de Sesiones Anteriores

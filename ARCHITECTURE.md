@@ -126,7 +126,7 @@ Para evitar duplicidad y asegurar que un cambio en la configuración (ej: endpoi
 
 El Hub v4.0 incorpora un módulo de CRM interno para hacer seguimiento de las propuestas enviadas a directores/coordinadores de colegios. Opera de forma **independiente** del flujo B2C (padres de familia).
 
-### Pestaña `Propuestas` en Google Sheets
+### Pestaña `Propuestas` en Google Sheets (CRM B2B)
 
 | Columna | Campo | Automatización |
 |---------|-------|----------------|
@@ -147,6 +147,12 @@ El Hub v4.0 incorpora un módulo de CRM interno para hacer seguimiento de las pr
 * **`setupTrackerTrigger()`**: Registra el trigger diario una sola vez. Elimina duplicados automáticamente.
 
 > ⚠️ **Restricción de contexto**: `getUi()` solo está disponible cuando la ejecución proviene del menú de Google Sheets. Las funciones de setup usan `Logger.log()` para ser compatibles con el editor de Apps Script.
+
+### Recepción de Leads B2C (Onboarding)
+El Hub también procesa el JSON entrante de las reservas creadas por los clientes B2C:
+1. **Hoja Principal**: Anexa la fila con 16 columnas de datos, incluyendo logística y `Estudio` seleccionado (ubicación).
+2. **Airtable**: Envía un payload POST sincronizando el lead con el CRM de Airtable y asegurando la consistencia demográfica.
+3. **Logs**: Deja rastro de auditoría transaccional en la pestaña `Logs` por cada lead recibido.
 
 ---
 

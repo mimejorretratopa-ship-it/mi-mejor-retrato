@@ -52,10 +52,15 @@ Se añadió al Hub el módulo de seguimiento de propuestas comerciales (acuerdos
 * **`verificarSeguimientos()`**: Trigger diario 8am que colorea filas por urgencia y envía resumen a Discord.
 * **Nota importante**: Las funciones `setupPropostasSheet()` y `setupTrackerTrigger()` usan `Logger.log()` en vez de `getUi().alert()` para ser compatibles con ejecución desde el editor de Apps Script.
 
+### 6. Corrección Integral de Persistencia en Onboarding (21 de Mayo de 2026)
+* **Sincronización Completa con Airtable**: Se añadieron los campos faltantes al payload POST (`Relacion`, `Paquete`, `Precio`, `Genero`, `Q_onboarding`, `Estudio`), asegurando que la data del lead viaje íntegra desde el primer toque.
+* **Tracking de Estudio (Ubicación)**: El Hub ahora anexa la ubicación de la sesión (ej. `condado` o `viaargentina` para sesiones independientes) como columna 16 en Google Sheets, a Airtable y a Discord.
+* **Auditoría Transaccional**: El flujo feliz de reservas B2C ahora registra un log detallado de éxito en la pestaña `Logs` de Google Sheets.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)
-Las reservas se escriben en la primera pestaña de la hoja de cálculo.
+Las reservas se escriben en la primera pestaña de la hoja de cálculo (anexando 16 columnas que incluyen datos de contacto, logística y la ubicación de estudio seleccionado).
 **Pestañas Adicionales**:
 * `Cuestionarios`: Respuestas en crudo del formulario de Discovery (Fase 1).
 * `Agendas`: Configuración JSON de horarios y slots por salón (`ID_Salon`, `Config_JSON`) (Fase 2).
@@ -72,6 +77,7 @@ Las reservas se escriben en la primera pestaña de la hoja de cálculo.
   * `Colegio`: Código o nombre de la escuela.
   * `Salon`: Valor del salón (ej: `Kinder`, `6to`).
   * `Link_WhatsApp_Q` y `Link_WhatsApp_Agenda`: Generados automáticamente por el Hub.
+  * `Estudio`: Ubicación del estudio seleccionado para sesiones independientes.
   * `Hora_Sesion`: Hora asignada en la agenda.
   * `Q_onboarding`: Checkbox que indica si se recibió el cuestionario de Discovery.
 
