@@ -11,7 +11,7 @@
         },
         "ubicacion": {
             "activo": true,
-            "estado": "estudios",
+            "estado": "colegio",
             "mensaje": "",
             "ubicaciones": [
                 "condado"

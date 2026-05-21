@@ -363,10 +363,28 @@ function doPost(e) {
             'WhatsApp': phone,
             'ID':       studentId,
             'Link_WhatsApp_Q':     linkQ,
-            'Link_WhatsApp_Agenda': linkA
+            'Link_WhatsApp_Agenda': linkA,
+            'Relacion':     data.relacion || '',
+            'Paquete':      data.paqueteLabel || data.paquete || '',
+            'Precio':       parseFloat(data.precio) || 0,
+            'Genero':       data.genero || '',
+            'Q_onboarding': false
           }
         })
       });
+    } catch(err) {}
+
+    try {
+      logSheet.appendRow([
+        new Date(),
+        'saveLead OK',
+        studentId,
+        meta.schoolName || data.idEscuela,
+        data.nombre,
+        data.salon,
+        data.paqueteLabel || '',
+        data.precio || ''
+      ]);
     } catch(err) {}
 
     return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);

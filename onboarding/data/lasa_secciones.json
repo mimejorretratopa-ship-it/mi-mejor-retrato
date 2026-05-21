@@ -12,7 +12,7 @@
         },
         "ubicacion": {
             "activo": true,
-            "estado": "estudios",
+            "estado": "colegio",
             "nota_estados": "pendiente | texto | colegio | estudios",
             "mensaje": "La ubicación se confirmará próximamente.",
             "ubicaciones": [],
