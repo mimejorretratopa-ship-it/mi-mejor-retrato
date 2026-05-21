@@ -249,11 +249,20 @@ const formModule = (() => {
       return { valid: false, data: null };
     }
 
+    // Copia profunda para no alterar el original
+    const formDefCopy = JSON.parse(JSON.stringify(formDef));
+
+    // Lógica condicional: si no hay estudios, remover campo ubicación de la validación
+    const sections = state.get('sections');
+    if (sections?.secciones?.ubicacion?.estado !== 'estudios' && formDefCopy.formulario?.campos) {
+      formDefCopy.formulario.campos = formDefCopy.formulario.campos.filter(c => c.id !== 'ubicacion');
+    }
+
     // Sanitizar
-    const sanitized = validators.sanitizeFormData(data, formDef);
+    const sanitized = validators.sanitizeFormData(data, formDefCopy);
 
     // Validar
-    const validation = validators.validateFormData(sanitized, formDef);
+    const validation = validators.validateFormData(sanitized, formDefCopy);
 
     // Limpiar errores previos
     const campos = formDef.formulario?.campos || formDef;
