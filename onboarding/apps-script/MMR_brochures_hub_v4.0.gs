@@ -346,7 +346,7 @@ function doPost(e) {
     sheet.appendRow([
       new Date(), meta.schoolName || data.idEscuela, data.nombre, data.relacion,
       data.nombreEstudiante, data.salon, data.genero, phone,
-      data.paqueteLabel, data.precio, data.email, studentId, linkQ, linkA, fechaQ, ''
+      data.paqueteLabel, data.precio, data.email, studentId, linkQ, linkA, fechaQ, data.ubicacion || ''
     ]);
 
     try {
@@ -368,7 +368,8 @@ function doPost(e) {
             'Paquete':      data.paqueteLabel || data.paquete || '',
             'Precio':       parseFloat(data.precio) || 0,
             'Genero':       data.genero || '',
-            'Q_onboarding': false
+            'Q_onboarding': false,
+            'Estudio':      data.ubicacion || ''
           }
         })
       });

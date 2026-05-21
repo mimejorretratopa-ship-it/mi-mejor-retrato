@@ -363,6 +363,7 @@ const formModule = (() => {
           .replace('{celular}', validation.data.celular)
           .replace('{paqueteLabel}', validation.data.paqueteLabel)
           .replace('{precio}', validation.data.precio)
+          .replace('{ubicacion}', validation.data.ubicacion || 'N/A')
           .replace('{whatsapp_limpio}', metadata.whatsapp_limpio)
           .replace('{nombre_encoded}', nombre_encoded)
           .replace('{school_name_encoded}', school_name_encoded)
