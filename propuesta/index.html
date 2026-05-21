@@ -308,14 +308,48 @@
 
     </div> <!-- Cierre de content-wrapper -->
 
-    <!-- ── CTA FINAL ─────────────────────────────────────────── -->
-    <section class="cta-section" style="display: none;">
-      <h2 class="heading-2" style="font-size:22px;">¿Les gustaría organizarlo para su <em>salón?</em></h2>
-      <p style="font-size:16px; margin-bottom:20px; color:var(--color-ink-muted);">Los niños cambian muy rápido. Estas
-        fotos terminan convirtiéndose en recuerdos que las familias guardan por años.<br><br>📲 Escríbenos por
-        WhatsApp<br>Nosotros coordinamos directamente con cada familia.</p>
-      <a href="https://wa.me/50767438951" id="whatsapp-link" target="_blank" class="btn-whatsapp">Escribir por
-        WhatsApp</a>
+    <!-- ── CTA FINAL DUAL ─────────────────────────────────────────── -->
+    <section class="cta-section" id="cta-section" style="display: none;">
+      <h2 class="heading-2" style="font-size:22px;">¿Te gustaría organizar una sesión de fotos?</h2>
+      <p style="font-size:16px; margin-bottom:30px; color:var(--color-ink-muted);">Elige la opción que mejor se adapte a tus necesidades:</p>
+      
+      <div class="cta-dual-container">
+        <!-- Opción A: Institucional -->
+        <div class="cta-card">
+          <h3>🏫 Para la Escuela o Salón</h3>
+          <p>Llena este formulario y prepararemos una opción personalizada para tu grupo.</p>
+          
+          <form id="form-b2b-cta" class="form-b2b">
+            <div class="form-group">
+              <label for="b2b-nombre">Tu nombre</label>
+              <input type="text" id="b2b-nombre" name="nombre" required placeholder="Ej: María Pérez">
+            </div>
+            <div class="form-group">
+              <label for="b2b-whatsapp">Número de WhatsApp</label>
+              <input type="tel" id="b2b-whatsapp" name="whatsapp" required placeholder="6000-0000">
+            </div>
+            <div class="form-group">
+              <label for="b2b-email">Correo electrónico</label>
+              <input type="email" id="b2b-email" name="email" required placeholder="correo@ejemplo.com">
+            </div>
+            <div class="form-group">
+              <label for="b2b-escuela">Nombre del Colegio / Salón</label>
+              <input type="text" id="b2b-escuela" name="escuela" required placeholder="Ej: Colegio XYZ, Salón K">
+            </div>
+            <button type="submit" id="btn-submit-b2b" class="btn-submit">Solicitar Propuesta</button>
+            <div id="b2b-msg-exito" class="b2b-msg-exito" style="display: none;">
+              ✅ ¡Listo! Te contactaremos pronto.
+            </div>
+          </form>
+        </div>
+
+        <!-- Opción B: Individual -->
+        <div class="cta-card cta-card-secondary">
+          <h3>👨‍👩‍👧‍👦 Sesión Individual</h3>
+          <p>Si deseas contratar una sesión únicamente para tu familia, puedes agendar de forma independiente en nuestros estudios.</p>
+          <a href="../onboarding/index.html?brochure=indp-26" target="_blank" class="btn-whatsapp">Reservar Sesión Individual</a>
+        </div>
+      </div>
     </section>
   </div>
 

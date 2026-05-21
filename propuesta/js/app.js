@@ -76,10 +76,64 @@ async function initPropuesta() {
     const cta = document.querySelector('.cta-section');
     if (cta) cta.style.display = 'block';
 
+    // 7. Inicializar mini-formulario B2B
+    setupB2bForm(schoolData);
+
   } catch (err) {
     console.error(err);
     showErrorState("El link que usaste no corresponde a una propuesta formal armada. Por eso te pedimos que escribas directo a Mike para darte respuesta más rápido.");
   }
+}
+
+// ── MINI-FORMULARIO B2B (CTA Final) ──────────────────────────────────
+function setupB2bForm(schoolData) {
+  const form = document.getElementById('form-b2b-cta');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const btn = document.getElementById('btn-submit-b2b');
+    const msgExito = document.getElementById('b2b-msg-exito');
+
+    const nombre   = document.getElementById('b2b-nombre').value.trim();
+    const whatsapp = document.getElementById('b2b-whatsapp').value.trim();
+    const email    = document.getElementById('b2b-email').value.trim();
+    const escuela  = document.getElementById('b2b-escuela').value.trim();
+
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    try {
+      // Notificar Discord con el lead B2B
+      if (window.Api && typeof window.Api.notificarDiscord === 'function') {
+        const wa_clean = whatsapp.replace(/\D/g, '');
+        const waLink = `https://wa.me/507${wa_clean}?text=Hola+${encodeURIComponent(nombre)}%2C+gracias+por+tu+inter%C3%A9s.+Te+prepararemos+una+propuesta+personalizada.`;
+
+        await window.Api.notificarDiscord({
+          title: '🏫 Nuevo Lead B2B — Propuesta Institucional',
+          fields: [
+            { name: '👤 Nombre',   value: nombre,   inline: true  },
+            { name: '📱 WhatsApp', value: wa_clean ? `507 ${wa_clean}` : whatsapp, inline: true  },
+            { name: '📧 Correo',   value: email || 'No indicado',  inline: false },
+            { name: '🏫 Escuela',  value: escuela,  inline: false },
+            { name: '📄 Propuesta vista', value: schoolData ? schoolData.name : currentSchoolCode, inline: false },
+            { name: '📲 Responder', value: `[WhatsApp →](${waLink})`, inline: false }
+          ]
+        });
+      }
+
+      // Mostrar éxito
+      form.style.display = 'none';
+      msgExito.style.display = 'block';
+
+    } catch (err) {
+      console.error('[B2B Form] Error:', err);
+      btn.textContent = 'Solicitar Propuesta';
+      btn.disabled = false;
+      alert('Hubo un error al enviar. Por favor intenta de nuevo o escríbenos directamente.');
+    }
+  });
 }
 
 function showErrorState(message) {

@@ -12,19 +12,18 @@ Tienes el sistema técnico sólido. El problema ahora es **comercial y de gesti�
 |--------|---------------------|----------|----------------|--------|
 | `lasa` | Colegio La Salle | ✅ 3 paquetes | ✅ lasa_propuesta.json | **Listo** |
 | `enda` | Guillermo Endara Galimani | ✅ 3 paquetes | ✅ enda_propuesta.json | **Listo** |
-| `ebrv` | Vacamonte | ✅ 3 paquetes | ❌ sin propuesta .json | **Precios a revisar** |
-| `port` | Portafolio | ⚠️ 1 paquete (precio: $0) | ❌ sin propuesta .json | **Incompleto** |
+| `ebrv` | Vacamonte | ✅ 3 paquetes | ✅ ebrv_propuesta.json | **Listo** |
+| `port` | Portafolio | ✅ 1 paquete | ✅ port_propuesta.json | **Listo** |
 | `indp` | Tu Sesión de Retrato | ✅ 3 paquetes | ✅ indp_propuesta.json | **Listo** |
-| `clia` | Chiara Lubich | ❌ sin paquetes | ❌ | **Pendiente** |
-| `pana` | Propuesta Panamá | ❌ sin paquetes | ✅ pana_propuesta.json | **Pendiente** |
-| `chor` | Propuesta La Chorrera | ❌ sin paquetes | ✅ chor_propuesta.json | **Pendiente** |
-| `ofxd` | Oxford International | ❌ sin paquetes | ✅ ofxd_propuesta.json | **Pendiente** |
-| `oxbg` | Oxford Brisas | ❌ sin paquetes | ✅ oxbg_propuesta.json | **Pendiente** |
-| `sagu` | San Agustín | ❌ sin paquetes | ✅ sagu_propuesta.json | **Pendiente** |
-| `b2b`  | Propuesta Directores (genérica) | ❌ | ✅ b2b_propuesta.json | **Pendiente** |
-| `clia` | Chiara Lubich | ❌ | ❌ | **Pendiente** |
+| `clia` | Chiara Lubich | ✅ 3 paquetes | ✅ clia_propuesta.json | **Listo** |
+| `pana` | Propuesta Panamá | ✅ 3 paquetes | ✅ pana_propuesta.json | **Listo** |
+| `chor` | Propuesta La Chorrera | ✅ 3 paquetes | ✅ chor_propuesta.json | **Listo** |
+| `ofxd` | Oxford International | ✅ 3 paquetes | ✅ ofxd_propuesta.json | **Listo** |
+| `oxbg` | Oxford Brisas | ✅ 3 paquetes | ✅ oxbg_propuesta.json | **Listo** |
+| `sagu` | San Agustín | ✅ 3 paquetes | ✅ sagu_propuesta.json | **Listo** |
+| `b2b`  | Propuesta Directores (genérica) | ❌ sin paquetes | ✅ b2b_propuesta.json | **Pendiente** |
 | `sabi` | Sabis International | ⚠️ 1 paquete sin tabla | ❌ | **Pausado** |
-| —      | **SAIE** | ❌ | ❌ | **Baja prioridad** |
+| —      | Textos Genéricos (ej: SAIE) | ✅ Textos limpiados | ✅ | **Listo** |
 
 ---
 

@@ -142,6 +142,37 @@
       ]
     },
     {
+      "code": "dire",
+      "name": "Propuesta para Directores",
+      "years": [
+        26
+      ],
+      "ga_id": "G-6H4H52RL0T",
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Consulta Comercial",
+          "precio": 0,
+          "descripcion": "Contáctenos para armar una propuesta a la medida de su institución.",
+          "tabla_comparativa": {
+            "fotos_digitales": 0,
+            "foto_grupal": true,
+            "impresiones": "Personalizado",
+            "foto_enmarcada": "Personalizado",
+            "fotos_familiares": true,
+            "ideal_para": "Colegios y Directores"
+          },
+          "entregables": {
+            "impresos": null,
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
+    },
+    {
       "code": "dolo",
       "name": "Nuestra Señora De Los Dolores",
       "years": [

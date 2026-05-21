@@ -96,6 +96,21 @@
         "nota": "Solo el número local. El código 507 se añade automáticamente."
       },
       {
+        "id": "ubicacion",
+        "label": "¿Qué estudio te queda más conveniente?",
+        "tipo": "select",
+        "opciones": [
+          { "valor": "condado", "label": "Estudio Condado del Rey" },
+          { "valor": "viaargentina", "label": "Estudio Vía Argentina" },
+          { "valor": "lachorrera", "label": "Estudio La Chorrera" },
+          { "valor": "pendiente", "label": "Sin preferencia / coordinemos" }
+        ],
+        "requerido": true,
+        "incluir_en_contacto": false,
+        "incluir_en_discord": true,
+        "nota": "Campo condicional. Solo se muestra si secciones.ubicacion.estado es 'estudios'."
+      },
+      {
         "id": "paquete",
         "label": "Paquete de interés",
         "tipo": "select",

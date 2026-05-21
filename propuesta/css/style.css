@@ -410,22 +410,128 @@ p+p {
 }
 
 /* ==========================================================================
-   10. CTA FINAL (WhatsApp)
+   10. CTA FINAL DUAL
    ========================================================================== */
-.cta-section,
-.cta-block {
-  text-align: center;
-  padding: var(--space-12) var(--space-6);
+.cta-section {
+  padding: var(--space-10) 0;
   border-top: 1px solid var(--color-border);
   margin-top: var(--space-8);
-  background-color: var(--color-accent-light);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
 }
 
-.cta-section .heading-2,
-.cta-block .heading-2 {
-  margin-bottom: var(--space-6);
+.cta-section .heading-2 {
+  text-align: center;
+  margin-bottom: var(--space-2);
+}
+
+.cta-section p {
+  text-align: center;
+  margin: 0 auto var(--space-6);
+}
+
+.cta-dual-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 720px) {
+  .cta-dual-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cta-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.cta-card h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  color: var(--color-ink);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.cta-card p {
+  color: var(--color-ink-muted);
+  margin: 0 0 var(--space-6) 0;
+  text-align: left;
+}
+
+.cta-card-secondary {
+  background-color: var(--color-accent-light);
+  border-color: var(--color-accent);
+  align-items: flex-start;
+}
+
+.form-b2b {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: auto;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.form-group label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-ink);
+  text-align: left;
+}
+
+.form-group input {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-dark);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-submit {
+  background-color: var(--color-ink);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: var(--space-2);
+  width: 100%;
+}
+
+.btn-submit:hover {
+  opacity: 0.9;
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.b2b-msg-exito {
+  padding: var(--space-3);
+  background-color: var(--color-ok-light);
+  color: var(--color-ok);
+  border: 1px solid #A7F3D0;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  text-align: center;
+  margin-top: var(--space-2);
 }
 
 .btn-whatsapp {

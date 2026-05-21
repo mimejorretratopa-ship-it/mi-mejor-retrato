@@ -450,6 +450,15 @@ const formModule = (() => {
     campos.forEach(campo => {
       if (campo.tipo === 'hidden' || omitir.has(campo.id)) return;
 
+      // Lógica condicional para el campo de ubicación
+      if (campo.id === 'ubicacion') {
+        const sections = state.get('sections');
+        const estadoUbicacion = sections?.secciones?.ubicacion?.estado;
+        if (estadoUbicacion !== 'estudios') {
+          return; // Omitir el campo si no hay múltiples estudios para elegir
+        }
+      }
+
       const fieldEl = renderField(campo);
       if (fieldEl) contenedorCampos.appendChild(fieldEl);
     });
