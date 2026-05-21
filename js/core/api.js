@@ -77,7 +77,7 @@ const Api = (() => {
             embeds: [{
               color: 0xF07030, // naranja terra
               title: payload.title || (isWebsite ? '📋 Nuevo contacto (Website)' : '🎉 Nueva reserva (Onboarding)'),
-              description: payload.description || '',
+              ...(payload.description ? { description: payload.description } : {}),
               fields: validFields,
               footer: { text: window.config.brand.location },
               timestamp: new Date().toISOString()
