@@ -527,16 +527,11 @@ function setupPropostasSheet() {
   var ss    = SpreadsheetApp.openById(SHEET_ID);
   var sheet = ss.getSheetByName(TRACKER_SHEET_NAME);
 
-  if (sheet) {
-    var ui = SpreadsheetApp.getUi();
-    var resp = ui.alert(
-      '⚠️ La hoja "' + TRACKER_SHEET_NAME + '" ya existe.',
-      '¿Deseas sobrescribir los encabezados y validaciones? (Los datos existentes se conservan)',
-      ui.ButtonSet.YES_NO
-    );
-    if (resp !== ui.Button.YES) return;
-  } else {
+  if (!sheet) {
     sheet = ss.insertSheet(TRACKER_SHEET_NAME);
+  } else {
+    // Sheet already exists; we'll just ensure headers are set without prompting.
+    Logger.log('Sheet "' + TRACKER_SHEET_NAME + '" already exists; updating headers.');
   }
 
   // ── Encabezados ────────────────────────────────────────────
@@ -613,7 +608,7 @@ function setupPropostasSheet() {
   // ── Nota en la celda K1 ────────────────────────────────────
   sheet.getRange(1, 11).setNote('Se calcula automáticamente: Fecha envío + 7 días.\nUsa "Marcar fila como Enviada hoy" del menú para llenar J y K juntos.');
 
-  SpreadsheetApp.getUi().alert('✅ Hoja "' + TRACKER_SHEET_NAME + '" lista.\n\nPróximo paso: ve a Extensiones → Apps Script → Ejecutar → setupTrackerTrigger() para activar las alertas diarias.');
+  Logger.log('✅ Hoja "' + TRACKER_SHEET_NAME + '" lista. Próximo paso: ejecuta setupTrackerTrigger() para activar las alertas diarias.');
 }
 
 
@@ -777,5 +772,5 @@ function setupTrackerTrigger() {
     .atHour(8)     // 8am hora del proyecto (configurar zona horaria en App Script Settings → América/Panamá)
     .create();
 
-  SpreadsheetApp.getUi().alert('✅ Trigger activado.\n\n"verificarSeguimientos" correrá todos los días a las 8:00am y enviará alertas a Discord cuando haya seguimientos vencidos o próximos.');
+  Logger.log('✅ Trigger activado. "verificarSeguimientos" correrá todos los días a las 8:00am y enviará alertas a Discord cuando haya seguimientos vencidos o próximos.');
 }
