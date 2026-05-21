@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "escuela_code": "ebrv",
+    "titulo_principal": "Propuesta Escuela Bilingüe Residencial Vacamonte",
+    "fecha_actualizacion": "21 de Mayo, 2026"
+  },
+  "diferenciadores": {
+    "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real. Si el niño no quiere sonreír, no hay presión — las mejores fotos salen cuando están cómodos.",
+    "fotos_autenticas": "El cuestionario previo — Nuestro truco secreto. Los papás nos cuentan los gustos, comidas favorita, música y nosotros nos preparamos antes. Cuando tu hijo llega ya tenemos tema de conversación que a él o ella le interesa.",
+    "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas. Las fotos seleccionadas se retocan individualmente — no es un filtro masivo, es edición foto por foto."
+  },
+  "galeria": {
+    "portafolio_id": "lasa"
+  },
+  "logistica": {
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "escuela",
+          "texto_display": "En las instalaciones de la escuela",
+          "descripcion": "Instalamos nuestro estudio fotográfico completo dentro de la escuela para mayor comodidad de los padres."
+        }
+      ]
+    },
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos capas y birretes del color oficial de la escuela."
+    },
+    "solicitudes_especiales": {
+      "mascotas": false,
+      "familiares": "Por ser dentro de la escuela, las fotos son exclusivas del estudiante para mantener el flujo de los salones.",
+      "cambios_vestuario": "Solo si la escuela lo permite dentro del horario asignado."
+    }
+  },
+  "entrega_y_pagos": {
+    "metodo_entrega": [
+      {
+        "tipo": "fotografo_escuela",
+        "texto": "Entregaremos los paquetes impresos directamente en la escuela en la fecha acordada con la dirección."
+      }
+    ],
+    "tiempo_entrega_semanas": 3,
+    "recoleccion_dinero": {
+      "metodo_principal": "Pago directo al fotógrafo (Recomendado)",
+      "explicacion": "El colegio no maneja el dinero. El pago se realiza directamente al fotógrafo vía Yappy o transferencia al coordinar los paquetes."
+    }
+  },
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Política de Reagendamiento",
+      "opcion_multiples_salones": "Se programará 1 día de 'Retake' en la escuela para los estudiantes ausentes sin costo.",
+      "opcion_un_salon": "Se programará 1 día de 'Retake' en la escuela para los estudiantes ausentes sin costo."
+    },
+    "descuento_hermanos": {
+      "aplica": true,
+      "porcentaje": 25,
+      "texto": "25% de descuento por cada hijo en salones diferentes."
+    },
+    "extras": "Posibilidad de adquirir fondos extra, impresiones adicionales o archivos digitales extra desde la galería online."
+  }
+}

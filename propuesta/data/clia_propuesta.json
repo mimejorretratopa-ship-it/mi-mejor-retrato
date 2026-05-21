@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "escuela_code": "clia",
+    "titulo_principal": "Propuesta Fotográfica 6to Grado",
+    "fecha_actualizacion": "21 de Mayo, 2026"
+  },
+  "diferenciadores": {
+    "trato_nino": "Nuestra prioridad es que el estudiante disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real.",
+    "fotos_autenticas": "El cuestionario previo — Nuestro truco secreto. Nos cuentan los gustos, comida favorita, música y nosotros nos preparamos antes. Cuando llegan ya tenemos tema de conversación.",
+    "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas. Las fotos seleccionadas se retocan individualmente — no es un filtro masivo, es edición foto por foto."
+  },
+  "galeria": {
+    "portafolio_id": "lasa"
+  },
+  "logistica": {
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "estudios",
+          "texto_display": "Estudio fotográfico en Vía Argentina o Condado del Rey",
+          "descripcion": "Contamos con estudios totalmente equipados y céntricos para la sesión."
+        }
+      ]
+    },
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos estolas y accesorios acordes a la graduación de 6to grado."
+    },
+    "solicitudes_especiales": {
+      "mascotas": true,
+      "familiares": "Familiares bienvenidos para la foto familiar al final de la sesión.",
+      "cambios_vestuario": "Permitidos dentro del tiempo de la sesión (ej. uniforme y ropa casual)."
+    }
+  },
+  "entrega_y_pagos": {
+    "metodo_entrega": [
+      {
+        "tipo": "delivery",
+        "texto": "Delivery directo a casa o trabajo ($2.50) o retiro coordinado."
+      }
+    ],
+    "tiempo_entrega_semanas": 2,
+    "recoleccion_dinero": {
+      "metodo_principal": "Pago directo al fotógrafo (Recomendado)",
+      "explicacion": "Preferimos el pago directo (Yappy o transferencia) ya que cada familia debe comunicarse individualmente con nosotros de todos modos para recibir su galería privada por WhatsApp."
+    }
+  },
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Política de Reagendamiento",
+      "opcion_multiples_salones": "Se programará 1 fecha extra global sin costo. Si no puede asistir a esa segunda fecha, habrá un recargo de $15 por asignar una nueva fecha individual.",
+      "opcion_un_salon": "Se programará 1 fecha extra global sin costo. Si no puede asistir a esa segunda fecha, habrá un recargo de $15 por asignar una nueva fecha individual."
+    },
+    "descuento_hermanos": {
+      "aplica": true,
+      "porcentaje": 25,
+      "texto": "25% de descuento por cada hijo en salones diferentes."
+    },
+    "extras": "Posibilidad de adquirir fondos extra, impresiones adicionales o archivos digitales extra."
+  }
+}

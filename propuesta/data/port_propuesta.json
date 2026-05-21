@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "escuela_code": "port",
+    "titulo_principal": "Sesión Especial: Construcción de Portafolio",
+    "fecha_actualizacion": "21 de Mayo, 2026"
+  },
+  "diferenciadores": {
+    "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real.",
+    "fotos_autenticas": "El cuestionario previo — Nuestro truco secreto. Nos cuentan los gustos, comida favorita, música y nosotros nos preparamos antes. Cuando tu hijo llega ya tenemos tema de conversación que a él o ella le interesa.",
+    "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas."
+  },
+  "galeria": {
+    "portafolio_id": "lasa"
+  },
+  "logistica": {
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "estudio_chorrera",
+          "texto_display": "Estudio fotográfico en Las Arboledas, La Chorrera",
+          "descripcion": "Estudio fotográfico totalmente equipado."
+        }
+      ]
+    },
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos capas y birretes del color que requieran si la sesión es para graduación."
+    },
+    "solicitudes_especiales": {
+      "mascotas": true,
+      "familiares": "¡Familiares bienvenidos! Haremos una toma familiar al final.",
+      "cambios_vestuario": "Permitidos dentro del tiempo de la sesión."
+    }
+  },
+  "entrega_y_pagos": {
+    "metodo_entrega": [
+      {
+        "tipo": "digital",
+        "texto": "Entrega 100% digital a través de galería privada online en alta resolución."
+      }
+    ],
+    "tiempo_entrega_semanas": 2,
+    "recoleccion_dinero": {
+      "metodo_principal": "Gratis / Intercambio",
+      "explicacion": "Esta sesión no tiene costo. Es un intercambio (TFP): ustedes reciben las fotos editadas y nosotros podemos utilizarlas en nuestro portafolio y redes sociales."
+    }
+  },
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Política de Asistencia",
+      "opcion_multiples_salones": "Al ser una sesión gratuita y de cupos limitados, te pedimos máxima puntualidad y avisarnos con al menos 24 hrs si no podrás asistir para ceder el espacio.",
+      "opcion_un_salon": "Al ser una sesión gratuita y de cupos limitados, te pedimos máxima puntualidad y avisarnos con al menos 24 hrs si no podrás asistir para ceder el espacio."
+    },
+    "descuento_hermanos": {
+      "aplica": false,
+      "porcentaje": 0,
+      "texto": "Las fotos individuales aplican solo para el niño/a seleccionado para el portafolio. Hermanos pueden salir en la foto familiar."
+    },
+    "extras": "Si deseas fotos impresas o archivos digitales adicionales a los incluidos, estarán disponibles para compra desde tu galería."
+  }
+}

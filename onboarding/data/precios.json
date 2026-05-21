@@ -34,8 +34,112 @@
         26
       ],
       "ga_id": "G-6H4H52RL0T",
-      "visibilidad": "no_publicar",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Esencial",
+          "precio": 19,
+          "descripcion": "4 fotos digitales en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 4,
+            "foto_grupal": true,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Un recuerdo digital sencillo"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Familiar",
+          "precio": 36,
+          "descripcion": "6 fotos: digital + impresas",
+          "tabla_comparativa": {
+            "fotos_digitales": 6,
+            "foto_grupal": true,
+            "impresiones": "1 gr. + 4 peq.",
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Para quienes quieren variedad sin complicarse"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Premium",
+          "precio": 57,
+          "descripcion": "12 fotos: digital + impresas + enmarcadas",
+          "tabla_comparativa": {
+            "fotos_digitales": 12,
+            "foto_grupal": true,
+            "impresiones": "2 gr. + 9 peq.",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": true,
+            "ideal_para": "La experiencia completa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     },
     {
       "code": "dolo",
@@ -292,8 +396,112 @@
         26
       ],
       "ga_id": "G-6H4H52RL0T",
-      "visibilidad": "pendiente",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Esencial",
+          "precio": 19,
+          "descripcion": "4 fotos digitales en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 4,
+            "foto_grupal": true,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Un recuerdo digital sencillo"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Familiar",
+          "precio": 36,
+          "descripcion": "6 fotos: digital + impresas",
+          "tabla_comparativa": {
+            "fotos_digitales": 6,
+            "foto_grupal": true,
+            "impresiones": "1 gr. + 4 peq.",
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Para quienes quieren variedad sin complicarse"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Premium",
+          "precio": 57,
+          "descripcion": "12 fotos: digital + impresas + enmarcadas",
+          "tabla_comparativa": {
+            "fotos_digitales": 12,
+            "foto_grupal": true,
+            "impresiones": "2 gr. + 9 peq.",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": true,
+            "ideal_para": "La experiencia completa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     },
     {
       "code": "port",
@@ -308,25 +516,17 @@
           "id": "paquete_1",
           "nombre": "Paquete 1",
           "precio": 0,
-          "descripcion": "5 Fotos únicamente en galería online.  No incluye fotos impresas",
+          "descripcion": "Fotos únicamente en galería online.",
+          "tabla_comparativa": {
+            "fotos_digitales": 5,
+            "foto_grupal": false,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Intercambio Portafolio"
+          },
           "entregables": {
-            "impresos": [
-              {
-                "cantidad": 75,
-                "tamano": "de preview en galería online",
-                "detalle": "para que escojas las que más te gusten"
-              },
-              {
-                "cantidad": 4,
-                "tamano": "retocadas",
-                "detalle": "del estudiante"
-              },
-              {
-                "cantidad": 1,
-                "tamano": "retocadas",
-                "detalle": "con papá y mamá"
-              }
-            ],
+            "impresos": null,
             "digitales": {
               "plataforma": "Galería online"
             }
@@ -380,8 +580,112 @@
         26
       ],
       "ga_id": "G-6H4H52RL0T",
-      "visibilidad": "pendiente",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Esencial",
+          "precio": 19,
+          "descripcion": "4 fotos digitales en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 4,
+            "foto_grupal": true,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Un recuerdo digital sencillo"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Familiar",
+          "precio": 36,
+          "descripcion": "6 fotos: digital + impresas",
+          "tabla_comparativa": {
+            "fotos_digitales": 6,
+            "foto_grupal": true,
+            "impresiones": "1 gr. + 4 peq.",
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Para quienes quieren variedad sin complicarse"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Premium",
+          "precio": 57,
+          "descripcion": "12 fotos: digital + impresas + enmarcadas",
+          "tabla_comparativa": {
+            "fotos_digitales": 12,
+            "foto_grupal": true,
+            "impresiones": "2 gr. + 9 peq.",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": true,
+            "ideal_para": "La experiencia completa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     },
     {
       "code": "enda",
@@ -504,8 +808,112 @@
         26
       ],
       "ga_id": "G-6H4H52RL0T",
-      "visibilidad": "pendiente",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Esencial",
+          "precio": 19,
+          "descripcion": "4 fotos digitales en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 4,
+            "foto_grupal": true,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Un recuerdo digital sencillo"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Familiar",
+          "precio": 36,
+          "descripcion": "6 fotos: digital + impresas",
+          "tabla_comparativa": {
+            "fotos_digitales": 6,
+            "foto_grupal": true,
+            "impresiones": "1 gr. + 4 peq.",
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Para quienes quieren variedad sin complicarse"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Premium",
+          "precio": 57,
+          "descripcion": "12 fotos: digital + impresas + enmarcadas",
+          "tabla_comparativa": {
+            "fotos_digitales": 12,
+            "foto_grupal": true,
+            "impresiones": "2 gr. + 9 peq.",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": true,
+            "ideal_para": "La experiencia completa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     },
     {
       "code": "b2b",
@@ -524,8 +932,112 @@
         26
       ],
       "ga_id": "G-6H4H52RL0T",
-      "visibilidad": "pendiente",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Esencial",
+          "precio": 14,
+          "descripcion": "4 Fotos únicamente en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 4,
+            "foto_grupal": true,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": false,
+            "ideal_para": "Un recuerdo digital sencillo"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 3,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Familiar",
+          "precio": 29,
+          "descripcion": "6 Fotos impresas y en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 6,
+            "foto_grupal": true,
+            "impresiones": "1 gr. + 4 peq.",
+            "foto_enmarcada": null,
+            "fotos_familiares": false,
+            "ideal_para": "Variedad con foto impresa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 4,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Premium",
+          "precio": 49,
+          "descripcion": "12 Fotos impresas y en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 12,
+            "foto_grupal": true,
+            "impresiones": "2 gr. + 9 peq.",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": false,
+            "ideal_para": "La experiencia completa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "8x12",
+                "detalle": "ENMARCADAS y listas para colgar"
+              },
+              {
+                "cantidad": 9,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     },
     {
       "code": "pana",
@@ -534,8 +1046,112 @@
         26
       ],
       "ga_id": "G-6H4H52RL0T",
-      "visibilidad": "pendiente",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paquete_1",
+          "nombre": "Esencial",
+          "precio": 12,
+          "descripcion": "3 Fotos únicamente en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 3,
+            "foto_grupal": true,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": false,
+            "ideal_para": "Un recuerdo digital sencillo"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 2,
+                "tamano": "digital",
+                "detalle": "del estudiante"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "digital",
+                "detalle": "de grupo"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_2",
+          "nombre": "Familiar",
+          "precio": 21,
+          "descripcion": "6 Fotos impresas y en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 5,
+            "foto_grupal": true,
+            "impresiones": "1 gr. + 3 peq.",
+            "foto_enmarcada": null,
+            "fotos_familiares": false,
+            "ideal_para": "Variedad con foto impresa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "Grande"
+              },
+              {
+                "cantidad": 3,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paquete_3",
+          "nombre": "Premium",
+          "precio": 34,
+          "descripcion": "12 Fotos impresas y en galería online",
+          "tabla_comparativa": {
+            "fotos_digitales": 9,
+            "foto_grupal": true,
+            "impresiones": "1 gr. + 7 peq.",
+            "foto_enmarcada": "La grande",
+            "fotos_familiares": false,
+            "ideal_para": "La experiencia completa"
+          },
+          "entregables": {
+            "impresos": [
+              {
+                "cantidad": 1,
+                "tamano": "8x12",
+                "detalle": "ENMARCADADA y lista para colgar"
+              },
+              {
+                "cantidad": 7,
+                "tamano": "4x6",
+                "detalle": "Chicas"
+              },
+              {
+                "cantidad": 1,
+                "tamano": "4x6",
+                "detalle": "Grupo del salón"
+              }
+            ],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     },
     {
       "code": "indp",
