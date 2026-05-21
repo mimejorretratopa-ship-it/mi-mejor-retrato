@@ -420,9 +420,9 @@ const formModule = (() => {
 
     // Track evento en analytics
     if (config.features.analytics && window.gtag) {
-      window.gtag('event', config.analytics.events.formSubmit, {
-        school_code: brochure.code,
-        package: data.paquete
+      window.gtag('event', 'form_submit', {
+        school_code: brochure.code || brochure.id || '',
+        package: data.paquete || ''
       });
     }
   }
