@@ -1,70 +1,94 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: OPTIMIZACIÓN DE CONVERSIÓN Y REFACTORIZACIÓN VISUAL (Propuesta V2.1)
-Hemos consolidado el módulo de `/propuesta/` (Brochure B2B para colegios) aplicando la nueva identidad visual de marca mediante un robusto sistema de tokens de diseño CSS, manteniendo la estabilidad y los copies modificados manualmente, e integrando la estructura de Google Analytics lista para producción.
+## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + CATÁLOGO DE COLEGIOS COMPLETO (v4.0)
+
+Esta sesión completó la implementación del módulo de **Tracker de Propuestas Comerciales (B2B)** y amplió el catálogo de colegios activos en producción. El Hub de Google Apps Script fue actualizado a la versión **v4.0**.
 
 ---
 
-## ✅ Logros Técnicos y Refactorizaciones de la Sesión
+## ✅ Logros Técnicos de Esta Sesión (Mayo 21, 2026)
 
-### 1. Refactorización Estética Premium (Design Handoff — 50% CSS Base)
-* **Tokens de Diseño en `:root`**: Se implementó una arquitectura CSS moderna en [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css) gobernada por variables CSS (`--color-accent`, `--color-paper-warm`, `--font-display`, etc.).
-* **Tipografía Editorial**: Integración de Google Fonts con **Playfair Display** (itálicas expresivas para títulos) y **Outfit** (alta legibilidad para cuerpo y etiquetas).
-* **Mobile-First & Resposividad**: Layout reestructurado desde cero para verse impecable y prémium en dispositivos móviles (WhatsApp) y adaptarse fluidamente a pantallas de escritorio.
+### 1. Hub v4.0 — Módulo Tracker de Propuestas
+* **Nueva pestaña "Propuestas" en Google Sheets**: Inicializada mediante `setupPropostasSheet()` con 14 columnas formateadas (encabezado oscuro, anchos definidos, validaciones de lista desplegable en Estado y Probabilidad, formato de fecha en columnas J/K).
+* **Función `marcarEnviadaHoy()`**: Acción de menú que, al seleccionar una fila, rellena automáticamente _Fecha envío_ (hoy), _Fecha seguimiento_ (hoy + 7 días) y cambia el Estado a `🟡 Enviada`.
+* **Función `verificarSeguimientos()`**: Corre diariamente (trigger a las 8am) y colorea las filas en rojo (vencidas) o amarillo (hoy/mañana). Envía un resumen formateado a Discord con las propuestas que requieren acción. Fallback a email si Discord falla.
+* **Función `setupTrackerTrigger()`**: Configura el trigger diario una sola vez. Elimina triggers anteriores duplicados automáticamente.
+* **Corrección de contexto `getUi()`**: Se reemplazaron todos los `SpreadsheetApp.getUi().alert()` por `Logger.log()` dentro de las funciones de setup, ya que `getUi()` solo está disponible cuando se ejecuta desde el menú de la hoja, no desde el editor de Apps Script.
 
-### 2. Migración Dinámica y DRY de Precios (100% Completado)
+### 2. Catálogo de Colegios — Nuevos colegios publicados
+Se completaron los paquetes y se activó la visibilidad (`publicar`) en `precios.json` para:
+* **`chor`** — La Chorrera: paquetes agregados.
+* **`clia`** — Chiara Lubich: paquetes agregados + `clia_propuesta.json` creado.
+* **`ofxd`** / **`oxbg`** — Oxford (dos colegios): paquetes agregados.
+* **`sagu`** — San Agustín (solo Kinder): paquetes agregados.
+
+### 3. Limpieza de Textos Genéricos
+* El portafolio `lasa` fue renombrado de _"Nuestro trabajo en La Salle"_ a **"Nuestro trabajo previo"** en `propuesta/portafolios/lasa/manifest.json` para que sirva como portafolio genérico reutilizable por otros colegios.
+
+---
+
+## ✅ Logros Técnicos de Sesiones Anteriores
+
+### 4. Refactorización Estética Premium (Design Handoff — 50% CSS Base)
+* **Tokens de Diseño en `:root`**: Se implementó una arquitectura CSS moderna en `propuesta/css/style.css` gobernada por variables CSS.
+* **Tipografía Editorial**: `Playfair Display` (itálicas expresivas para títulos) y `Outfit` (alta legibilidad para cuerpo).
+* **Mobile-First**: Layout reestructurado para verse impecable en dispositivos móviles (WhatsApp) y adaptarse a escritorio.
+
+### 5. Migración Dinámica y DRY de Precios (100% Completado)
 * **Single Source of Truth (`precios.json`)**: Eliminamos la redundancia de precios y entregables en todo el ecosistema.
-* **Refactorización de Tabla Comparativa**: Reemplazamos las filas hardcodeadas de la propuesta comercial (`propuesta/index.html`) por un generador dinámico en JavaScript (`propuesta/js/app.js`) que renderiza celdas dinámicas directamente en el layout CSS Grid (`.pt-grid`), manteniendo el scroll horizontal suave en móviles y un diseño premium.
-* **Unificación de UI/UX con Onboarding**: Reemplazamos la visualización tradicional de "cards" del formulario de onboarding (`onboarding/index.html`) por el mismo formato de tabla comparativa premium (con los colores del dark theme de onboarding), conservando la funcionalidad del selector de radio-buttons intacta.
-* **Control de Inclusiones Específicas**: El campo `fotos_familiares` en `precios.json` define automáticamente por escuela si las fotos familiares van incluidas (ej: `false` para escuelas como `lasa`, `enda` o `ebrv` por restricciones de horario de clase, y `true` para estudios independientes como `indp`).
+* **Tabla Comparativa Dinámica**: El generador en `propuesta/js/app.js` renderiza celdas dinámicamente desde `precios.json` en layout CSS Grid.
+* **Control de Inclusiones por Escuela**: El campo `fotos_familiares` (booleano) activa/desactiva fotos familiares por colegio.
 
-### 3. Implementación Definitiva de Google Analytics & Estrategia Multi-Propuesta
-* **Código de Analytics Activo**: Se activó en producción el ID de medición `G-6H4H52RL0T` para Onboarding y Propuestas B2B.
-* **Estrategia de Títulos Legibles**: Para evitar que GA4 registre todas las visitas bajo un solo título HTML (`Propuesta — Mi Mejor Retrato`), se retrasó el disparo del evento de página hasta que `app.js` resuelve la URL, obtiene el nombre real de la institución en `precios.json` (dentro de `escuelas`) y actualiza el `document.title`. Así, las métricas son cristalinas (ej. `Propuesta: Tu Sesión de Retrato`).
+### 6. Integración de CRM Local "Pulso" y Generación de Links (Fase 2)
+* **Exportador CSV en Hub**: filtra reservas por colegio/salón y devuelve CSV para Pulso.
+* **`[link_onboarding]` Variable**: Pulso genera el `student_id` e inyecta la URL del cuestionario automáticamente.
 
-### 4. Creación de Catálogo de Propuestas
-Se implementaron en JSON las propuestas específicas y genéricas requeridas y se adaptó su estructura de precios con `tabla_comparativa`:
-* **Específicas**: `lasa` (La Salle), `enda` (Endara Galimani), `ebrv` (Enrique Barvo).
-* **Independientes**: `indp` (Padres Independientes).
-
-### 5. Creación del Admin Dashboard Local
-* **Herramienta Interna sin Código**: Se desarrolló un panel de control local en `/admin/` (HTML/JS Vanilla) para editar visualmente el archivo `precios.json`.
-* **Beneficios**: Previene errores de sintaxis (comas faltantes, llaves rotas), permite alternar funciones como "Fotos Familiares" con un checkbox, y muestra estadísticas en tiempo real de los colegios publicados.
-* **Autoguardado Inteligente & Descargas Perfectas**: Se implementó una lógica de autoguardado automático e invisible que escribe los datos del colegio activo en memoria tanto al cambiar de colegio en la barra lateral como al hacer clic directamente en el botón verde de descargar. Además, se solucionó un problema en navegadores Chromium difiriendo la revocación de la URL temporal en 100ms, logrando que el archivo se descargue siempre de forma impecable bajo el nombre real `precios.json` y con su extensión correspondiente.
-
-### 6. Unificación Absoluta de la Arquitectura de Datos (Fusión de escuelas.json en precios.json)
-* **Eliminación de Redundancia (DRY)**: Fusionamos por completo el catálogo `escuelas.json` dentro de `precios.json`. Ahora existe una **única fuente de verdad** para los colegios, donde cada registro contiene la identidad comercial (`name`, `years`, `ga_id`), visibilidad y la estructura de precios.
-* **Limpieza de Workspace**: Eliminamos físicamente el archivo obsoleto `escuelas.json` para evitar discrepancias futuras.
-* **Refactorización de Loaders**: Actualizamos todas las llamadas de la aplicación (`propuesta/js/app.js`, `onboarding/index.html`, `onboarding/cuestionario.html`, `agenda/agenda.js`, `agenda/view.js`) para que lean de la fuente unificada.
-* **Dashboard Enriquecido**: Agregamos campos editables en el panel de control local de `/admin/` para gestionar de forma fluida el nombre comercial, los años activos y el ID de Google Analytics de cada colegio.
-
-### 7. Integración de Pulso (WhatsApp CRM) y Generación Automática de Links (Fase 2)
-* **Adopción de CRM Local**: Integramos el módulo externo `wassap-crm` (Pulso) dentro de `/herramientas/`.
-* **Exportador CSV Nativo**: Se desarrolló un UI dentro del Google Apps Script Hub para extraer reservas agrupadas por colegio y salón en formato compatible 100% con Pulso.
-* **Generador de Links y `student_id`**: Modificamos Pulso para soportar la variable dinámica `[link_onboarding]`. Esta actualización automatiza el `student_id` seguro y pre-rellena la URL del cuestionario, consolidando la automatización de la Fase 2 sin necesidad de flujos intermedios ni apps externas.
-
-### 8. Refactorización Integral del Dashboard Local (Dashboard v2.0)
-* **Sincronización Directa desde Sheets**: El dashboard local (`herramientas/dashboard.html`) ahora se conecta dinámicamente con el Google Apps Script Hub mediante la nueva acción `getStudents`, eliminando la necesidad de cargar manualmente archivos intermedios de leads.
-* **Población Automática desde precios.json**: El selector de colegio se alimenta en caliente desde el catálogo unificado `precios.json`, haciendo la interfaz rápida y libre de mantenimiento manual.
-* **Eliminación de Herramientas Obsoletas**: Retiramos físicamente `json_a_csv.html` y su manual de uso, simplificando el ecosistema y consolidando a Google Sheets como la única fuente de verdad transaccional.
+### 7. Dashboard Local v2.0
+* Sincronización directa desde Google Sheets via `getStudents`.
+* Selector de colegio alimentado en tiempo real desde `precios.json`.
 
 ---
 
-## 📂 Archivos Modificados e Integridad
-* `onboarding/data/precios.json` — Estructura final unificada con identidades, años activos, IDs de Analytics y configuraciones de precios de cada colegio.
-* `onboarding/data/escuelas.json` — **Eliminado** tras migrar todos sus datos.
-* `propuesta/js/app.js` — Refactorizado para cargar y cachear el catálogo directamente desde `precios.json`.
-* `onboarding/index.html` & `onboarding/cuestionario.html` — Actualizados para consumir la estructura unificada de colegios.
-* `agenda/agenda.js` & `agenda/view.js` — Actualizados para consumir colegios de la fuente consolidada.
-* `admin/index.html` & `admin/js/admin.js` — Enriquecidos con los nuevos controles interactivos de identidad comercial.
-* `herramientas/dashboard.html` & `herramientas/dashboard_que es.md` — Refactorizado a la versión v2.0 con sincronización directa desde Sheets, alimentación desde precios.json y manual de uso actualizado.
-* `herramientas/json_a_csv.html` & `herramientas/json_a_csv_que es.md` — **Eliminados** físicamente al quedar obsoletos bajo el flujo unificado.
-* `onboarding/apps-script/MMR_brochures_hub_v3.9.gs` — Añadido el endpoint seguro `getStudents` para nutrir en tiempo real al Dashboard.
-* `ARCHITECTURE.md`, `DEVELOPMENT.md`, `MIGRATION-GUIDE.md`, `SESSION-HANDOFF.md` — Documentación completamente actualizada.
+## 📂 Archivos Modificados (esta sesión)
+
+* `onboarding/apps-script/MMR_brochures_hub_v4.0.gs` — Hub v4.0 con módulo Tracker completo.
+* `onboarding/data/precios.json` — Colegios `chor`, `clia`, `ofxd`, `oxbg`, `sagu` activos.
+* `propuesta/data/clia_propuesta.json` — **[NUEVO]** Propuesta Chiara Lubich.
+* `propuesta/portafolios/lasa/manifest.json` — Título cambiado a "Nuestro trabajo previo".
+* `ARCHITECTURE.md`, `DEVELOPMENT.md`, `MIGRATION-GUIDE.md`, `SESSION-HANDOFF.md` — Documentación actualizada.
 
 ---
 
-## 🛠️ Siguientes Pasos (Fase 3: Producción)
-1. **Generador de Hojas de Ruta PDF**: Crear la herramienta local (`herramientas/generador_pdf.html`) para exportar la agenda de cada salón en formato imprimible con layout 8.5x11.
-2. **Módulo de Códigos QR**: Integrar códigos QR gigantes en el PDF anterior (conteniendo el `student_id` exacto, escuela, salón, nombre) para la identificación ágil en Lightroom.
-3. **Verificación de Envíos**: Probar el comportamiento general de submit y sincronización con Airtable usando el nuevo esquema.
+## 🗺️ Cómo funciona el Tracker (resumen operacional)
+
+El tab **"Propuestas"** en Google Sheets es un **CRM manual** para seguimiento de acuerdos con directores/coordinadores de colegios. **No se llena automáticamente desde ningún formulario web** — las filas se agregan a mano. La automatización opera así:
+
+1. **Agregar fila manualmente**: Escuela, contacto, zona, tipo de sesión, etc.
+2. **Marcar envío**: Seleccionar fila → Menú "📸 Mi Mejor Retrato" → "✅ Marcar fila como Enviada hoy" → llena J (fecha envío), K (hoy+7) y L (🟡 Enviada) automáticamente.
+3. **Alertas diarias automáticas**: A las 8am el script colorea filas vencidas 🔴 o próximas 🟡 y envía resumen a Discord.
+4. **Actualizar estado manualmente**: Cambiar columna L a 🟢 En conversación / ✅ Confirmada / ❌ Rechazada.
+
+---
+
+## 🛠️ Pendientes de Configuración (usuario)
+
+El archivo `MMR_brochures_hub_v4.0.gs` tiene tres constantes que **deben reemplazarse** con los valores reales antes de que el Tracker funcione:
+
+```javascript
+var SHEET_ID        = 'VER_APPS_SCRIPT'; // ← ID del Google Sheet (en la URL: /d/<ID>/)
+var AT_TOKEN        = 'VER_APPS_SCRIPT'; // ← Token personal de Airtable
+var DISCORD_WEBHOOK = 'VER_APPS_SCRIPT'; // ← URL del webhook de Discord
+```
+
+Después de reemplazar, ejecutar **una sola vez** en el editor de Apps Script:
+1. `setupPropostasSheet()` — crea/formatea la pestaña "Propuestas".
+2. `setupTrackerTrigger()` — activa el trigger diario a las 8am.
+
+---
+
+## 🔭 Siguientes Pasos (Fase 3)
+
+1. **Generador de Hojas de Ruta PDF** — `herramientas/generador_pdf.html`: exportar agenda de cada salón en formato imprimible 8.5x11.
+2. **Módulo de Códigos QR**: QR con `student_id`, escuela, salón y nombre para identificación ágil en Lightroom.
+3. **Verificación de Envíos**: Testear submit → Airtable con el esquema actual.
+4. **Propuestas adicionales**: Completar `port` y `pana` si son prioritarias para la temporada.

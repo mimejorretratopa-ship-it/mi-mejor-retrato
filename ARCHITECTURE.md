@@ -63,11 +63,13 @@ Existen dos modalidades principales en la aplicación:
                        │ lee / escribe
 ┌──────────────────────▼──────────────────────────────┐
 │                   DATOS & BACKEND                    │
-│  DATOS (JSON): precios, secciones                     │
-│  — precios.json: Única Fuente de Verdad para la       │
-│    identidad, visibilidad, precios, inclusiones y    │
-│    fotos familiares                                  │
-│  BACKEND: Google Sheets (DB) + Discord (Alertas)     │
+│  DATOS (JSON): precios, secciones, propuesta
+│  — precios.json: Única Fuente de Verdad para la
+│    identidad, visibilidad, precios, inclusiones y
+│    fotos familiares
+│  — {code}_propuesta.json: contenido B2B específico
+│    por colegio (logística, diferenciadores, galería)
+│  BACKEND: Google Sheets (DB + Tracker B2B) + Discord
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -117,6 +119,34 @@ Para evitar duplicidad y asegurar que un cambio en la configuración (ej: endpoi
 * **`storage.js`**: Adaptador de persistencia y carga de JSONs con caché de memoria.
 * **`api.js`**: Hub de comunicaciones externas (Google Sheets Hub y Discord).
 * **`validators.js`** / **`utils.js`**: Librerías de lógica pura compartidas.
+
+---
+
+## 📋 Tracker de Propuestas B2B (`onboarding/apps-script/MMR_brochures_hub_v4.0.gs`)
+
+El Hub v4.0 incorpora un módulo de CRM interno para hacer seguimiento de las propuestas enviadas a directores/coordinadores de colegios. Opera de forma **independiente** del flujo B2C (padres de familia).
+
+### Pestaña `Propuestas` en Google Sheets
+
+| Columna | Campo | Automatización |
+|---------|-------|----------------|
+| A | Escuela | Manual |
+| B | Código | Manual |
+| C–F | Tipo, Zona, Modalidad, Grados | Manual |
+| G–I | Contacto, Cargo, WhatsApp | Manual |
+| J | Fecha envío | Auto — `marcarEnviadaHoy()` |
+| K | Fecha seguimiento | Auto — J + 7 días |
+| L | Estado | Auto inicial / actualización manual |
+| M | Probabilidad | Manual (Alta / Media / Baja) |
+| N | Notas | Manual |
+
+### Funciones del módulo
+* **`setupPropostasSheet()`**: Crea e inicializa la pestaña con formato, validaciones y anchos. Ejecutar una sola vez.
+* **`marcarEnviadaHoy()`**: Acción de menú. Rellena J, K y cambia Estado a 🟡 Enviada en la fila seleccionada.
+* **`verificarSeguimientos()`**: Trigger diario (8am). Colorea filas vencidas (🔴) o próximas (🟡) y envía resumen a Discord. Fallback a email.
+* **`setupTrackerTrigger()`**: Registra el trigger diario una sola vez. Elimina duplicados automáticamente.
+
+> ⚠️ **Restricción de contexto**: `getUi()` solo está disponible cuando la ejecución proviene del menú de Google Sheets. Las funciones de setup usan `Logger.log()` para ser compatibles con el editor de Apps Script.
 
 ---
 

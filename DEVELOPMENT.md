@@ -15,6 +15,8 @@ code "d:\mmr_studio\01_core_apps\website"
 
 > ⚠️ **Importante:** abrir como archivo local `file://` NO funciona debido a políticas de seguridad CORS de los navegadores — `fetch()` requiere un servidor HTTP (servido por Live Server).
 
+> 📌 El Hub de Google Apps Script se encuentra en `onboarding/apps-script/MMR_brochures_hub_v4.0.gs`. Copiar su contenido al editor de Apps Script antes de ejecutar cualquier función de setup.
+
 ---
 
 ## 1. Flujo Completo: Publicar Propuesta (B2B) y Onboarding (B2C)
@@ -55,7 +57,15 @@ Ajusta la logística, fechas y el copy específico que leerá la directiva del c
 Usa **Pulso** (`herramientas/wassap-crm/index.html`) para crear campañas masivas de WhatsApp.
 * **Exporta los leads:** En tu Google Sheets, ve a `Mi Mejor Retrato > 📤 Exportar para Pulso`. Selecciona el colegio y salón, y descarga el archivo.
 * **Importa:** Arrastra el archivo CSV descargado a la sección de Listas en Pulso.
-* **Envía:** Crea una campaña y usa la variable `[link_onboarding]` en tus plantillas. Pulso generará de forma automática el enlace a `onboarding/cuestionario.html` inyectando el `student_id` (para la sincronización limpia con Airtable).
+* **Envía:** Crea una campaña y usa la variable `[link_onboarding]` en tus plantillas. Pulso generará de forma automática el enlace a `onboarding/cuestionario.html` inyectando el `student_id`.
+
+### Paso 7: Registrar la propuesta en el Tracker B2B
+Después de enviar la propuesta al director/coordinador:
+1. Abre tu Google Sheet y ve a la pestaña **`Propuestas`**.
+2. Agrega una fila con los datos del colegio (Escuela, Código, Contacto, etc.).
+3. Con la fila seleccionada, usa el menú **`📸 Mi Mejor Retrato → ✅ Marcar fila como Enviada hoy`**.
+4. El script llenará automáticamente la fecha de envío (hoy) y la fecha de seguimiento (hoy + 7 días).
+5. Recibirás una alerta en Discord si hay seguimientos vencidos o próximos cada mañana a las 8am.
 
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.
@@ -79,6 +89,21 @@ Para medir de forma individualizada el comportamiento en las múltiples propuest
 
 ---
 
+## 3. Configuración del Tracker B2B (una sola vez)
+
+Antes de usar el tracker, asegúrate de:
+1. Haber reemplazado las tres constantes en `MMR_brochures_hub_v4.0.gs`:
+   * `SHEET_ID` — ID de tu Google Sheet (extraer de la URL).
+   * `AT_TOKEN` — Token de Airtable (en Airtable Account Settings).
+   * `DISCORD_WEBHOOK` — URL del webhook del canal donde llegan las alertas.
+2. Copiar el contenido del archivo al editor de Apps Script y guardar.
+3. Ejecutar `setupPropostasSheet()` — crea la pestaña `Propuestas` con todo el formato.
+4. Ejecutar `setupTrackerTrigger()` — activa el trigger diario a las 8am.
+
+> ⚠️ Estas funciones deben ejecutarse desde el **editor de Apps Script**, no desde el menú de la hoja (ya que el menú usa `getUi()` que no está disponible en ese contexto). La función `marcarEnviadaHoy()` sí debe ejecutarse **desde el menú de Google Sheets**.
+
+---
+
 ## Debugging local en Consola (F12)
 
 En entorno de desarrollo local, el sistema expone herramientas en el objeto global `window`:
@@ -99,3 +124,4 @@ config.debug()                  // Muestra la configuración de endpoints activa
 - [ ] **5. UX:** El título dinámico de la propuesta carga el nombre del colegio correctamente en la pestaña
 - [ ] **6. Conversión:** El botón de WhatsApp tiene el número y mensaje de inicio correctos
 - [ ] **7. QA:** Sin errores en la consola del navegador (`F12`) al cargar ambas rutas en local
+- [ ] **8. Tracker:** Fila agregada en la pestaña `Propuestas` del Google Sheet y marcada como Enviada

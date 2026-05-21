@@ -7,11 +7,11 @@ El sistema usa un **Google Apps Script Hub** como único receptor del formulario
 ```
 Frontend (Vercel)
     └── storage.js → postToAPI()
-            └── POST → Google Apps Script Hub (v3.9)
-                        ├── Google Sheets   (base de datos principal y Logs)
+            └── POST → Google Apps Script Hub (v4.0)
+                        ├── Google Sheets   (base de datos principal, Logs, Agendas, Propuestas)
                         ├── Google Contacts (agenda de contactos del fotógrafo)
                         ├── Airtable        (CRM / pipeline)
-                        └── Discord         (notificación directa de leads)
+                        └── Discord         (notificación directa de leads + alertas tracker)
 ```
 
 ---
@@ -44,6 +44,14 @@ Se implementó el módulo externo **Pulso** (`herramientas/wassap-crm`) como mot
 * **Generación de ID en Origen**: Pulso ahora es el responsable de generar la llave primaria `student_id` al combinar el número de WhatsApp, nombre y salón durante la creación de la campaña, mediante la variable adaptada `[link_onboarding]`.
 * Esto garantiza que los registros ingresen a Airtable sin errores tipográficos o duplicaciones, **marcando la finalización oficial de la Fase 2 de automatización**.
 
+### 5. Hub v4.0 — Tracker de Propuestas B2B (21 de Mayo de 2026)
+Se añadió al Hub el módulo de seguimiento de propuestas comerciales (acuerdos con colegios):
+* **Pestaña `Propuestas`**: Inicializada con `setupPropostasSheet()`. 14 columnas: Escuela, Código, Tipo, Zona, Modalidad, Grados, Contacto, Cargo, WhatsApp, Fecha envío, Fecha seguimiento, Estado, Probabilidad, Notas.
+* **Validaciones de lista**: La columna Estado tiene valores predefinidos (🔵 Nueva, 🟡 Enviada, 🟢 En conversación, ✅ Confirmada, ❌ Rechazada). Probabilidad: Alta, Media, Baja.
+* **`marcarEnviadaHoy()`**: Desde el menú de Sheets, llena automáticamente fechas de envío y seguimiento (hoy + 7 días).
+* **`verificarSeguimientos()`**: Trigger diario 8am que colorea filas por urgencia y envía resumen a Discord.
+* **Nota importante**: Las funciones `setupPropostasSheet()` y `setupTrackerTrigger()` usan `Logger.log()` en vez de `getUi().alert()` para ser compatibles con ejecución desde el editor de Apps Script.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)
@@ -51,6 +59,7 @@ Las reservas se escriben en la primera pestaña de la hoja de cálculo.
 **Pestañas Adicionales**:
 * `Cuestionarios`: Respuestas en crudo del formulario de Discovery (Fase 1).
 * `Agendas`: Configuración JSON de horarios y slots por salón (`ID_Salon`, `Config_JSON`) (Fase 2).
+* `Propuestas`: Tracker manual de acuerdos B2B con colegios (Fase 3 — v4.0).
 * `Logs`: Auditoría del estado de sincronización y envío a Airtable/Discord en tiempo real.
 
 ---
