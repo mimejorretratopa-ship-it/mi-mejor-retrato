@@ -1,24 +1,23 @@
 /**
- * MMR BACKEND v4.0 — HUB + TRACKER DE PROPUESTAS
+ * MMR BACKEND v4.1 — HUB + TRACKER + SECUENCIA NUMÉRICA
  * Archivo: MMR_brochures_hub_v4.0.gs
  *
- * CAMBIOS v4.0:
- * - Módulo TRACKER: nueva pestaña "Propuestas" en el mismo Google Sheet.
- *   Registra propuestas enviadas, contacto, fecha, seguimiento y estado.
- * - setupPropostasSheet(): inicializa la hoja con headers, validaciones y formato.
- *   Ejecutar UNA SOLA VEZ desde el menú "📸 Mi Mejor Retrato".
- * - verificarSeguimientos(): corre diario a las 8am. Pinta filas vencidas
- *   en rojo, próximas en amarillo. Notifica por Discord.
- * - marcarEnviadaHoy(): selecciona la fila activa y la marca como enviada
- *   hoy, calculando automáticamente la fecha de seguimiento (+7 días).
- * - setupTrackerTrigger(): activa el trigger diario del tracker.
- *   Ejecutar UNA SOLA VEZ desde el editor de Apps Script.
- * - onOpen(): menú unificado con Pulso + Tracker.
+ * CAMBIOS v4.1:
+ * - getAgenda: ahora retorna `secuencia_dia` (r.fields.Secuencia_Dia) por cada
+ *   estudiante obtenido de Airtable, permitiendo al Generador PDF mostrar el
+ *   número de orden (#01, #02...) en las hojas de ruta impresas.
+ * - saveAgenda: al sincronizar la agenda, calcula automáticamente el orden
+ *   cronológico de los slots asignados y escribe `Secuencia_Dia` en Airtable
+ *   vía PATCH, junto con `Hora_Sesion`.
+ *   REQUISITO: crear la columna `Secuencia_Dia` (tipo Number) en la tabla
+ *   `Leads` de Airtable antes de re-desplegar.
  *
- * HEREDA DE v3.9 (sin cambios):
+ * HEREDA DE v4.0 (sin cambios):
  * - doGet(), doPost(), getOpcionesFiltro(), generarCSVPulso(),
  *   dailyDiscoveryReminder(), setupDailyTrigger(),
- *   buildWhatsAppDiscoveryLink(), buildWhatsAppAgendaLink()
+ *   buildWhatsAppDiscoveryLink(), buildWhatsAppAgendaLink(),
+ *   setupPropostasSheet(), marcarEnviadaHoy(), verificarSeguimientos(),
+ *   setupTrackerTrigger(), onOpen()
  */
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -218,7 +217,12 @@ function doPost(e) {
 
         if (atData.records && atData.records.length > 0) {
           students = atData.records.map(function(r) {
-            return { id: r.fields.ID || r.id, nombre: r.fields.Estudiante, hora_sesion: r.fields.Hora_Sesion || null };
+            return {
+              id: r.fields.ID || r.id,
+              nombre: r.fields.Estudiante,
+              hora_sesion: r.fields.Hora_Sesion || null,
+              secuencia_dia: r.fields.Secuencia_Dia || null
+            };
           });
         } else {
           logSheet.appendRow([new Date(), 'Airtable 0 records with school filter', filter]);
@@ -243,13 +247,19 @@ function doPost(e) {
 
       try {
         var assignments = agendaData.assignments || {};
+
+        // Calcular orden cronológico de los slots asignados (1, 2, 3...)
+        var horasAsignadas = Object.keys(assignments).sort();
+        var secuencias = {};
+        horasAsignadas.forEach(function(h, i) { secuencias[h] = i + 1; });
+
         for (var hora in assignments) {
           var rid = assignments[hora].id;
           if (rid && rid.indexOf('rec') === 0) {
             UrlFetchApp.fetch('https://api.airtable.com/v0/' + AT_BASE_ID + '/' + encodeURIComponent(AT_TABLE) + '/' + rid, {
               method: 'patch',
               headers: { 'Authorization': 'Bearer ' + AT_TOKEN, 'Content-Type': 'application/json' },
-              payload: JSON.stringify({ fields: { 'Hora_Sesion': hora } })
+              payload: JSON.stringify({ fields: { 'Hora_Sesion': hora, 'Secuencia_Dia': secuencias[hora] } })
             });
           }
         }
