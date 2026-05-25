@@ -1,101 +1,62 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + CATÁLOGO DE COLEGIOS COMPLETO (v4.0)
+## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + GENERADOR PDF + CATÁLOGO v4.0
 
-Esta sesión completó la implementación del módulo de **Tracker de Propuestas Comerciales (B2B)** y amplió el catálogo de colegios activos en producción. El Hub de Google Apps Script fue actualizado a la versión **v4.0**.
-
----
-
-## ✅ Logros Técnicos de Esta Sesión (Mayo 21, 2026)
-
-### 1. Hub v4.0 — Módulo Tracker de Propuestas
-* **Nueva pestaña "Propuestas" en Google Sheets**: Inicializada mediante `setupPropostasSheet()` con 14 columnas formateadas (encabezado oscuro, anchos definidos, validaciones de lista desplegable en Estado y Probabilidad, formato de fecha en columnas J/K).
-* **Función `marcarEnviadaHoy()`**: Acción de menú que, al seleccionar una fila, rellena automáticamente _Fecha envío_ (hoy), _Fecha seguimiento_ (hoy + 7 días) y cambia el Estado a `🟡 Enviada`.
-* **Función `verificarSeguimientos()`**: Corre diariamente (trigger a las 8am) y colorea las filas en rojo (vencidas) o amarillo (hoy/mañana). Envía un resumen formateado a Discord con las propuestas que requieren acción. Fallback a email si Discord falla.
-* **Función `setupTrackerTrigger()`**: Configura el trigger diario una sola vez. Elimina triggers anteriores duplicados automáticamente.
-* **Corrección de contexto `getUi()`**: Se reemplazaron todos los `SpreadsheetApp.getUi().alert()` por `Logger.log()` dentro de las funciones de setup, ya que `getUi()` solo está disponible cuando se ejecuta desde el menú de la hoja, no desde el editor de Apps Script.
-
-### 2. Catálogo de Colegios — Nuevos colegios publicados
-Se completaron los paquetes y se activó la visibilidad (`publicar`) en `precios.json` para:
-* **`chor`** — La Chorrera: paquetes agregados.
-* **`clia`** — Chiara Lubich: paquetes agregados + `clia_propuesta.json` creado.
-* **`ofxd`** / **`oxbg`** — Oxford (dos colegios): paquetes agregados.
-* **`sagu`** — San Agustín (solo Kinder): paquetes agregados.
-
-### 3. Limpieza de Textos Genéricos
-* El portafolio `lasa` fue renombrado de _"Nuestro trabajo en La Salle"_ a **"Nuestro trabajo previo"** en `propuesta/portafolios/lasa/manifest.json` para que sirva como portafolio genérico reutilizable por otros colegios.
-
-### 4. Resolución de Bugs Críticos en Onboarding B2C
-* **Visibilidad del campo Ubicación**: Se corrigió el valor `estado` a `"colegio"` en la configuración de secciones para los colegios con sesiones presenciales (`lasa`, `ofxd`, `oxbg`, `pana`, `port`, `sagu`), ocultando el selector de estudio que aparecía por error. El validador en `form-renderer.js` fue ajustado para remover el campo dinámicamente si no aplica y no bloquear el envío.
-* **Payload Completo en Airtable**: Se modificó `MMR_brochures_hub_v4.0.gs` para incluir los 5 campos omitidos en la creación del lead: `Relacion`, `Paquete`, `Precio`, `Genero`, y `Q_onboarding`.
-* **Registro de Logs**: Se implementó el llamado a `logSheet.appendRow()` dentro de `saveLead` en el Hub para registrar correctamente cada transacción en la pestaña `Logs`.
-* **Tracking de Estudio Seleccionado**: Se integró el seguimiento del campo condicional `ubicacion` (para sesiones independientes como `indp` y `chor`) enviándolo a la columna 16 de Google Sheets, al campo `Estudio` en Airtable y a la notificación de Discord.
-* **Fix de Google Analytics**: Se resolvió un error fatal que detenía la ejecución del script tras enviar el formulario, debido a la referencia inexistente `config.analytics.events.formSubmit`, reemplazándola por `'form_submit'`.
+Esta sesión completó la implementación del **Generador de Hojas de Ruta PDF con Códigos QR** para uso el día de la sesión, facilitando el escaneo e identificación de fotos en Lightroom. 
 
 ---
 
-## ✅ Logros Técnicos de Sesiones Anteriores
+## ✅ Logros Técnicos de Esta Sesión (Mayo 25, 2026)
 
-### 4. Refactorización Estética Premium (Design Handoff — 50% CSS Base)
-* **Tokens de Diseño en `:root`**: Se implementó una arquitectura CSS moderna en `propuesta/css/style.css` gobernada por variables CSS.
-* **Tipografía Editorial**: `Playfair Display` (itálicas expresivas para títulos) y `Outfit` (alta legibilidad para cuerpo).
-* **Mobile-First**: Layout reestructurado para verse impecable en dispositivos móviles (WhatsApp) y adaptarse a escritorio.
+### 1. Herramienta: Generador PDF + QR (`herramientas/generador_pdf/index.html`)
+* **Ubicación:** `herramientas/generador_pdf/index.html`. Funciona de manera local y aislada.
+* **Lógica Mixta de Datos:** Extrae todos los leads confirmados para un salón usando `getStudents` e intenta cruzarlos con `getAgenda` para encontrar su hora asignada.
+* **Formato Optimo de Lightroom:** El QR generado contiene **estrictamente** el `student_id` (ej. `50767438951_alinja-scaldis_kinder-c`), sin URLs extras.
+* **Diseño para Imprimir (@media print):** Se adaptó para que, al oprimir imprimir, la web cambie por completo a fondo blanco y tarjetas en un layout de 4 estudiantes (2x2) por página, ajustadas a tamaño carta (8.5x11). 
+* **Ajustes visuales:** 
+  - El QR ahora es gigante (300px) para máxima legibilidad. 
+  - El tamaño de fuente del nombre del estudiante es de 2.5rem (~40px) y se agrupa con su número de orden para ahorrar espacio.
 
-### 5. Migración Dinámica y DRY de Precios (100% Completado)
-* **Single Source of Truth (`precios.json`)**: Eliminamos la redundancia de precios y entregables en todo el ecosistema.
-* **Tabla Comparativa Dinámica**: El generador en `propuesta/js/app.js` renderiza celdas dinámicamente desde `precios.json` en layout CSS Grid.
-* **Control de Inclusiones por Escuela**: El campo `fotos_familiares` (booleano) activa/desactiva fotos familiares por colegio.
-
-### 6. Integración de CRM Local "Pulso" y Generación de Links (Fase 2)
-* **Exportador CSV en Hub**: filtra reservas por colegio/salón y devuelve CSV para Pulso.
-* **`[link_onboarding]` Variable**: Pulso genera el `student_id` e inyecta la URL del cuestionario automáticamente.
-
-### 7. Dashboard Local v2.0
-* Sincronización directa desde Google Sheets via `getStudents`.
-* Selector de colegio alimentado en tiempo real desde `precios.json`.
+### 2. Hub v4.0 — Módulo Tracker de Propuestas (Logro previo mantenido)
+* Tracker con pestaña "Propuestas", coloreo por estado, triggers diarios a las 8am y conexión con alertas por Discord.
 
 ---
 
-## 📂 Archivos Modificados (esta sesión)
+## 🛠️ ESTRATEGIA PARA SECUENCIA NUMÉRICA (Requerimiento)
 
-* `onboarding/apps-script/MMR_brochures_hub_v4.0.gs` — Hub v4.0 con módulo Tracker completo.
-* `onboarding/data/precios.json` — Colegios `chor`, `clia`, `ofxd`, `oxbg`, `sagu` activos.
-* `propuesta/data/clia_propuesta.json` — **[NUEVO]** Propuesta Chiara Lubich.
-* `propuesta/portafolios/lasa/manifest.json` — Título cambiado a "Nuestro trabajo previo".
-* `ARCHITECTURE.md`, `DEVELOPMENT.md`, `MIGRATION-GUIDE.md`, `SESSION-HANDOFF.md` — Documentación actualizada.
+Actualmente, el sistema agrupa y ordena a los niños primero por su hora de sesión y luego alfabéticamente. Sin embargo, para la eficiencia el día de la sesión, se ha implementado soporte para un **Número de Secuencia** explícito. 
+
+**El Problema:** La agenda actualmente tiene horas, pero no un número de orden lineal (Ej. `#01`, `#02`, `#03`...) que indique quién debe pasar primero a la cámara y coincida con el número impreso.
+
+**La Solución / Siguientes pasos (Base de Datos):**
+1. **Airtable**: Se debe crear una nueva columna en la tabla `Leads` llamada `Secuencia_Dia` (tipo Number).
+2. Cuando el fotógrafo o el asistente organiza la agenda final de un salón, debe llenar esta columna con el orden exacto (1, 2, 3...) de los niños.
+3. **El Hub (`MMR_brochures_hub_v4.0.gs`)**: Debe actualizarse en su función `doPost` (en el bloque de `action === 'getAgenda'`) para que retorne el campo nuevo:
+   ```javascript
+   students = atData.records.map(function(r) {
+       return { 
+           id: r.fields.ID || r.id, 
+           nombre: r.fields.Estudiante, 
+           hora_sesion: r.fields.Hora_Sesion || null,
+           secuencia_dia: r.fields.Secuencia_Dia || null  // <--- NUEVO CAMPO A AGREGAR
+       };
+   });
+   ```
+4. **El Generador PDF**: Ya está programado para detectar este campo `secuencia_dia`. Si lo encuentra, imprimirá un hermoso número terracota (Ej. `#05`) a la izquierda del nombre del niño. Si no lo encuentra, simplemente no imprimirá número, liberando el espacio visual.
 
 ---
 
 ## 🗺️ Cómo funciona el Tracker (resumen operacional)
 
-El tab **"Propuestas"** en Google Sheets es un **CRM manual** para seguimiento de acuerdos con directores/coordinadores de colegios. **No se llena automáticamente desde ningún formulario web** — las filas se agregan a mano. La automatización opera así:
-
 1. **Agregar fila manualmente**: Escuela, contacto, zona, tipo de sesión, etc.
 2. **Marcar envío**: Seleccionar fila → Menú "📸 Mi Mejor Retrato" → "✅ Marcar fila como Enviada hoy" → llena J (fecha envío), K (hoy+7) y L (🟡 Enviada) automáticamente.
 3. **Alertas diarias automáticas**: A las 8am el script colorea filas vencidas 🔴 o próximas 🟡 y envía resumen a Discord.
-4. **Actualizar estado manualmente**: Cambiar columna L a 🟢 En conversación / ✅ Confirmada / ❌ Rechazada.
 
 ---
 
-## 🛠️ Pendientes de Configuración (usuario)
+## 🔭 Siguientes Pasos (Fase 3 - Restante)
 
-El archivo `MMR_brochures_hub_v4.0.gs` tiene tres constantes que **deben reemplazarse** con los valores reales antes de que el Tracker funcione:
-
-```javascript
-var SHEET_ID        = 'VER_APPS_SCRIPT'; // ← ID del Google Sheet (en la URL: /d/<ID>/)
-var AT_TOKEN        = 'VER_APPS_SCRIPT'; // ← Token personal de Airtable
-var DISCORD_WEBHOOK = 'VER_APPS_SCRIPT'; // ← URL del webhook de Discord
-```
-
-Después de reemplazar, ejecutar **una sola vez** en el editor de Apps Script:
-1. `setupPropostasSheet()` — crea/formatea la pestaña "Propuestas".
-2. `setupTrackerTrigger()` — activa el trigger diario a las 8am.
-
----
-
-## 🔭 Siguientes Pasos (Fase 3)
-
-1. **Generador de Hojas de Ruta PDF** — `herramientas/generador_pdf.html`: exportar agenda de cada salón en formato imprimible 8.5x11.
-2. **Módulo de Códigos QR**: QR con `student_id`, escuela, salón y nombre para identificación ágil en Lightroom.
+1. **Aplicar la Estrategia de Secuencia**: Actualizar Airtable y el Hub v4.0 con el campo `secuencia_dia` como se detalló arriba.
+2. **Módulo de Códigos QR**: (Este requerimiento fue cubierto con la creación del Generador de Hojas de Ruta).
 3. **Verificación de Envíos**: Testear submit → Airtable con el esquema actual.
 4. **Propuestas adicionales**: Completar `port` y `pana` si son prioritarias para la temporada.
