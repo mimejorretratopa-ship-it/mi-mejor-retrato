@@ -1,20 +1,15 @@
 /**
- * MMR BACKEND v4.1 — HUB + TRACKER + SECUENCIA NUMÉRICA
+ * MMR BACKEND v4.2 — HUB + TRACKER + SECUENCIA + BUGFIX
  * Archivo: MMR_brochures_hub_v4.0.gs
  *
- * CAMBIOS v4.1:
- * - getAgenda: ahora retorna `secuencia_dia` (r.fields.Secuencia_Dia) por cada
- *   estudiante obtenido de Airtable, permitiendo al Generador PDF mostrar el
- *   número de orden (#01, #02...) en las hojas de ruta impresas.
- * - saveAgenda: al sincronizar la agenda, calcula automáticamente el orden
- *   cronológico de los slots asignados y escribe `Secuencia_Dia` en Airtable
- *   vía PATCH, junto con `Hora_Sesion`.
- *   REQUISITO: crear la columna `Secuencia_Dia` (tipo Number) en la tabla
- *   `Leads` de Airtable antes de re-desplegar.
- * - getCuestionarios: nuevo endpoint POST que lee la hoja `Cuestionarios`
- *   y retorna los perfiles Discovery respondidos, filtrados por escuela y salón.
- *   Usado por `herramientas/generador_perfiles/index.html` para imprimir
- *   los perfiles de un salón completo de un solo golpe.
+ * CAMBIOS v4.2:
+ * - BUGFIX CRITICO: El bloque `saveLead` en `doPost` ahora tiene un guard
+ *   `if (action !== 'saveLead')` que retorna error para cualquier acción
+ *   desconocida. Antes, cualquier llamada POST con una acción no capturada
+ *   (como `getStudent`) creaba silenciosamente una fila vacía en la Hoja.
+ * - getStudent en doPost: nuevo bloque que busca al estudiante por su `sid`
+ *   en la hoja principal. Permite que `api.getStudent()` use POST (evitando
+ *   CORS preflight) sin riesgo de crear filas fantasma.
  *
  * HEREDA DE v4.0 (sin cambios):
  * - doGet(), doPost(), getOpcionesFiltro(), generarCSVPulso(),
@@ -377,7 +372,42 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // ── GET STUDENT (Cuestionario) ───────────────────────────────
+    // api.js llama a este endpoint vía POST (para evitar CORS preflight).
+    if (action === 'getStudent') {
+      var sid       = data.sid || '';
+      var sheetData = ss.getSheets()[0].getDataRange().getValues();
+      var headers   = sheetData[0];
+      var idIdx     = headers.indexOf('ID');
+      var estudIdx  = headers.indexOf('Estudiante');
+      var colIdx    = headers.indexOf('Colegio');
+      var salIdx    = headers.indexOf('Salón');
+      var genIdx    = headers.indexOf('Género');
+
+      for (var i = 1; i < sheetData.length; i++) {
+        if (String(sheetData[i][idIdx]).trim() === sid) {
+          return ContentService.createTextOutput(JSON.stringify({
+            success: true,
+            data: {
+              nombre:  String(sheetData[i][estudIdx] || '').trim(),
+              colegio: String(sheetData[i][colIdx]   || '').trim(),
+              salon:   String(sheetData[i][salIdx]   || '').trim(),
+              genero:  String(sheetData[i][genIdx]   || '').trim()
+            }
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Estudiante no encontrado' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // ── SAVE LEAD (ONBOARDING) ──────────────────────────────────
+    // Guard explícito: SOLO corre si la acción es saveLead.
+    if (action !== 'saveLead') {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Acción desconocida: ' + action }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     var phone      = data.celular ? '507' + data.celular : '';
     var schoolCode = (data.idEscuela || 'mmr').toLowerCase();
     var linkQ      = buildWhatsAppDiscoveryLink(phone, data.nombreEstudiante, studentId);
