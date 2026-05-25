@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador PDF - MMR</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Librería para generar el QR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           VARIABLES Y BASE (PANTALLA)
+           ========================================================================== */
+        :root {
+            --color-bg: #0F1117;
+            --color-card: #1A1D27;
+            --color-text: #E2E8F0;
+            --color-accent: #C8622A;
+            --color-accent-light: rgba(200, 98, 42, 0.15);
+            --color-border: #2D3748;
+            --font-main: 'Outfit', sans-serif;
+            --radius: 8px;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* ==========================================================================
+           CONTROLES (PANTALLA)
+           ========================================================================== */
+        .controls-container {
+            background-color: var(--color-card);
+            border-bottom: 1px solid var(--color-border);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .controls-header h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge {
+            background-color: var(--color-border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .badge.success { background-color: rgba(72, 187, 120, 0.2); color: #68D391; }
+        .badge.warning { background-color: rgba(237, 137, 54, 0.2); color: #F6AD55; }
+        .badge.error { background-color: rgba(245, 101, 101, 0.2); color: #FC8181; }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            color: #A0AEC0;
+            font-weight: 600;
+        }
+
+        select, button {
+            font-family: var(--font-main);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--color-border);
+            background-color: var(--color-bg);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        select:focus {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px var(--color-accent-light);
+        }
+
+        button {
+            background-color: var(--color-border);
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #4A5568;
+        }
+
+        button.primary {
+            background-color: var(--color-accent);
+            color: white;
+        }
+
+        button.primary:hover:not(:disabled) {
+            background-color: #B25624;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ==========================================================================
+           ÁREA DE PREVISUALIZACIÓN (PANTALLA)
+           ========================================================================== */
+        .preview-area {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .preview-page {
+            background-color: white;
+            color: black;
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-header {
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .page-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #2D3748;
+        }
+
+        .page-header .meta {
+            color: #718096;
+            font-size: 0.875rem;
+            text-align: right;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .student-card {
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .student-order {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+        
+        .student-time {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #4A5568;
+            background-color: #EDF2F7;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+        }
+
+        .qr-container {
+            margin: 2rem 0 1.5rem 0;
+            padding: 10px;
+            background: white; /* Para asegurar contraste del QR */
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .student-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: #1A202C;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .student-meta {
+            font-size: 1rem;
+            color: #718096;
+            margin: 0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #A0AEC0;
+        }
+
+        /* ==========================================================================
+           REGLAS DE IMPRESIÓN (@media print)
+           ========================================================================== */
+        @media print {
+            @page {
+                size: letter portrait;
+                margin: 1cm;
+            }
+
+            body {
+                background-color: white !important;
+                color: black !important;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Ocultar UI de control */
+            .controls-container {
+                display: none !important;
+            }
+
+            .preview-area {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: none !important;
+            }
+
+            .preview-page {
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                /* Forzar salto de página al final de cada .preview-page */
+                page-break-after: always;
+                break-after: page;
+            }
+
+            /* Evitar que una página quede en blanco extra al final */
+            .preview-page:last-child {
+                page-break-after: auto;
+                break-after: auto;
+            }
+
+            .cards-grid {
+                gap: 1.5cm;
+            }
+
+            .student-card {
+                /* Evitar que una card se corte a la mitad */
+                page-break-inside: avoid;
+                break-inside: avoid;
+                border: 1px solid #000;
+            }
+
+            .student-order {
+                color: black; /* Evitar que el color claro no se imprima bien */
+            }
+
+            /* Asegurar que los backgrounds se impriman si el navegador lo soporta,
+               aunque por defecto lo forzamos a bordes puros para seguridad */
+            .student-time {
+                border: 1px solid #000;
+                background: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- UI DE CONTROL -->
+    <div class="controls-container">
+        <div class="controls-header">
+            <h1>📄 Hojas de Ruta · Mi Mejor Retrato</h1>
+            <div id="statusBadge" class="badge">Esperando...</div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="colegioSelect">Colegio</label>
+                <select id="colegioSelect">
+                    <option value="">Cargando colegios...</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="salonSelect">Salón</label>
+                <select id="salonSelect" disabled>
+                    <option value="">Selecciona un colegio primero</option>
+                </select>
+            </div>
+            
+            <button id="btnCargar" class="primary" disabled>
+                Cargar Estudiantes
+            </button>
+            
+            <button id="btnImprimir" disabled onclick="window.print()">
+                🖨️ Imprimir PDF
+            </button>
+        </div>
+    </div>
+
+    <!-- ÁREA DE PREVISUALIZACIÓN / IMPRESIÓN -->
+    <div class="preview-area" id="previewArea">
+        <div class="empty-state">
+            Selecciona un colegio y un salón, luego presiona "Cargar Estudiantes".
+        </div>
+    </div>
+
+
+    <script>
+        // ── CONFIGURACIÓN ────────────────────────────────────────────────────────
+        const HUB_URL = 'https://script.google.com/macros/s/AKfycbw1jWdPTcixFqhQc46GVesnB2qAyk9HS7qblUDljk9nywIC7yYQhLGbWsKyEoKbns07/exec';
+        const CARDS_PER_PAGE = 4; // 2x2 grid
+        const QR_SIZE = 160;
+
+        // ── ESTADO LOCAL ─────────────────────────────────────────────────────────
+        let colegiosData = [];
+        let salonesData = [];
+        let selectedColegio = null;
+        let selectedSalon = null;
+
+        // ── ELEMENTOS DEL DOM ────────────────────────────────────────────────────
+        const elColegioSelect = document.getElementById('colegioSelect');
+        const elSalonSelect = document.getElementById('salonSelect');
+        const elBtnCargar = document.getElementById('btnCargar');
+        const elBtnImprimir = document.getElementById('btnImprimir');
+        const elPreviewArea = document.getElementById('previewArea');
+        const elStatusBadge = document.getElementById('statusBadge');
+
+        // ── 1. INICIALIZACIÓN: CARGAR COLEGIOS DESDE precios.json ──────────────
+        async function init() {
+            try {
+                // Fetch de precios.json asumiendo que la herramienta se hostea en la misma estructura de carpetas
+                const res = await fetch('../../onboarding/data/precios.json');
+                if (!res.ok) throw new Error('No se pudo cargar precios.json');
+                
+                const data = await res.json();
+                
+                // Filtrar solo colegios visibles (o pendientes)
+                colegiosData = data.escuelas.filter(e => e.visibilidad !== 'no_publicar' && e.code !== 'dire');
+                
+                // Poblar select
+                elColegioSelect.innerHTML = '<option value="">Seleccione un colegio...</option>';
+                colegiosData.forEach(escuela => {
+                    const opt = document.createElement('option');
+                    opt.value = escuela.code;
+                    opt.textContent = escuela.name;
+                    elColegioSelect.appendChild(opt);
+                });
+                
+                setStatus('Listo', 'success');
+
+            } catch (err) {
+                console.error(err);
+                setStatus('Error al cargar precios.json', 'error');
+                elColegioSelect.innerHTML = '<option value="">Error cargando datos</option>';
+            }
+        }
+
+        // ── 2. EVENTOS: SELECCIÓN DE COLEGIO Y SALÓN ───────────────────────────
+        elColegioSelect.addEventListener('change', async (e) => {
+            const code = e.target.value;
+            selectedColegio = colegiosData.find(c => c.code === code);
+            
+            elSalonSelect.innerHTML = '<option value="">Cargando salones...</option>';
+            elSalonSelect.disabled = true;
+            elBtnCargar.disabled = true;
+            elBtnImprimir.disabled = true;
+            
+            if (!code) return;
+
+            try {
+                // Fetch de salones
+                const res = await fetch(`../../onboarding/data/${code}_secciones.json`);
+                if (!res.ok) throw new Error(`No existe ${code}_secciones.json`);
+                
+                const data = await res.json();
+                salonesData = data.salones || [];
+                
+                elSalonSelect.innerHTML = '<option value="">Seleccione un salón...</option>';
+                // Opción para "Todos los salones" si quisiéramos implementarlo luego
+                // elSalonSelect.innerHTML += '<option value="TODOS">Todos los salones</option>';
+
+                salonesData.forEach(salon => {
+                    const opt = document.createElement('option');
+                    opt.value = salon.valor;
+                    // Guardar el nombre corto también si es necesario, pero usaremos valor y label
+                    opt.textContent = salon.label;
+                    opt.dataset.label = salon.label;
+                    elSalonSelect.appendChild(opt);
+                });
+                
+                elSalonSelect.disabled = false;
+                setStatus('Salones cargados', 'success');
+
+            } catch (err) {
+                console.error(err);
+                setStatus(`Falta configuración: ${code}_secciones.json`, 'warning');
+                elSalonSelect.innerHTML = '<option value="">Sin salones configurados</option>';
+            }
+        });
+
+        elSalonSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val) {
+                selectedSalon = salonesData.find(s => s.valor === val);
+                // Fallback si es 'TODOS' o algo raro
+                if (!selectedSalon && e.target.selectedOptions[0]) {
+                    selectedSalon = { valor: val, label: e.target.selectedOptions[0].text };
+                }
+                elBtnCargar.disabled = false;
+            } else {
+                selectedSalon = null;
+                elBtnCargar.disabled = true;
+            }
+        });
+
+        // ── 3. LÓGICA PRINCIPAL: CARGAR Y CRUZAR DATOS DEL HUB ──────────────────
+        elBtnCargar.addEventListener('click', async () => {
+            if (!selectedColegio || !selectedSalon) return;
+
+            elBtnCargar.disabled = true;
+            elBtnImprimir.disabled = true;
+            elPreviewArea.innerHTML = '<div class="empty-state">⏳ Obteniendo datos desde Google Sheets y Airtable...</div>';
+            setStatus('Consultando Hub...', 'warning');
+
+            try {
+                // Hacemos 2 llamadas en paralelo para armar la lista robusta:
+                // 1. getStudents: trae TODOS los leads de este colegio (Hoja principal)
+                // 2. getAgenda: trae los slots de Airtable (con su Hora_Sesion si la hay)
+                
+                const pStudents = postToHub({ action: 'getStudents', school: selectedColegio.code });
+                const pAgenda = postToHub({ 
+                    action: 'getAgenda', 
+                    school: selectedColegio.name, // Airtable usa el nombre completo usualmente
+                    salon: selectedSalon.label,    // Airtable usa el label
+                    id_salon: `${selectedColegio.code}_${selectedSalon.valor}` 
+                });
+
+                const [resStudents, resAgenda] = await Promise.all([pStudents, pAgenda]);
+
+                if (!resStudents.success) throw new Error(resStudents.error || 'Error en getStudents');
+                
+                // Extraer lista base (solo los del salón seleccionado)
+                // resStudents.estudiantes tiene el formato: { student_id, estudiante: { nombre, salon }, reserva: { paquete } }
+                let listaBruta = (resStudents.estudiantes || []).filter(s => {
+                    // Normalizar comparación de salones (a veces puede haber diferencias minúsculas)
+                    const salonData = s.estudiante.salon.toLowerCase().trim();
+                    const salonFiltro = selectedSalon.valor.toLowerCase().trim();
+                    const labelFiltro = selectedSalon.label.toLowerCase().trim();
+                    
+                    return salonData === salonFiltro || salonData === labelFiltro || 
+                           salonData.replace(/_/g, ' ') === labelFiltro.replace(/_/g, ' ');
+                });
+
+                if (listaBruta.length === 0) {
+                    elPreviewArea.innerHTML = '<div class="empty-state">No se encontraron reservas para este salón.</div>';
+                    setStatus('Sin datos', 'warning');
+                    elBtnCargar.disabled = false;
+                    return;
+                }
+
+                // Extraer horas de la agenda si la hay
+                // resAgenda.students viene de Airtable: [{ id (student_id), nombre, hora_sesion }]
+                const mapHoras = {};
+                if (resAgenda.success && resAgenda.students) {
+                    resAgenda.students.forEach(st => {
+                        if (st.hora_sesion) {
+                            mapHoras[st.id] = st.hora_sesion;
+                        }
+                    });
+                }
+
+                // Armar lista final enriquecida
+                const roster = listaBruta.map(s => {
+                    return {
+                        id: s.student_id,
+                        nombre: s.estudiante.nombre,
+                        salon: selectedSalon.label,
+                        paquete: s.reserva.paquete || 'Sin paquete',
+                        hora: mapHoras[s.student_id] || '--:--'
+                    };
+                });
+
+                // Ordenar: primero por hora (si hay), luego alfabéticamente
+                roster.sort((a, b) => {
+                    if (a.hora !== '--:--' && b.hora !== '--:--') {
+                        return a.hora.localeCompare(b.hora);
+                    }
+                    if (a.hora !== '--:--') return -1;
+                    if (b.hora !== '--:--') return 1;
+                    return a.nombre.localeCompare(b.nombre);
+                });
+
+                // ── 4. RENDERIZAR PAGINACIÓN Y CARDS ────────────────────────────
+                renderRoster(roster);
+                
+                let agendaStatus = Object.keys(mapHoras).length > 0 ? '' : ' (Sin horas)';
+                setStatus(`${roster.length} estudiantes cargados${agendaStatus}`, 'success');
+                
+                elBtnCargar.disabled = false;
+                elBtnImprimir.disabled = false;
+
+            } catch (err) {
+                console.error(err);
+                elPreviewArea.innerHTML = `<div class="empty-state" style="color: #FC8181;">❌ Error de conexión: ${err.message}</div>`;
+                setStatus('Error de Hub', 'error');
+                elBtnCargar.disabled = false;
+            }
+        });
+
+        // ── 5. MOTOR DE RENDERIZADO DOM ─────────────────────────────────────────
+        function renderRoster(roster) {
+            elPreviewArea.innerHTML = '';
+            
+            const totalPages = Math.ceil(roster.length / CARDS_PER_PAGE);
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('es-PA') + ' ' + 
+                            now.toLocaleTimeString('es-PA', {hour: '2-digit', minute:'2-digit'});
+
+            for (let p = 0; p < totalPages; p++) {
+                const pageStartIndex = p * CARDS_PER_PAGE;
+                const pageItems = roster.slice(pageStartIndex, pageStartIndex + CARDS_PER_PAGE);
+                
+                // Crear contenedor de página
+                const pageEl = document.createElement('div');
+                pageEl.className = 'preview-page';
+                
+                // Header de página
+                const headerEl = document.createElement('div');
+                headerEl.className = 'page-header';
+                headerEl.innerHTML = `
+                    <h2>${selectedColegio.name} · ${selectedSalon.label}</h2>
+                    <div class="meta">
+                        Hoja ${p + 1} de ${totalPages} <br>
+                        Generado: ${dateStr}
+                    </div>
+                `;
+                pageEl.appendChild(headerEl);
+                
+                // Grid de cards
+                const gridEl = document.createElement('div');
+                gridEl.className = 'cards-grid';
+                
+                // Llenar cards
+                pageItems.forEach((student, idx) => {
+                    const globalIndex = pageStartIndex + idx + 1;
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'student-card';
+                    
+                    cardEl.innerHTML = `
+                        <div class="student-order">#${String(globalIndex).padStart(2, '0')}</div>
+                        ${student.hora !== '--:--' ? `<div class="student-time">${student.hora}</div>` : ''}
+                        
+                        <div class="qr-container" id="qr-${student.id}"></div>
+                        
+                        <h3 class="student-name">${student.nombre}</h3>
+                        <p class="student-meta">${student.salon} · ${student.paquete}</p>
+                    `;
+                    
+                    gridEl.appendChild(cardEl);
+                });
+                
+                pageEl.appendChild(gridEl);
+                elPreviewArea.appendChild(pageEl);
+                
+                // Generar los QR de manera asíncrona una vez que el DOM está insertado
+                pageItems.forEach(student => {
+                    const qrEl = document.getElementById(`qr-${student.id}`);
+                    new QRCode(qrEl, {
+                        text: student.id,      // <--- AQUI: Solo el student_id (ej. 5076..._nombre_salon)
+                        width: QR_SIZE,
+                        height: QR_SIZE,
+                        colorDark : "#000000",
+                        colorLight : "#ffffff",
+                        correctLevel : QRCode.CorrectLevel.M
+                    });
+                });
+            }
+        }
+
+        // ── UTILS ───────────────────────────────────────────────────────────────
+        async function postToHub(data) {
+            const res = await fetch(HUB_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: { 'Content-Type': 'text/plain' }, // Avoid CORS preflight
+                body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        }
+
+        function setStatus(text, type = 'success') {
+            elStatusBadge.textContent = text;
+            elStatusBadge.className = `badge ${type}`;
+        }
+
+        // Arrancar
+        init();
+    </script>
+</body>
+</html>
