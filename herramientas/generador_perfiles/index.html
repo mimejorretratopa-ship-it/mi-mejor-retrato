@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfiles Discovery — Mi Mejor Retrato</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ====================================================================
+       VARIABLES Y BASE
+       ==================================================================== */
+    :root {
+      --bg:         #0F1117;
+      --card:       #1A1D27;
+      --accent:     #C8622A;
+      --accent-lt:  rgba(200,98,42,.15);
+      --border:     #2D3748;
+      --text:       #E2E8F0;
+      --muted:      #A0AEC0;
+      --sans:       'Outfit', sans-serif;
+      --serif:      'EB Garamond', Georgia, serif;
+      --radius:     8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ====================================================================
+       CONTROLES (pantalla)
+       ==================================================================== */
+    .controls {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,.3);
+    }
+
+    .ctrl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .ctrl-header h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: #fff;
+    }
+
+    .badge {
+      font-size: .8rem;
+      font-weight: 600;
+      padding: .2rem .75rem;
+      border-radius: 9999px;
+      background: var(--border);
+      color: var(--muted);
+    }
+    .badge.ok  { background: rgba(72,187,120,.2); color: #68D391; }
+    .badge.wrn { background: rgba(237,137,54,.2);  color: #F6AD55; }
+    .badge.err { background: rgba(245,101,101,.2); color: #FC8181; }
+
+    .ctrl-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .ctrl-group {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .ctrl-group label {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    select, button {
+      font-family: var(--sans);
+      padding: .65rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: #fff;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: all .2s;
+      outline: none;
+    }
+
+    select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-lt); }
+
+    button { border: none; font-weight: 600; background: var(--border); }
+    button:hover:not(:disabled) { background: #4A5568; }
+    button.primary { background: var(--accent); }
+    button.primary:hover:not(:disabled) { background: #B25624; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ====================================================================
+       ÁREA DE PREVIEW
+       ==================================================================== */
+    .preview {
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    /* ====================================================================
+       PERFIL DE ESTUDIANTE (pantalla)
+       ==================================================================== */
+    .perfil {
+      background: #fff;
+      color: #1A202C;
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,.15);
+      font-family: var(--serif);
+      font-size: 14pt;
+      line-height: 1.6;
+    }
+
+    .perfil-header {
+      border-bottom: 2px solid #2D3748;
+      padding-bottom: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .perfil-titulo {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 0 0 .25rem;
+      color: #1A202C;
+      font-family: var(--serif);
+    }
+
+    .perfil-id {
+      font-size: .9rem;
+      color: #718096;
+      font-family: var(--sans);
+      letter-spacing: .01em;
+    }
+
+    .perfil-meta {
+      font-size: .95rem;
+      color: #4A5568;
+      margin-top: .35rem;
+      font-family: var(--sans);
+    }
+
+    .seccion-titulo {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #C8622A;
+      margin: 1.75rem 0 .5rem;
+      font-family: var(--sans);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: .85rem;
+    }
+
+    .campo-bloque {
+      margin-bottom: 1.1rem;
+    }
+
+    .campo-label {
+      font-style: italic;
+      color: #4A5568;
+      display: block;
+      margin-bottom: .2rem;
+      font-size: .95rem;
+    }
+
+    .campo-respuesta {
+      font-size: 1rem;
+      color: #1A202C;
+      font-weight: 400;
+      display: block;
+    }
+
+    .campo-respuesta.vacia {
+      color: #A0AEC0;
+      font-style: italic;
+    }
+
+    /* ====================================================================
+       ESTILOS DE IMPRESIÓN
+       ==================================================================== */
+    @media print {
+
+      @page {
+        size: letter portrait;
+        margin: 2cm 2cm 2cm 2cm;
+      }
+
+      /* Ocultar todo lo que no es contenido */
+      .controls,
+      .preview > .empty { display: none !important; }
+
+      body {
+        background: #fff !important;
+        font-family: 'EB Garamond', Georgia, Times, serif !important;
+        font-size: 14pt !important;
+        color: #000 !important;
+      }
+
+      .preview {
+        padding: 0 !important;
+        max-width: none !important;
+      }
+
+      /* Cada perfil = nueva página */
+      .perfil {
+        background: #fff !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        page-break-after: always;
+        break-after: page;
+      }
+
+      .perfil:last-child {
+        page-break-after: auto;
+        break-after: auto;
+      }
+
+      .perfil-titulo {
+        font-size: 1.4rem !important;
+        color: #000 !important;
+      }
+
+      .perfil-id {
+        color: #333 !important;
+        font-size: .85rem !important;
+      }
+
+      .perfil-meta {
+        color: #333 !important;
+      }
+
+      .perfil-header {
+        border-bottom: 1.5pt solid #000 !important;
+      }
+
+      .seccion-titulo {
+        color: #000 !important;
+        border-bottom: .5pt solid #999;
+        padding-bottom: .2rem;
+      }
+
+      .campo-label { color: #333 !important; }
+      .campo-respuesta { color: #000 !important; }
+      .campo-respuesta.vacia { color: #999 !important; }
+
+      /* Evitar que un campo se corte en el borde de página */
+      .campo-bloque {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== CONTROLES ====== -->
+  <div class="controls">
+    <div class="ctrl-header">
+      <h1>📋 Perfiles Discovery · Mi Mejor Retrato</h1>
+      <div id="badge" class="badge">Esperando...</div>
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-group">
+        <label for="selColegio">Colegio</label>
+        <select id="selColegio"><option value="">Cargando...</option></select>
+      </div>
+      <div class="ctrl-group">
+        <label for="selSalon">Salón</label>
+        <select id="selSalon" disabled><option value="">Selecciona un colegio primero</option></select>
+      </div>
+      <button id="btnCargar" class="primary" disabled>Cargar Perfiles</button>
+      <button id="btnImprimir" disabled onclick="window.print()">🖨️ Imprimir PDF</button>
+    </div>
+  </div>
+
+  <!-- ====== ÁREA DE PREVIEW ====== -->
+  <div class="preview" id="previewArea">
+    <div class="empty">Selecciona un colegio y salón, luego presiona "Cargar Perfiles".</div>
+  </div>
+
+  <script>
+  // ─── CONFIGURACIÓN ───────────────────────────────────────────────────────────
+  const HUB_URL        = 'https://script.google.com/macros/s/AKfycbw1jWdPTcixFqhQc46GVesnB2qAyk9HS7qblUDljk9nywIC7yYQhLGbWsKyEoKbns07/exec';
+  const DATA_BASE      = '../../onboarding/data/';
+  const SKIP_FIELDS    = new Set(['student_id','nombre_estudiante','escuela','salon','idEscuela','action','_meta']);
+
+  // ─── ESTADO ──────────────────────────────────────────────────────────────────
+  let colegios = [];
+  let salones  = [];
+  let selectedColegio = null;
+  let selectedSalon   = null;
+
+  // ─── REFS ────────────────────────────────────────────────────────────────────
+  const elColegio   = document.getElementById('selColegio');
+  const elSalon     = document.getElementById('selSalon');
+  const elCargar    = document.getElementById('btnCargar');
+  const elImprimir  = document.getElementById('btnImprimir');
+  const elPreview   = document.getElementById('previewArea');
+  const elBadge     = document.getElementById('badge');
+
+  // ─── 1. INICIALIZACIÓN ───────────────────────────────────────────────────────
+  async function init() {
+    try {
+      const res  = await fetch(DATA_BASE + 'precios.json');
+      const data = await res.json();
+      colegios   = data.escuelas.filter(e => e.visibilidad !== 'no_publicar' && e.code !== 'dire');
+
+      elColegio.innerHTML = '<option value="">Seleccione un colegio...</option>';
+      colegios.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c.code;
+        o.textContent = c.name;
+        elColegio.appendChild(o);
+      });
+      badge('Listo', 'ok');
+    } catch(e) {
+      badge('Error cargando precios.json', 'err');
+    }
+  }
+
+  // ─── 2. EVENTOS ──────────────────────────────────────────────────────────────
+  elColegio.addEventListener('change', async e => {
+    const code = e.target.value;
+    selectedColegio = colegios.find(c => c.code === code) || null;
+
+    elSalon.innerHTML = '<option value="">Cargando salones...</option>';
+    elSalon.disabled  = true;
+    elCargar.disabled = true;
+    elImprimir.disabled = true;
+
+    if (!code) return;
+
+    try {
+      const res  = await fetch(`${DATA_BASE}${code}_secciones.json`);
+      const data = await res.json();
+      salones    = data.salones || [];
+
+      elSalon.innerHTML = '<option value="">Seleccione un salón...</option>';
+      salones.forEach(s => {
+        const o = document.createElement('option');
+        o.value = s.valor;
+        o.textContent = s.label;
+        elSalon.appendChild(o);
+      });
+      elSalon.disabled = false;
+      badge('Salones cargados', 'ok');
+    } catch(e) {
+      badge(`Sin config: ${code}_secciones.json`, 'wrn');
+      elSalon.innerHTML = '<option value="">Sin salones configurados</option>';
+    }
+  });
+
+  elSalon.addEventListener('change', e => {
+    const val = e.target.value;
+    selectedSalon = salones.find(s => s.valor === val) || null;
+    elCargar.disabled = !val;
+  });
+
+  // ─── 3. CARGA PRINCIPAL ──────────────────────────────────────────────────────
+  elCargar.addEventListener('click', async () => {
+    if (!selectedColegio || !selectedSalon) return;
+
+    elCargar.disabled   = true;
+    elImprimir.disabled = true;
+    elPreview.innerHTML = '<div class="empty">⏳ Descargando perfiles desde Google Sheets...</div>';
+    badge('Consultando Hub...', 'wrn');
+
+    try {
+      // 3a. Descargar cuestionarios del salón
+      const resCuest = await postHub({
+        action: 'getCuestionarios',
+        school: selectedColegio.name,
+        salon:  selectedSalon.valor
+      });
+
+      if (!resCuest.success) throw new Error(resCuest.error || 'Error en getCuestionarios');
+
+      const cuestionarios = resCuest.cuestionarios || [];
+
+      if (cuestionarios.length === 0) {
+        elPreview.innerHTML = '<div class="empty">No hay cuestionarios respondidos para este salón todavía.</div>';
+        badge('Sin respuestas', 'wrn');
+        elCargar.disabled = false;
+        return;
+      }
+
+      // 3b. Cargar definición de preguntas según el tipo de salón
+      const questConfig = await (await fetch(DATA_BASE + 'cuestionario_config.json')).json();
+      const salonBase   = slugBase(selectedSalon.valor);
+      const questType   = questConfig.mapeo_salones[salonBase] || questConfig.default;
+      const preguntas   = await (await fetch(`${DATA_BASE}cuestionario_${questType}.json`)).json();
+
+      // 3c. Renderizar
+      renderAll(cuestionarios, preguntas);
+      badge(`${cuestionarios.length} perfiles cargados`, 'ok');
+      elCargar.disabled   = false;
+      elImprimir.disabled = false;
+
+    } catch(err) {
+      console.error(err);
+      elPreview.innerHTML = `<div class="empty" style="color:#FC8181;">❌ Error: ${err.message}</div>`;
+      badge('Error de Hub', 'err');
+      elCargar.disabled = false;
+    }
+  });
+
+  // ─── 4. RENDERIZADO ──────────────────────────────────────────────────────────
+  function renderAll(cuestionarios, preguntas) {
+    elPreview.innerHTML = '';
+
+    // Ordenar alfabéticamente por nombre
+    cuestionarios.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+    cuestionarios.forEach((c, idx) => {
+      const el = renderPerfil(c, preguntas, idx + 1);
+      elPreview.appendChild(el);
+    });
+  }
+
+  function renderPerfil(c, preguntas, num) {
+    const div = document.createElement('div');
+    div.className = 'perfil';
+
+    // Header
+    div.innerHTML = `
+      <div class="perfil-header">
+        <div class="perfil-titulo">${c.nombre}</div>
+        <div class="perfil-id">ID: ${c.id}</div>
+        <div class="perfil-meta">${selectedColegio.name} &middot; ${selectedSalon.label}</div>
+      </div>
+    `;
+
+    // Preguntas + respuestas
+    const resp = c.respuestas || {};
+
+    preguntas.forEach(q => {
+      if (q.tipo === 'section_header') {
+        const h = document.createElement('div');
+        h.className = 'seccion-titulo';
+        h.textContent = q.label;
+        div.appendChild(h);
+        return;
+      }
+
+      // Saltar campos meta
+      if (SKIP_FIELDS.has(q.id)) return;
+
+      const valor = resp[q.id];
+      const vacio = valor === undefined || valor === null || valor === '';
+
+      const bloque = document.createElement('div');
+      bloque.className = 'campo-bloque';
+      bloque.innerHTML = `
+        <span class="campo-label">${q.label}</span>
+        <span class="campo-respuesta${vacio ? ' vacia' : ''}">${vacio ? '—' : htmlEscape(String(valor))}</span>
+      `;
+      div.appendChild(bloque);
+    });
+
+    return div;
+  }
+
+  // ─── UTILS ───────────────────────────────────────────────────────────────────
+  async function postHub(data) {
+    const res = await fetch(HUB_URL, {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  function badge(txt, type = '') {
+    elBadge.textContent = txt;
+    elBadge.className   = `badge ${type}`;
+  }
+
+  // Normaliza el valor del salón al primer token alfa para buscar en cuestionario_config
+  // "kinder-a" → "kinder"  |  "pre-kinder" → "pre" (fallback → default)
+  function slugBase(valor) {
+    return valor.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .split(/[-_ ]/)[0];
+  }
+
+  function htmlEscape(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ─── ARRANCAR ────────────────────────────────────────────────────────────────
+  init();
+  </script>
+</body>
+</html>

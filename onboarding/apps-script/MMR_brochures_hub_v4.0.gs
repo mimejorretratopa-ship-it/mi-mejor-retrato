@@ -11,6 +11,10 @@
  *   vía PATCH, junto con `Hora_Sesion`.
  *   REQUISITO: crear la columna `Secuencia_Dia` (tipo Number) en la tabla
  *   `Leads` de Airtable antes de re-desplegar.
+ * - getCuestionarios: nuevo endpoint POST que lee la hoja `Cuestionarios`
+ *   y retorna los perfiles Discovery respondidos, filtrados por escuela y salón.
+ *   Usado por `herramientas/generador_perfiles/index.html` para imprimir
+ *   los perfiles de un salón completo de un solo golpe.
  *
  * HEREDA DE v4.0 (sin cambios):
  * - doGet(), doPost(), getOpcionesFiltro(), generarCSVPulso(),
@@ -272,6 +276,34 @@ function doPost(e) {
       var qSheet = ss.getSheetByName('Cuestionarios') || ss.insertSheet('Cuestionarios');
       qSheet.appendRow([new Date(), studentId, meta.nombre_estudiante, meta.escuela, meta.salon, JSON.stringify(data)]);
       return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // ── GET CUESTIONARIOS ──────────────────────────────────────
+    if (action === 'getCuestionarios') {
+      var qSheet = ss.getSheetByName('Cuestionarios');
+      var results = [];
+      if (qSheet) {
+        var rows = qSheet.getDataRange().getValues();
+        // headers: [0: Fecha, 1: ID, 2: Nombre, 3: Escuela, 4: Salon, 5: JSON]
+        for (var i = 1; i < rows.length; i++) {
+          // Filtros
+          if (data.school && rows[i][3] !== data.school) continue;
+          if (data.salon && rows[i][4] !== data.salon) continue;
+          
+          try {
+            results.push({
+              id: rows[i][1],
+              nombre: rows[i][2],
+              escuela: rows[i][3],
+              salon: rows[i][4],
+              respuestas: JSON.parse(rows[i][5]),
+              fecha: rows[i][0]
+            });
+          } catch(e) {}
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: true, cuestionarios: results }))
+        .setMimeType(ContentService.MimeType.JSON);
     }
 
     // ── GET STUDENTS (para Dashboard) ──────────────────────────
