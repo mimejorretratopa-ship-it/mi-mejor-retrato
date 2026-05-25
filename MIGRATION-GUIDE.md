@@ -62,7 +62,12 @@ Como parte inicial de la **Fase 3**, se creó una herramienta operativa interna 
 * **Aislada pero conectada**: Lee el archivo local `precios.json` y los endpoints del Hub en tiempo real (`getStudents` y `getAgenda`) para imprimir la lista combinada del salón sin requerir un backend intermedio.
 * **Eficiencia en Flujo de Trabajo**: Renderiza códigos QR de 300px usando `qrcode.js` que exponen exclusivamente el `student_id` para escaneo rápido con cámaras DSLR / Lightroom en el set.
 * **Layout Print-Ready**: Implementa `@media print` que formatea el HTML en grids 2x2 para papel carta (8.5x11).
-* **Lógica de Secuencia Numérica**: Se sentaron las bases para leer `secuencia_dia` desde Airtable, ocultándose elegantemente cuando la agenda no contenga dicho orden asignado.
+
+### 8. Hub v4.1 - Motor de Secuencia Automática (25 de Mayo de 2026)
+Se actualizó el Hub de Google Apps Script a la **versión 4.1**.
+* **Automatización Cronológica**: Al presionar *Sincronizar* en la herramienta de Agenda, el script `saveAgenda` ahora calcula automáticamente el orden numérico de los estudiantes según su hora asignada.
+* **Persistencia Airtable**: El script escribe (vía PATCH) este número de secuencia en el campo `Secuencia_Dia` de Airtable, además de la hora.
+* **Consumo Transparente**: El `getAgenda` expone este campo de vuelta al frontend, permitiendo al Generador PDF mostrar dinámicamente un número de orden impreso (`#01`, `#02`...) de forma totalmente automatizada para el fotógrafo.
 
 ---
 

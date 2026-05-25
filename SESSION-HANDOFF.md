@@ -1,8 +1,8 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + GENERADOR PDF + CATÁLOGO v4.0
+## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + GENERADOR PDF + CATÁLOGO v4.1
 
-Esta sesión completó la implementación del **Generador de Hojas de Ruta PDF con Códigos QR** para uso el día de la sesión, facilitando el escaneo e identificación de fotos en Lightroom. 
+Esta sesión completó la implementación del **Generador de Hojas de Ruta PDF con Códigos QR** para uso el día de la sesión, facilitando el escaneo e identificación de fotos en Lightroom, y actualizó el Hub a la versión 4.1.
 
 ---
 
@@ -17,32 +17,20 @@ Esta sesión completó la implementación del **Generador de Hojas de Ruta PDF c
   - El QR ahora es gigante (300px) para máxima legibilidad. 
   - El tamaño de fuente del nombre del estudiante es de 2.5rem (~40px) y se agrupa con su número de orden para ahorrar espacio.
 
-### 2. Hub v4.0 — Módulo Tracker de Propuestas (Logro previo mantenido)
-* Tracker con pestaña "Propuestas", coloreo por estado, triggers diarios a las 8am y conexión con alertas por Discord.
+### 2. Hub v4.1 — Secuencia Automática y Tracker de Propuestas
+* **Actualización a v4.1 (Hoy)**: Se modificaron los hooks de `getAgenda` y `saveAgenda` en `MMR_brochures_hub_v4.0.gs`. Ahora el sistema calcula automáticamente el orden cronológico de cada estudiante cuando el coordinador guarda la agenda, y lo inyecta como `Secuencia_Dia` en Airtable.
+* **Tracker Activo (Previo)**: Tracker con pestaña "Propuestas", coloreo por estado, triggers diarios a las 8am y conexión con alertas por Discord.
 
 ---
 
-## 🛠️ ESTRATEGIA PARA SECUENCIA NUMÉRICA (Requerimiento)
+## ✅ ESTRATEGIA PARA SECUENCIA NUMÉRICA (¡COMPLETADA!)
 
-Actualmente, el sistema agrupa y ordena a los niños primero por su hora de sesión y luego alfabéticamente. Sin embargo, para la eficiencia el día de la sesión, se ha implementado soporte para un **Número de Secuencia** explícito. 
+Actualmente, el sistema agrupa y ordena a los niños primero por su hora de sesión y luego alfabéticamente. Para la eficiencia el día de la sesión, se implementó un **Número de Secuencia** automático. 
 
-**El Problema:** La agenda actualmente tiene horas, pero no un número de orden lineal (Ej. `#01`, `#02`, `#03`...) que indique quién debe pasar primero a la cámara y coincida con el número impreso.
-
-**La Solución / Siguientes pasos (Base de Datos):**
-1. **Airtable**: Se debe crear una nueva columna en la tabla `Leads` llamada `Secuencia_Dia` (tipo Number).
-2. Cuando el fotógrafo o el asistente organiza la agenda final de un salón, debe llenar esta columna con el orden exacto (1, 2, 3...) de los niños.
-3. **El Hub (`MMR_brochures_hub_v4.0.gs`)**: Debe actualizarse en su función `doPost` (en el bloque de `action === 'getAgenda'`) para que retorne el campo nuevo:
-   ```javascript
-   students = atData.records.map(function(r) {
-       return { 
-           id: r.fields.ID || r.id, 
-           nombre: r.fields.Estudiante, 
-           hora_sesion: r.fields.Hora_Sesion || null,
-           secuencia_dia: r.fields.Secuencia_Dia || null  // <--- NUEVO CAMPO A AGREGAR
-       };
-   });
-   ```
-4. **El Generador PDF**: Ya está programado para detectar este campo `secuencia_dia`. Si lo encuentra, imprimirá un hermoso número terracota (Ej. `#05`) a la izquierda del nombre del niño. Si no lo encuentra, simplemente no imprimirá número, liberando el espacio visual.
+**Cómo Funciona (La Solución ya implementada):**
+1. **Airtable (Tú debes hacer esto)**: Crea una nueva columna en la tabla `Leads` llamada `Secuencia_Dia` (tipo Number).
+2. **El Hub (v4.1)**: Cuando el fotógrafo o el asistente organiza la agenda final de un salón y hace clic en "Guardar / Sincronizar", el Hub calcula matemáticamente el orden cronológico de todos los estudiantes, y actualiza Airtable (`Secuencia_Dia`) junto con la Hora.
+3. **El Generador PDF**: Ya está leyendo este campo. Imprimirá un número gigante (Ej. `#05`) a la izquierda del nombre del niño, logrando una hoja de ruta perfecta sin esfuerzo manual de numeración.
 
 ---
 
@@ -56,7 +44,7 @@ Actualmente, el sistema agrupa y ordena a los niños primero por su hora de sesi
 
 ## 🔭 Siguientes Pasos (Fase 3 - Restante)
 
-1. **Aplicar la Estrategia de Secuencia**: Actualizar Airtable y el Hub v4.0 con el campo `secuencia_dia` como se detalló arriba.
-2. **Módulo de Códigos QR**: (Este requerimiento fue cubierto con la creación del Generador de Hojas de Ruta).
+1. **~~Aplicar la Estrategia de Secuencia~~**: (COMPLETADO en Hub v4.1).
+2. **~~Módulo de Códigos QR~~**: (COMPLETADO en Generador PDF).
 3. **Verificación de Envíos**: Testear submit → Airtable con el esquema actual.
 4. **Propuestas adicionales**: Completar `port` y `pana` si son prioritarias para la temporada.
