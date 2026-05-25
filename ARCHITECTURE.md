@@ -199,6 +199,18 @@ El sistema incluye **Pulso** (`herramientas/wassap-crm`), un CRM local sin servi
 
 ---
 
+## 🖨️ Herramientas Locales: Generador de Hojas de Ruta (Códigos QR)
+
+El ecosistema cuenta con una herramienta web interna (`herramientas/generador_pdf/index.html`) para facilitar el flujo presencial el día de la sesión de fotos.
+
+* **Arquitectura sin dependencias**: Single Page Application en HTML/JS vanilla que se ejecuta localmente.
+* **Consumo Dinámico**: Se conecta al Google Apps Script Hub (`getStudents` y `getAgenda`) para descargar el roster de un salón y renderizarlo en pantalla.
+* **Escaneo en Lightroom**: Genera en vivo mediante `qrcode.js` un Código QR de alto contraste por cada estudiante que contiene exclusivamente su clave primaria (`student_id`). Esto permite a la cámara leer el código y catalogar la sesión instantáneamente.
+* **Diseño para Impresión**: Utiliza un bloque `@media print` para cambiar a un layout minimalista de alto contraste (fondo blanco, cero botones), empaquetando 4 estudiantes por hoja de tamaño carta (8.5x11).
+* **Preparación para Orden**: Compatible con un sistema de orden secuencial. Lee la propiedad `secuencia_dia` desde Airtable para imprimir en qué orden exacto posará el estudiante frente a la cámara.
+
+---
+
 ## Inicialización de Google Analytics en Propuestas B2B
 
 Para mantener la legibilidad de los reportes en Google Analytics 4 (GA4) y evitar que todas las propuestas registren el título genérico del HTML (`Propuesta — Mi Mejor Retrato`), el sistema utiliza una estrategia de **Disparo Asíncrono Retrasado**.

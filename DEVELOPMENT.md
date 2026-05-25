@@ -67,6 +67,14 @@ Después de enviar la propuesta al director/coordinador:
 4. El script llenará automáticamente la fecha de envío (hoy) y la fecha de seguimiento (hoy + 7 días).
 5. Recibirás una alerta en Discord si hay seguimientos vencidos o próximos cada mañana a las 8am.
 
+### Paso 8: Imprimir Hojas de Ruta (El día de la sesión)
+Para organizar el día de fotos en el colegio o estudio:
+1. Abre `herramientas/generador_pdf/index.html` con Live Server.
+2. Selecciona el colegio y salón, y haz clic en **Cargar Estudiantes**.
+3. La aplicación cruzará los datos y generará Códigos QR (`student_id`) por cada estudiante de forma segura y local.
+4. Presiona **Imprimir PDF** para exportar el *roster* en diseño optimizado de 8.5x11.
+5. Usa la cámara para leer este QR antes de fotografiar al niño, insertando el `student_id` como metadata para Lightroom.
+
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.
 * **Formulario Eliminado**: Se eliminó el formulario de contacto largo en favor de un botón directo de WhatsApp. El copy final `"Los niños cambian muy rápido..."` se inyecta directamente antes del botón de WhatsApp.

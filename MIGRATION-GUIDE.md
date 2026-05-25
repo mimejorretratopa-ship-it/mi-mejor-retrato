@@ -57,6 +57,13 @@ Se añadió al Hub el módulo de seguimiento de propuestas comerciales (acuerdos
 * **Tracking de Estudio (Ubicación)**: El Hub ahora anexa la ubicación de la sesión (ej. `condado` o `viaargentina` para sesiones independientes) como columna 16 en Google Sheets, a Airtable y a Discord.
 * **Auditoría Transaccional**: El flujo feliz de reservas B2C ahora registra un log detallado de éxito en la pestaña `Logs` de Google Sheets.
 
+### 7. Generador de Hojas de Ruta y QR (25 de Mayo de 2026)
+Como parte inicial de la **Fase 3**, se creó una herramienta operativa interna en `herramientas/generador_pdf/index.html`:
+* **Aislada pero conectada**: Lee el archivo local `precios.json` y los endpoints del Hub en tiempo real (`getStudents` y `getAgenda`) para imprimir la lista combinada del salón sin requerir un backend intermedio.
+* **Eficiencia en Flujo de Trabajo**: Renderiza códigos QR de 300px usando `qrcode.js` que exponen exclusivamente el `student_id` para escaneo rápido con cámaras DSLR / Lightroom en el set.
+* **Layout Print-Ready**: Implementa `@media print` que formatea el HTML en grids 2x2 para papel carta (8.5x11).
+* **Lógica de Secuencia Numérica**: Se sentaron las bases para leer `secuencia_dia` desde Airtable, ocultándose elegantemente cuando la agenda no contenga dicho orden asignado.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)
