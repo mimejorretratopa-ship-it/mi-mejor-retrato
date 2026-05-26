@@ -506,6 +506,41 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    // ── SAVE SELECTION (Para Galería Web MMR) ────────────────────
+    if (action === 'saveSelection') {
+      var sid = data.sid || '';
+      var round = data.round || ''; // '1', '2', 'print'
+      var photo_ids = data.photo_ids || []; // Array of photo_ids
+      
+      var gSheet = ss.getSheetByName('Galerias');
+      if (!gSheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Pestaña Galerias no existe' })).setMimeType(ContentService.MimeType.JSON);
+      
+      var rows = gSheet.getDataRange().getValues();
+      var headers = rows[0];
+      var idx = {
+        sid: headers.indexOf('student_id'),
+        pid: headers.indexOf('photo_id'),
+        r1: headers.indexOf('round_1'),
+        print: headers.indexOf('selected_print')
+      };
+
+      // Encontrar la columna que vamos a actualizar
+      var colToUpdate = round === '1' ? idx.r1 : (round === 'print' ? idx.print : -1);
+      
+      if (colToUpdate > -1) {
+        for (var i = 1; i < rows.length; i++) {
+          if (String(rows[i][idx.sid]).trim() === sid) {
+            var pId = rows[i][idx.pid];
+            // Si el photo_id está en la lista de enviados, true, si no, false
+            var isSelected = photo_ids.indexOf(pId) !== -1;
+            // getRange(row, col) es 1-indexed. row = i + 1, col = colToUpdate + 1
+            gSheet.getRange(i + 1, colToUpdate + 1).setValue(isSelected);
+          }
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: true })).setMimeType(ContentService.MimeType.JSON);
+    }
+
     // ── SAVE LEAD (ONBOARDING) ──────────────────────────────────
     // Guard explícito: SOLO corre si la acción es saveLead.
     if (action !== 'saveLead') {
