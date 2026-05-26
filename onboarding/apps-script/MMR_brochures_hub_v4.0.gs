@@ -375,17 +375,29 @@ function doPost(e) {
     // ── GET STUDENT (Cuestionario) ───────────────────────────────
     // api.js llama a este endpoint vía POST (para evitar CORS preflight).
     if (action === 'getStudent') {
-      var sid       = data.sid || '';
-      var sheetData = ss.getSheets()[0].getDataRange().getValues();
+      var sid = data.sid || '';
+
+      // ── Intento 1: buscar en la hoja principal de Leads ──
+      var mainSheet = ss.getSheets()[0];
+      var sheetData = mainSheet.getDataRange().getValues();
       var headers   = sheetData[0];
-      var idIdx     = headers.indexOf('ID');
-      var estudIdx  = headers.indexOf('Estudiante');
-      var colIdx    = headers.indexOf('Colegio');
-      var salIdx    = headers.indexOf('Salón');
-      var genIdx    = headers.indexOf('Género');
+      // Mapear encabezados de forma flexible (trim + lowercase para evitar problemas de acentos)
+      function hIdx(name) {
+        var norm = name.toLowerCase().replace(/[\u0300-\u036f]/g, '');
+        for (var h = 0; h < headers.length; h++) {
+          var col = String(headers[h]).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+          if (col === norm) return h;
+        }
+        return -1;
+      }
+      var idIdx    = hIdx('ID');
+      var estudIdx = hIdx('Estudiante');
+      var colIdx   = hIdx('Colegio');
+      var salIdx   = hIdx('Salon');  // acepta 'Salon' o 'Salón'
+      var genIdx   = hIdx('Genero'); // acepta 'Genero' o 'Género'
 
       for (var i = 1; i < sheetData.length; i++) {
-        if (String(sheetData[i][idIdx]).trim() === sid) {
+        if (idIdx >= 0 && String(sheetData[i][idIdx]).trim() === sid) {
           return ContentService.createTextOutput(JSON.stringify({
             success: true,
             data: {
@@ -397,7 +409,31 @@ function doPost(e) {
           })).setMimeType(ContentService.MimeType.JSON);
         }
       }
-      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Estudiante no encontrado' }))
+
+      // ── Intento 2: buscar en hoja Cuestionarios (columnas: fecha,id,nombre,escuela,salon,json) ──
+      var qSheet = ss.getSheetByName('Cuestionarios');
+      if (qSheet && qSheet.getLastRow() > 1) {
+        var qRows = qSheet.getDataRange().getValues();
+        for (var j = 1; j < qRows.length; j++) {
+          if (String(qRows[j][1]).trim() === sid) {
+            // Intentar extraer género del JSON guardado
+            var genFromJson = '';
+            try { genFromJson = JSON.parse(qRows[j][5]).genero || ''; } catch(e) {}
+            return ContentService.createTextOutput(JSON.stringify({
+              success: true,
+              data: {
+                nombre:  String(qRows[j][2] || '').trim(),
+                colegio: String(qRows[j][3] || '').trim(),
+                salon:   String(qRows[j][4] || '').trim(),
+                genero:  genFromJson
+              }
+            })).setMimeType(ContentService.MimeType.JSON);
+          }
+        }
+      }
+
+      // No encontrado en ninguna hoja
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Estudiante no encontrado: ' + sid }))
         .setMimeType(ContentService.MimeType.JSON);
     }
 

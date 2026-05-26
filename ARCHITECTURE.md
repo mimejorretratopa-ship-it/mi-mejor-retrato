@@ -122,9 +122,9 @@ Para evitar duplicidad y asegurar que un cambio en la configuración (ej: endpoi
 
 ---
 
-## 📋 Tracker de Propuestas B2B (`onboarding/apps-script/MMR_brochures_hub_v4.0.gs`)
+## 📋 Tracker de Propuestas B2B (`onboarding/apps-script/MMR_brochures_hub_v4.0.gs` v4.2)
 
-El Hub v4.0 incorpora un módulo de CRM interno para hacer seguimiento de las propuestas enviadas a directores/coordinadores de colegios. Opera de forma **independiente** del flujo B2C (padres de familia).
+El Hub v4.2 incorpora un módulo de CRM interno para hacer seguimiento de las propuestas enviadas a directores/coordinadores de colegios. Opera de forma **independiente** del flujo B2C (padres de familia).
 
 ### Pestaña `Propuestas` en Google Sheets (CRM B2B)
 
@@ -208,6 +208,16 @@ El ecosistema cuenta con una herramienta web interna (`herramientas/generador_pd
 * **Escaneo en Lightroom**: Genera en vivo mediante `qrcode.js` un Código QR de alto contraste por cada estudiante que contiene exclusivamente su clave primaria (`student_id`). Esto permite a la cámara leer el código y catalogar la sesión instantáneamente.
 * **Diseño para Impresión**: Utiliza un bloque `@media print` para cambiar a un layout minimalista de alto contraste (fondo blanco, cero botones), empaquetando 4 estudiantes por hoja de tamaño carta (8.5x11).
 * **Preparación para Orden**: Compatible con un sistema de orden secuencial. Lee la propiedad `secuencia_dia` desde Airtable para imprimir en qué orden exacto posará el estudiante frente a la cámara.
+
+---
+
+## 📄 Herramientas Locales: Generador de Perfiles Discovery
+
+Ubicado en `herramientas/generador_perfiles/index.html`, permite imprimir las respuestas del cuestionario pre-sesión para todo un salón de un solo golpe.
+
+* **Consumo Dinámico Paralelo**: El Hub v4.2 incluye un endpoint `getCuestionarios` que filtra la hoja de Google Sheets y retorna todas las respuestas de un salón específico. La UI combina esto con la configuración base de preguntas (`cuestionario_config.json`).
+* **Diseño de Impresión Continua**: Usa la tipografía editorial Garamond a 14pt, con lógica `@media print` para asegurar que cada perfil se imprima en su propia página limpia, sin cortar respuestas a la mitad.
+* **Seguridad en Integración**: El Hub maneja `getStudent` mediante POST de forma inteligente (buscando primero en Leads y luego en la hoja Cuestionarios) para evitar bloqueos por CORS y prevenir la creación de "filas fantasma" al cargar el formulario.
 
 ---
 

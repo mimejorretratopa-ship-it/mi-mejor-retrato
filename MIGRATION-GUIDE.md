@@ -69,6 +69,11 @@ Se actualizó el Hub de Google Apps Script a la **versión 4.1**.
 * **Persistencia Airtable**: El script escribe (vía PATCH) este número de secuencia en el campo `Secuencia_Dia` de Airtable, además de la hora.
 * **Consumo Transparente**: El `getAgenda` expone este campo de vuelta al frontend, permitiendo al Generador PDF mostrar dinámicamente un número de orden impreso (`#01`, `#02`...) de forma totalmente automatizada para el fotógrafo.
 
+### 9. Hub v4.2 - Generador de Perfiles y Robustez (25 de Mayo de 2026)
+* **Generador de Perfiles Discovery**: Nueva herramienta standalone (`herramientas/generador_perfiles/index.html`) que imprime los cuestionarios completos de un salón en formato PDF optimizado para impresión (Garamond 14pt, 1 página por estudiante).
+* **Robustez en getStudent**: Se implementó una doble validación en `doPost` (busca en `Leads` y si no, en `Cuestionarios`). Esto evita bloqueos de CORS y **previene el bug de creación de filas fantasma** en Google Sheets cuando un lead aún no existe en la hoja principal.
+* **Seguridad (Guard)**: Se añadió un guard explícito `if (action !== 'saveLead')` para evitar que peticiones perdidas escriban filas vacías.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)

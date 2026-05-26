@@ -1,8 +1,8 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + GENERADOR PDF + CATÁLOGO v4.1
+## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + GENERADORES (PDF/PERFILES) + HUB v4.2
 
-Esta sesión completó la implementación del **Generador de Hojas de Ruta PDF con Códigos QR** para uso el día de la sesión, facilitando el escaneo e identificación de fotos en Lightroom, y actualizó el Hub a la versión 4.1.
+Esta sesión completó la implementación de las herramientas operativas internas: el **Generador de Hojas de Ruta PDF con Códigos QR** (para control de sesión) y el **Generador de Perfiles Discovery** (para imprimir cuestionarios de forma masiva). El Hub fue actualizado a la versión **v4.2**.
 
 ---
 
@@ -13,13 +13,14 @@ Esta sesión completó la implementación del **Generador de Hojas de Ruta PDF c
 * **Lógica Mixta de Datos:** Extrae todos los leads confirmados para un salón usando `getStudents` e intenta cruzarlos con `getAgenda` para encontrar su hora asignada.
 * **Formato Optimo de Lightroom:** El QR generado contiene **estrictamente** el `student_id` (ej. `50767438951_alinja-scaldis_kinder-c`), sin URLs extras.
 * **Diseño para Imprimir (@media print):** Se adaptó para que, al oprimir imprimir, la web cambie por completo a fondo blanco y tarjetas en un layout de 4 estudiantes (2x2) por página, ajustadas a tamaño carta (8.5x11). 
-* **Ajustes visuales:** 
-  - El QR ahora es gigante (300px) para máxima legibilidad. 
-  - El tamaño de fuente del nombre del estudiante es de 2.5rem (~40px) y se agrupa con su número de orden para ahorrar espacio.
 
-### 2. Hub v4.1 — Secuencia Automática y Tracker de Propuestas
-* **Actualización a v4.1 (Hoy)**: Se modificaron los hooks de `getAgenda` y `saveAgenda` en `MMR_brochures_hub_v4.0.gs`. Ahora el sistema calcula automáticamente el orden cronológico de cada estudiante cuando el coordinador guarda la agenda, y lo inyecta como `Secuencia_Dia` en Airtable.
-* **Tracker Activo (Previo)**: Tracker con pestaña "Propuestas", coloreo por estado, triggers diarios a las 8am y conexión con alertas por Discord.
+### 2. Herramienta: Generador de Perfiles Discovery (`herramientas/generador_perfiles/index.html`)
+* **Uso del Fotógrafo:** Permite descargar e imprimir de un solo golpe (bulk-print) todos los cuestionarios de un salón en fuente Garamond 14pt (una página por niño).
+* **Consumo Dual:** Lee el JSON base localmente y obtiene las respuestas a través del nuevo endpoint `getCuestionarios` (v4.2).
+
+### 3. Hub v4.2 — Secuencia Automática, Cuestionarios y Bugfixes
+* **Actualización a v4.2 (Hoy)**: Se modificaron los hooks de `getAgenda` y `saveAgenda` en `MMR_brochures_hub_v4.0.gs`. Ahora el sistema calcula automáticamente el orden cronológico de cada estudiante cuando el coordinador guarda la agenda, y lo inyecta como `Secuencia_Dia` en Airtable.
+* **Bugfix Crítico (Filas Fantasma)**: Se blindó el endpoint `getStudent` en POST y se añadió un *guard* al bloque de `saveLead` para evitar la creación de filas vacías en la hoja cuando la app interactúa con el backend de forma temprana.
 
 ---
 
@@ -44,7 +45,5 @@ Actualmente, el sistema agrupa y ordena a los niños primero por su hora de sesi
 
 ## 🔭 Siguientes Pasos (Fase 3 - Restante)
 
-1. **~~Aplicar la Estrategia de Secuencia~~**: (COMPLETADO en Hub v4.1).
-2. **~~Módulo de Códigos QR~~**: (COMPLETADO en Generador PDF).
-3. **Verificación de Envíos**: Testear submit → Airtable con el esquema actual.
-4. **Propuestas adicionales**: Completar `port` y `pana` si son prioritarias para la temporada.
+1. **Verificación Real de Envíos**: Testear `submit` → inserción final en Airtable con el esquema actual simulando ser un padre (incluyendo campos `Estudio`, `Relacion`, `Paquete`, `Precio`, `Genero` y el checkbox `Q_onboarding`).
+2. **Propuestas adicionales (`port` y `pana`)**: Crear JSONs base y estructura visual para los colegios pendientes de prospectar si es necesario en esta temporada.

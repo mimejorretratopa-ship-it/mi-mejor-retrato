@@ -75,6 +75,13 @@ Para organizar el día de fotos en el colegio o estudio:
 4. Presiona **Imprimir PDF** para exportar el *roster* en diseño optimizado de 8.5x11.
 5. Usa la cámara para leer este QR antes de fotografiar al niño, insertando el `student_id` como metadata para Lightroom.
 
+### Paso 9: Imprimir Perfiles Discovery (Para el Fotógrafo)
+Para conocer mejor a los niños antes de la sesión basándose en las respuestas de los padres:
+1. Abre `herramientas/generador_perfiles/index.html` con Live Server.
+2. Selecciona el colegio y salón, y haz clic en **Cargar Perfiles**.
+3. La aplicación descargará las respuestas y las combinará con las preguntas base.
+4. Presiona **Imprimir PDF** para generar un documento limpio donde cada perfil ocupa su propia página, ideal para revisión rápida en el set.
+
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.
 * **Formulario Eliminado**: Se eliminó el formulario de contacto largo en favor de un botón directo de WhatsApp. El copy final `"Los niños cambian muy rápido..."` se inyecta directamente antes del botón de WhatsApp.
@@ -97,7 +104,7 @@ Para medir de forma individualizada el comportamiento en las múltiples propuest
 
 ---
 
-## 3. Configuración del Hub v4.0 y Airtable
+## 3. Configuración del Hub v4.2 y Airtable
 
 Antes de usar el tracker y el guardado de leads, asegúrate de:
 1. Haber reemplazado las tres constantes en `MMR_brochures_hub_v4.0.gs`:
@@ -106,7 +113,7 @@ Antes de usar el tracker y el guardado de leads, asegúrate de:
    * `DISCORD_WEBHOOK` — URL del webhook del canal donde llegan las alertas.
 2. Asegurarte de que la primera pestaña de Google Sheets contemple al menos 16 columnas para mapear los datos B2C (la última para "Ubicación/Estudio").
 3. Verificar que tu tabla `Leads` en Airtable incluya los campos: `Estudio`, `Relacion`, `Paquete`, `Precio`, `Genero` y el checkbox `Q_onboarding`.
-4. Copiar el contenido del archivo al editor de Apps Script y guardar (re-desplegar Nueva Versión siempre).
+4. Copiar el contenido del archivo al editor de Apps Script y guardar. **⚠️ MUY IMPORTANTE: Debes ir a Implementar -> Administrar implementaciones -> Editar y seleccionar "Nueva Versión" siempre que guardes cambios.** Si no haces esto, el código viejo seguirá respondiendo y creará filas fantasma.
 5. Ejecutar `setupPropostasSheet()` — crea la pestaña `Propuestas` con todo el formato.
 6. Ejecutar `setupTrackerTrigger()` — activa el trigger diario a las 8am.
 
