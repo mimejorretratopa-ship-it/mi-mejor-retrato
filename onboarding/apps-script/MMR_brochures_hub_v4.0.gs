@@ -173,10 +173,79 @@ function doGet(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
   }
-
-  return ContentService.createTextOutput(JSON.stringify({ success: false }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+176: 
+177:   // ── GET GALLERY (Para la Galería Web de los padres) ────────
+178:   if (action === 'getGallery' && sid) {
+179:     try {
+180:       var gSheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Galerias');
+181:       if (!gSheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Pestaña Galerias no existe' })).setMimeType(ContentService.MimeType.JSON);
+182:       
+183:       var rows = gSheet.getDataRange().getValues();
+184:       var headers = rows[0];
+185:       var idx = {
+186:         sid: headers.indexOf('student_id'),
+187:         pid: headers.indexOf('photo_id'),
+188:         preview: headers.indexOf('url_preview'),
+189:         full: headers.indexOf('url_full'),
+190:         r1: headers.indexOf('round_1'),
+191:         print: headers.indexOf('selected_print'),
+192:         extra: headers.indexOf('is_extra')
+193:       };
+194: 
+195:       var photos = [];
+196:       for (var i = 1; i < rows.length; i++) {
+197:         if (String(rows[i][idx.sid]).trim() === sid) {
+198:           photos.push({
+199:             photo_id: rows[i][idx.pid],
+200:             url_preview: rows[i][idx.preview],
+201:             url_full: rows[i][idx.full],
+202:             round_1: rows[i][idx.r1] === true || rows[i][idx.r1] === 'TRUE',
+203:             selected_print: rows[i][idx.print] === true || rows[i][idx.print] === 'TRUE',
+204:             is_extra: rows[i][idx.extra] === true || rows[i][idx.extra] === 'TRUE'
+205:           });
+206:         }
+207:       }
+208:       return ContentService.createTextOutput(JSON.stringify({ success: true, photos: photos })).setMimeType(ContentService.MimeType.JSON);
+209:     } catch (err) {
+210:       return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+211:     }
+212:   }
+213: 
+214:   // ── GET SELECTIONS (Para el Sincronizador Local) ────────────
+215:   if (action === 'getSelections') {
+216:     try {
+217:       var gSheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName('Galerias');
+218:       if (!gSheet) return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Pestaña Galerias no existe' })).setMimeType(ContentService.MimeType.JSON);
+219:       
+220:       var rows = gSheet.getDataRange().getValues();
+221:       var headers = rows[0];
+222:       var idx = {
+223:         sid: headers.indexOf('student_id'),
+224:         pid: headers.indexOf('photo_id'),
+225:         r1: headers.indexOf('round_1'),
+226:         print: headers.indexOf('selected_print')
+227:       };
+228: 
+229:       // Filtrar las que están seleccionadas para imprimir
+230:       var selections = [];
+231:       for (var i = 1; i < rows.length; i++) {
+232:         var isPrint = rows[i][idx.print] === true || rows[i][idx.print] === 'TRUE';
+233:         if (isPrint) {
+234:           selections.push({
+235:             student_id: rows[i][idx.sid],
+236:             photo_id: rows[i][idx.pid]
+237:           });
+238:         }
+239:       }
+240:       return ContentService.createTextOutput(JSON.stringify({ success: true, selections: selections })).setMimeType(ContentService.MimeType.JSON);
+241:     } catch (err) {
+242:       return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+243:     }
+244:   }
+245: 
+246:   return ContentService.createTextOutput(JSON.stringify({ success: false }))
+247:     .setMimeType(ContentService.MimeType.JSON);
+248: }
 
 
 // ═══════════════════════════════════════════════════════════════════════

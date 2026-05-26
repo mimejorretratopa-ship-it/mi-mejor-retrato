@@ -43,7 +43,20 @@ Actualmente, el sistema agrupa y ordena a los niños primero por su hora de sesi
 
 ---
 
-## 🔭 Siguientes Pasos (Fase 3 - Restante)
+## 🔭 Siguientes Pasos (Plan Aprobado - Fases 4 y 5)
 
-1. **Verificación Real de Envíos**: Testear `submit` → inserción final en Airtable con el esquema actual simulando ser un padre (incluyendo campos `Estudio`, `Relacion`, `Paquete`, `Precio`, `Genero` y el checkbox `Q_onboarding`).
-2. **Propuestas adicionales (`port` y `pana`)**: Crear JSONs base y estructura visual para los colegios pendientes de prospectar si es necesario en esta temporada.
+El plan de desarrollo de los módulos de post-sesión y entrega ha sido **aprobado** (26 de Mayo de 2026). Los próximos desarrollos se estructuran en 3 Sprints:
+
+### Sprint 1: Galería Web MMR Propia
+* **Backend y Storage**: Se utilizará **Cloudflare R2** para el almacenamiento de imágenes, y se crearán nuevos endpoints en el Hub (`getGallery`, `saveSelection`) junto con una nueva pestaña `Galerias` en Google Sheets.
+* **Frontend (`galeria/index.html`)**: Aplicación web SPA para los padres con 2 rondas de filtrado (preselección y selección final para impresión).
+* **Upselling**: Se implementará el cobro de fotos extra de forma manual (vía WhatsApp/Nequi).
+* **Herramienta de Subida**: Utilidad local para que el fotógrafo suba las fotos masivamente a Cloudflare R2.
+
+### Sprint 2: Sincronizador Local y Contact Sheet (Dashboard)
+* **Sincronizador Local (`herramientas/sincronizador/index.html`)**: Descargará las selecciones de la galería a la computadora local y las separará en carpetas automáticamente.
+* **Pestaña Impresión en Dashboard**: Nueva pestaña en `dashboard.html` para revisar selecciones, exportar el lote al taller, imprimir etiquetas y generar un **Contact Sheet PDF**.
+
+### Sprint 3: Confirmación de Entrega y Cierre
+* **Página Móvil (`galeria/confirmacion.html`)**: Para que el padre firme de recibido y confirme saldo en cero.
+* **Cierre Operativo**: El Dashboard reflejará el estado final `📋 Entregado`.

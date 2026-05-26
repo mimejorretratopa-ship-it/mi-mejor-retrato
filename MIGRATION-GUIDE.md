@@ -74,6 +74,12 @@ Se actualizó el Hub de Google Apps Script a la **versión 4.1**.
 * **Robustez en getStudent**: Se implementó una doble validación en `doPost` (busca en `Leads` y si no, en `Cuestionarios`). Esto evita bloqueos de CORS y **previene el bug de creación de filas fantasma** en Google Sheets cuando un lead aún no existe en la hoja principal.
 * **Seguridad (Guard)**: Se añadió un guard explícito `if (action !== 'saveLead')` para evitar que peticiones perdidas escriban filas vacías.
 
+### 10. Arquitectura de Galería y Post-Producción (Fase 4 y 5 - Planeado Mayo 2026)
+El ecosistema se prepara para manejar grandes volúmenes de fotos de alta resolución mediante una arquitectura híbrida:
+* **Storage Desacoplado**: Se migrará a **Cloudflare R2** para el alojamiento de la Galería Web, aprovechando su ancho de banda sin costo (egress nulo) frente a soluciones como AWS S3 o Firebase.
+* **Endpoints Hub (Próximamente)**: Se crearán `getGallery` y `saveSelection` para mantener el estado de las rondas de filtrado directamente en Google Sheets, evitando bases de datos SQL complejas y manteniendo la filosofía *serverless* del proyecto.
+* **Sincronización Local**: Uso avanzado de la *File System Access API* para descargar y organizar fotos localmente (`_seleccionadas`, `_para_retoque`), eliminando descargas manuales ZIP o servicios de terceros.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)

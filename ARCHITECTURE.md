@@ -230,5 +230,24 @@ El sistema consolida el rastreo mediante una sola propiedad GA4 (`G-6H4H52RL0T`)
 1. El usuario navega a la URL específica mediante Vercel (ej: `/propuesta/lasa-26`).
 2. El script inline en `<head>` carga la librería gtag, pero **no** dispara el hit de configuración (`gtag('config')`).
 3. `app.js` extrae el `schoolId` (soportando tanto Query Strings como URLs limpias de Vercel).
-4. `app.js` lee `precios.json` (sección `escuelas`), actualiza el `document.title` dinámicamente (ej: `Propuesta: Colegio La Salle`).
-5. Finalmente, `app.js` dispara el evento de GA4, enviando el `page_title` legible y la dimensión personalizada `school_id`.
+233: 4. `app.js` lee `precios.json` (sección `escuelas`), actualiza el `document.title` dinámicamente (ej: `Propuesta: Colegio La Salle`).
+234: 5. Finalmente, `app.js` dispara el evento de GA4, enviando el `page_title` legible y la dimensión personalizada `school_id`.
+235: 
+236: ---
+237: 
+238: ## 📸 Arquitectura Post-Sesión y Entrega (Fases 4 y 5 - En Desarrollo)
+239: 
+240: El sistema se expande para manejar la selección, retoque y entrega final de las fotos, cerrando el ciclo B2C.
+241: 
+242: ### Galería Web MMR
+243: * **Storage:** Se utilizará **Cloudflare R2** para almacenar las imágenes (costo-efectivo, sin egress fees).
+244: * **Flujo:** SPA en `galeria/index.html` con autenticación mediante token único (`student_id` + hash).
+245: * **Rondas de Filtrado:** Simplificado a 2 rondas (Preselección y Selección Final para impresión).
+246: * **Upselling:** Cobro manual de fotos adicionales coordinado vía WhatsApp/Nequi, eliminando la complejidad de una pasarela de pagos integrada.
+247: 
+248: ### Sincronización y Empaque Local
+249: * **Sincronizador Local:** `herramientas/sincronizador/index.html` consumirá las selecciones desde el Hub y usará la File System Access API para separar determinísticamente las fotos locales en carpetas (`_seleccionadas`, `_descartadas`, `_para_retoque`).
+250: * **Contact Sheet y Etiquetas:** La herramienta `dashboard.html` incorporará una nueva pestaña **Impresión** que generará un PDF de contactos y etiquetas de envío, facilitando el empacado masivo físico.
+251: 
+252: ### Cierre de Servicio
+253: * **Confirmación de Entrega:** SPA móvil en `galeria/confirmacion.html` donde el cliente firma digitalmente de recibido y confirma que no hay saldos pendientes. Esta acción actualizará el estado en el Dashboard a `📋 Entregado`.

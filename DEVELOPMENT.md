@@ -140,5 +140,24 @@ config.debug()                  // Muestra la configuración de endpoints activa
 - [ ] **4. B2B (Directiva):** Archivo `[code]_propuesta.json` creado en `propuesta/data/` con el copy B2B
 - [ ] **5. UX:** El título dinámico de la propuesta carga el nombre del colegio correctamente en la pestaña
 - [ ] **6. Conversión:** El botón de WhatsApp tiene el número y mensaje de inicio correctos
-- [ ] **7. QA:** Sin errores en la consola del navegador (`F12`) al cargar ambas rutas en local
-- [ ] **8. Tracker:** Fila agregada en la pestaña `Propuestas` del Google Sheet y marcada como Enviada
+143: - [ ] **7. QA:** Sin errores en la consola del navegador (`F12`) al cargar ambas rutas en local
+144: - [ ] **8. Tracker:** Fila agregada en la pestaña `Propuestas` del Google Sheet y marcada como Enviada
+145: 
+146: ---
+147: 
+148: ## Próximos Sprints de Desarrollo (Fases 4 y 5)
+149: 
+150: Se ha aprobado el plan de desarrollo para los módulos de post-sesión y entrega final:
+151: 
+152: ### Sprint 1: Galería Web MMR Propia
+153: Se desarrollará una galería web (`galeria/index.html`) respaldada por **Cloudflare R2** para el almacenamiento de imágenes.
+154: * Requerirá nuevos endpoints en el Hub v4.2+ (`getGallery`, `saveSelection`).
+155: * Los padres tendrán 2 rondas de filtrado (preselección y selección final).
+156: * El cobro del upselling por fotos adicionales se manejará manualmente vía WhatsApp/Nequi.
+157: 
+158: ### Sprint 2: Sincronizador Local y Contact Sheet
+159: * **Sincronizador (`herramientas/sincronizador/index.html`)**: Automatizará la descarga de selecciones desde la Galería Web a carpetas locales usando la *File System Access API*.
+160: * **Contact Sheet (Dashboard)**: Se añadirá una nueva pestaña de **Impresión** al `dashboard.html` existente para generar el Contact Sheet PDF y etiquetas de empaque.
+161: 
+162: ### Sprint 3: Confirmación de Entrega
+163: Se implementará una SPA móvil (`galeria/confirmacion.html`) para que el cliente confirme la recepción del paquete físico y la inexistencia de saldos pendientes, cerrando el flujo en el Dashboard con el estado `📋 Entregado`.
