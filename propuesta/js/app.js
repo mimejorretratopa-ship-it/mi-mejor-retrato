@@ -207,6 +207,22 @@ function renderContent(prop, precios) {
     // Filas del body: inyectadas como hijas directas de pt-grid (crítico para CSS Grid)
     const ptGrid = document.querySelector('.pt-grid');
     if (ptGrid && paquetes.every(p => p.tabla_comparativa)) {
+      
+      // Ajuste dinámico de columnas si hay menos de 3 paquetes
+      if (paquetes.length < 3) {
+        // Ajustar el grid CSS (1 label + N paquetes)
+        ptGrid.style.gridTemplateColumns = `36% ${Array(paquetes.length).fill('1fr').join(' ')}`;
+        
+        // Ocultar cabeceras sobrantes
+        for (let i = paquetes.length; i < 3; i++) {
+          const ids = ['precio-esencial', 'precio-familiar', 'precio-premium'];
+          const priceEl = document.getElementById(ids[i]);
+          if (priceEl && priceEl.parentElement) {
+            priceEl.parentElement.style.display = 'none';
+          }
+        }
+      }
+
       const tc = paquetes.map(p => p.tabla_comparativa);
       const featClass = i => i === 1 ? ' pt-feat' : '';
       const lastClass = ' pt-last';
