@@ -33,6 +33,13 @@ const paquetesModule = (() => {
       return val ? val : boolCell(false, inverted);
     }
 
+    const hasValidValue = (key) => {
+      return tc.some(t => {
+        const val = t[key];
+        return val !== null && val !== false && val !== 0 && val !== "0" && val !== "";
+      });
+    };
+
     const header = paquetes.map((pkg, i) => `
       <div class="pt-cell pt-head${i === 1 ? ' pt-feat' : ''}" role="columnheader">
         ${i === 1 ? '<span class="pt-popular-badge">Popular</span>' : ''}
@@ -42,24 +49,37 @@ const paquetesModule = (() => {
 
     let rows = '';
     if (hasTc) {
-      rows = [
-        labelCell('Fotos digitales') + tc.map((t, i) => cell(t.fotos_digitales, featClass(i))).join(''),
-        labelCell('Foto grupal') + tc.map((t, i) => cell(boolCell(t.foto_grupal, i === 1), featClass(i))).join(''),
-        labelCell('Impresiones') + tc.map((t, i) => cell(textOrNull(t.impresiones, i === 1), featClass(i) + (t.impresiones ? ' pt-sm' : ''))).join(''),
-        labelCell('Foto enmarcada') + tc.map((t, i) => cell(textOrNull(t.foto_enmarcada, i === 1), featClass(i) + (t.foto_enmarcada ? ' pt-sm' : ''))).join(''),
-        labelCell('Fotos familiares') + tc.map((t, i) => {
+      const rowsArray = [];
+      
+      rowsArray.push(labelCell('Fotos digitales') + tc.map((t, i) => cell(t.fotos_digitales, featClass(i))).join(''));
+      
+      if (hasValidValue('foto_grupal')) {
+        rowsArray.push(labelCell('Foto grupal') + tc.map((t, i) => cell(boolCell(t.foto_grupal, i === 1), featClass(i))).join(''));
+      }
+      if (hasValidValue('impresiones')) {
+        rowsArray.push(labelCell('Impresiones') + tc.map((t, i) => cell(textOrNull(t.impresiones, i === 1), featClass(i) + (t.impresiones ? ' pt-sm' : ''))).join(''));
+      }
+      if (hasValidValue('foto_enmarcada')) {
+        rowsArray.push(labelCell('Foto enmarcada') + tc.map((t, i) => cell(textOrNull(t.foto_enmarcada, i === 1), featClass(i) + (t.foto_enmarcada ? ' pt-sm' : ''))).join(''));
+      }
+      if (hasValidValue('fotos_familiares')) {
+        rowsArray.push(labelCell('Fotos familiares') + tc.map((t, i) => {
           const txt = t.fotos_familiares
             ? (i === 1 ? '<span class="pt-opt-inv">Incluidas</span>' : '<span class="pt-opt">Incluidas</span>')
             : boolCell(false, i === 1);
           return cell(txt, featClass(i));
-        }).join(''),
-        labelCell('Ideal para', ' pt-last') + tc.map((t, i) => cell(t.ideal_para, featClass(i) + ' pt-last pt-sm')).join(''),
-      ].join('');
+        }).join(''));
+      }
+      rowsArray.push(labelCell('Ideal para', ' pt-last') + tc.map((t, i) => cell(t.ideal_para, featClass(i) + ' pt-last pt-sm')).join(''));
+      
+      rows = rowsArray.join('');
     }
+
+    const gridTemplateCols = `36% ${Array(paquetes.length).fill('1fr').join(' ')}`;
 
     grid.innerHTML = `
       <div class="pricing-table-wrapper">
-        <div class="pt-grid" role="table" aria-label="Comparación de paquetes">
+        <div class="pt-grid" role="table" aria-label="Comparación de paquetes" style="grid-template-columns: ${gridTemplateCols};">
           <div class="pt-cell pt-head pt-label" role="columnheader"></div>
           ${header}
           ${rows}
