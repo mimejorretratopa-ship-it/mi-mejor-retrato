@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "escuela_code": "csca",
+    "titulo_principal": "Propuesta Institucional",
+    "fecha_actualizacion": "9 de Junio, 2026"
+  },
+  "diferenciadores": {
+    "trato_nino": "Eficiencia y excelencia. Garantizamos retratos impecables para uso institucional (carnets, anuarios y diplomas) con una fluidez excepcional para no interrumpir horas de clase.",
+    "fotos_autenticas": "Organización premium. El colegio se desentiende de la logística de cobro y entregas. Todo el trato es directo con las familias mediante nuestra plataforma.",
+    "entregables": "Las familias eligen las fotos desde el móvil. La escuela recibe los archivos en alta resolución organizados por grado y salón listos para el anuario."
+  },
+  "galeria": {
+    "portafolio_id": "lasa"
+  },
+  "logistica": {
+    "ubicacion": {
+      "titulo": "Ubicación de la Sesión",
+      "opciones_activas": [
+        {
+          "tipo": "institucional",
+          "texto_display": "Instalaciones de la Escuela",
+          "descripcion": "Instalamos nuestro estudio móvil en el gimnasio o salón designado para fotografiar salón por salón ágilmente."
+        }
+      ]
+    },
+    "capas_birretes": {
+      "incluido": true,
+      "texto": "Proveemos elementos de graduación."
+    },
+    "solicitudes_especiales": {
+      "mascotas": false,
+      "familiares": "Según lo permita la logística de la escuela.",
+      "cambios_vestuario": "No para fotos institucionales de flujo rápido."
+    }
+  },
+  "entrega_y_pagos": {
+    "metodo_entrega": [
+      {
+        "tipo": "escuela",
+        "texto": "Archivos institucionales entregados directamente a la administración. Las compras individuales se entregan por delivery a las familias."
+      }
+    ],
+    "tiempo_entrega_semanas": 3,
+    "recoleccion_dinero": {
+      "metodo_principal": "Gestión Fotógrafo",
+      "explicacion": "El colegio no maneja dinero de impresiones extra ni galerías privadas. Todo se gestiona externamente."
+    }
+  },
+  "politicas": {
+    "inasistencia": {
+      "titulo": "Inasistencia y Recuperación",
+      "opcion_multiples_salones": "Día de Retoma garantizado ('Retake Day') sin costo para la escuela.",
+      "opcion_un_salon": "Día de Retoma garantizado ('Retake Day') sin costo para la escuela."
+    },
+    "descuento_hermanos": {
+      "aplica": false,
+      "porcentaje": 0,
+      "texto": "N/A para logística institucional."
+    },
+    "extras": "Beneficios adicionales para el staff y directivos."
+  }
+}
