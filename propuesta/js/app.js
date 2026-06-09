@@ -246,29 +246,43 @@ function renderContent(prop, precios) {
         return val;
       }
 
-      const rows = [
-        // Fotos digitales
-        labelCell('Fotos digitales') +
-          tc.map((t, i) => cell(t.fotos_digitales, featClass(i))).join(''),
-        // Foto grupal
-        labelCell('Foto grupal') +
-          tc.map((t, i) => cell(boolCell(t.foto_grupal, i === 1), featClass(i))).join(''),
-        // Impresiones
-        labelCell('Impresiones') +
-          tc.map((t, i) => cell(textOrNull(t.impresiones, i === 1), featClass(i) + (t.impresiones ? ' pt-sm' : ''))).join(''),
-        // Foto enmarcada
-        labelCell('Foto enmarcada') +
-          tc.map((t, i) => cell(textOrNull(t.foto_enmarcada, i === 1), featClass(i) + (t.foto_enmarcada ? ' pt-sm' : ''))).join(''),
-        // Fotos familiares
-        labelCell('Fotos familiares') +
-          tc.map((t, i) => {
-            const txt = t.fotos_familiares ? (i === 1 ? '<span class="pt-opt-inv">Incluidas</span>' : '<span class="pt-opt">Incluidas</span>') : boolCell(null, i === 1);
-            return cell(txt, featClass(i));
-          }).join(''),
-        // Ideal para
-        labelCell('Ideal para', lastClass) +
-          tc.map((t, i) => cell(t.ideal_para, featClass(i) + lastClass + ' pt-sm')).join(''),
-      ];
+      const hasValidValue = (key) => {
+        return tc.some(t => {
+          const val = t[key];
+          return val !== null && val !== false && val !== 0 && val !== "0" && val !== "";
+        });
+      };
+
+      const rows = [];
+      
+      // Fotos digitales (siempre se muestra)
+      rows.push(labelCell('Fotos digitales') + tc.map((t, i) => cell(t.fotos_digitales, featClass(i))).join(''));
+
+      // Foto grupal
+      if (hasValidValue('foto_grupal')) {
+        rows.push(labelCell('Foto grupal') + tc.map((t, i) => cell(boolCell(t.foto_grupal, i === 1), featClass(i))).join(''));
+      }
+
+      // Impresiones
+      if (hasValidValue('impresiones')) {
+        rows.push(labelCell('Impresiones') + tc.map((t, i) => cell(textOrNull(t.impresiones, i === 1), featClass(i) + (t.impresiones ? ' pt-sm' : ''))).join(''));
+      }
+
+      // Foto enmarcada
+      if (hasValidValue('foto_enmarcada')) {
+        rows.push(labelCell('Foto enmarcada') + tc.map((t, i) => cell(textOrNull(t.foto_enmarcada, i === 1), featClass(i) + (t.foto_enmarcada ? ' pt-sm' : ''))).join(''));
+      }
+
+      // Fotos familiares
+      if (hasValidValue('fotos_familiares')) {
+        rows.push(labelCell('Fotos familiares') + tc.map((t, i) => {
+          const txt = t.fotos_familiares ? (i === 1 ? '<span class="pt-opt-inv">Incluidas</span>' : '<span class="pt-opt">Incluidas</span>') : boolCell(null, i === 1);
+          return cell(txt, featClass(i));
+        }).join(''));
+      }
+
+      // Ideal para (siempre se muestra y lleva el lastClass)
+      rows.push(labelCell('Ideal para', lastClass) + tc.map((t, i) => cell(t.ideal_para, featClass(i) + lastClass + ' pt-sm')).join(''));
 
       ptGrid.insertAdjacentHTML('beforeend', rows.join(''));
     }

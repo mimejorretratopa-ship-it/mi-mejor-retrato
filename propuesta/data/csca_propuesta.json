@@ -6,8 +6,8 @@
     "fecha_actualizacion": "9 de Junio, 2026"
   },
   "diferenciadores": {
-    "trato_nino": "Eficiencia y excelencia. Garantizamos retratos impecables para uso institucional (carnets, anuarios y diplomas) con una fluidez excepcional para no interrumpir horas de clase.",
-    "fotos_autenticas": "Organización premium. El colegio se desentiende de la logística de cobro y entregas. Todo el trato es directo con las familias mediante nuestra plataforma.",
+    "trato_nino": "Garantizamos un trato personalizado para cada niño.  Para lograrlo pedimos a los papás nos ayuden con sus gustos y asi tener tema de conversación durante las fotos.",
+    "fotos_autenticas": "El colegio se desentiende de la logística de cobro y entregas. Todo el trato es directo con las familias mediante nuestra plataforma.",
     "entregables": "Las familias eligen las fotos desde el móvil. La escuela recibe los archivos en alta resolución organizados por grado y salón listos para el anuario."
   },
   "galeria": {
@@ -38,10 +38,10 @@
     "metodo_entrega": [
       {
         "tipo": "escuela",
-        "texto": "Archivos institucionales entregados directamente a la administración. Las compras individuales se entregan por delivery a las familias."
+        "texto": "Archivos digitales de la sesión entregados directamente a los papás con copia a la administración para revisión y supervisión del trabajo."
       }
     ],
-    "tiempo_entrega_semanas": 3,
+    "tiempo_entrega_semanas": 2,
     "recoleccion_dinero": {
       "metodo_principal": "Gestión Fotógrafo",
       "explicacion": "El colegio no maneja dinero de impresiones extra ni galerías privadas. Todo se gestiona externamente."
@@ -56,7 +56,7 @@
     "descuento_hermanos": {
       "aplica": false,
       "porcentaje": 0,
-      "texto": "N/A para logística institucional."
+      "texto": "Los papas tendrán 2 semanas para elegir la foto de sus hijos dentro de una galería privada."
     },
     "extras": "Beneficios adicionales para el staff y directivos."
   }
