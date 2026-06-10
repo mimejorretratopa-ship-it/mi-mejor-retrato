@@ -2,12 +2,14 @@
   "rewrites": [
     { "source": "/propuesta/lasalletest", "destination": "/propuesta/lasalletest.html" },
     { "source": "/propuesta/:slug", "destination": "/propuesta/index.html" },
+    { "source": "/familias/:slug", "destination": "/familias/index.html" },
     { "source": "/onboarding/cuestionario", "destination": "/onboarding/cuestionario.html" },
     { "source": "/onboarding/:slug", "destination": "/onboarding/index.html" },
     { "source": "/agenda/:slug", "destination": "/agenda/view.html?s=:slug" }
   ],
   "redirects": [
     { "source": "/propuesta/:slug.html", "destination": "/propuesta/:slug", "statusCode": 301 },
+    { "source": "/familias/:slug.html", "destination": "/familias/:slug", "statusCode": 301 },
     { "source": "/onboarding/cuestionario.html", "destination": "/onboarding/cuestionario", "statusCode": 301 },
     { "source": "/onboarding/:slug.html", "destination": "/onboarding/:slug", "statusCode": 301 }
   ]

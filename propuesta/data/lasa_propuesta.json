@@ -3,6 +3,7 @@
   "metadata": {
     "nota": "Este archivo contiene el contenido específico para la página de propuesta de una escuela. Las opciones disponibles para cada sección están documentadas aquí para que sea fácil modificarlas o crear nuevas escuelas.",
     "escuela_code": "lasa",
+    "audiencia": "institucional",
     "titulo_principal": "Propuesta de Fotos de Recuerdo Kinder",
     "fecha_actualizacion": "18 de Mayo, 2026"
   },

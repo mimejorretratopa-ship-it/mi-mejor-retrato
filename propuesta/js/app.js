@@ -9,7 +9,7 @@ async function initPropuesta() {
   let slug = params.get('brochure'); 
   
   if (!slug) {
-    const match = window.location.pathname.match(/\/propuesta\/([a-z]{4}-\d{2})/);
+    const match = window.location.pathname.match(/\/(?:propuesta|familias)\/([a-z]{4}-\d{2})/);
     if (match) slug = match[1];
   }
 
@@ -23,7 +23,7 @@ async function initPropuesta() {
 
   try {
     // 2. Cargar precios.json (fuente unificada)
-    const escRes = await fetch('../onboarding/data/precios.json');
+    const escRes = await fetch('/onboarding/data/precios.json');
     if (!escRes.ok) throw new Error("No se pudo cargar el catálogo de escuelas.");
     const escData = await escRes.json();
     schoolData = escData.escuelas.find(s => s.code === currentSchoolCode);
@@ -47,7 +47,7 @@ async function initPropuesta() {
     }
 
     // 3. Cargar contenido de la propuesta específica
-    const propRes = await fetch(`./data/${currentSchoolCode}_propuesta.json`);
+    const propRes = await fetch(`/propuesta/data/${currentSchoolCode}_propuesta.json`);
     if (!propRes.ok) throw new Error("Aún no hay una propuesta configurada para esta institución.");
     const propuesta = await propRes.json();
 
@@ -63,6 +63,9 @@ async function initPropuesta() {
     // 4. Renderizar (schoolData ya contiene los precios y paquetes)
     renderContent(propuesta, schoolData);
     
+    // 5. Link dinámico al onboarding (usa el slug de la URL, ej: lasa-26)
+    renderOnboardingLink(slug);
+
     // 6. Inicializar Galería
     if (propuesta.galeria && propuesta.galeria.portafolio_id) {
       await initGaleria(propuesta.galeria.portafolio_id);
@@ -71,12 +74,18 @@ async function initPropuesta() {
       document.getElementById('gallery-container').style.display = 'none';
     }
     
-    // Formulario de contacto eliminado a favor del botón de WhatsApp directo.
+    // 7. Sección Regalo Kinder: solo visible en propuestas institucionales
+    const audiencia = propuesta.metadata && propuesta.metadata.audiencia;
+    const kinderSection = document.getElementById('kinder-gift-section');
+    if (kinderSection) {
+      kinderSection.style.display = (audiencia === 'institucional') ? 'block' : 'none';
+    }
+
     document.getElementById('content-wrapper').style.display = 'block';
     const cta = document.querySelector('.cta-section');
     if (cta) cta.style.display = 'block';
 
-    // 7. Inicializar mini-formulario B2B
+    // 8. Inicializar mini-formulario B2B
     setupB2bForm(schoolData);
 
   } catch (err) {
@@ -133,6 +142,15 @@ function setupB2bForm(schoolData) {
       btn.disabled = false;
       alert('Hubo un error al enviar. Por favor intenta de nuevo o escríbenos directamente.');
     }
+  });
+}
+
+// ── LINK DINÁMICO AL ONBOARDING ──────────────────────────────────────
+function renderOnboardingLink(slug) {
+  // Busca todos los elementos con data-onboarding-link y actualiza su href
+  document.querySelectorAll('[data-onboarding-link]').forEach(el => {
+    const base = el.getAttribute('data-onboarding-base') || '/onboarding/';
+    el.href = base + slug;
   });
 }
 
@@ -297,7 +315,7 @@ function renderContent(prop, precios) {
 
 async function initGaleria(portafolioId) {
   try {
-    const res = await fetch(`./portafolios/${portafolioId}/manifest.json`);
+    const res = await fetch(`/propuesta/portafolios/${portafolioId}/manifest.json`);
     if (!res.ok) throw new Error("No se pudo cargar el manifiesto de la galería.");
     const manifest = await res.json();
     
@@ -315,7 +333,7 @@ async function initGaleria(portafolioId) {
       item.className = `gallery-item ${orientacionClass}`;
 
       // Ruta de la imagen relativa a la página propuesta/index.html
-      const imgPath = `./portafolios/${portafolioId}/${foto.archivo}`;
+      const imgPath = `/propuesta/portafolios/${portafolioId}/${foto.archivo}`;
 
       item.innerHTML = `
         <img src="${imgPath}" alt="${foto.alt || 'Fotografía escolar'}" loading="lazy">
