@@ -63,7 +63,6 @@ const ubicacionModule = (() => {
       if (schoolCode) {
         const img = new Image();
         img.alt = 'Instalaciones del colegio';
-        img.loading = 'lazy';
         img.onload = () => {
           const card = document.getElementById('ubicacion-colegio-card');
           if (card) card.prepend(img);
