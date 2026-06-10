@@ -69,7 +69,7 @@ const ubicacionModule = (() => {
           if (card) card.prepend(img);
         };
         // onerror: no hace nada → la card queda solo con el texto
-        img.src = `ubicaciones/${schoolCode}.jpg`;
+        img.src = `/onboarding/ubicaciones/${schoolCode}.jpg`;
       }
     } else if ((estado === 'definido' || estado === 'estudios') && ubicaciones && ubicaciones.length > 0) {
       contenedor.innerHTML = `
