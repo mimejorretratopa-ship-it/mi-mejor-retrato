@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta — Mi Mejor Retrato</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=DM+Sans:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6H4H52RL0T"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        // El hit ('config') no se dispara aquí. 
+        // Se dispara en app.js cuando ya conocemos el nombre real de la escuela.
+    </script>
+
+</head>
+
+<body>
+    <div class="doc-page">
+
+        <!-- ENCABEZADO DE PROPUESTA -->
+        <header class="doc-header">
+            <div class="doc-brand">Mi Mejor Retrato</div>
+            <h1 id="propuesta-title" class="heading-1">Cargando Propuesta . . .</h1>
+            <div class="doc-meta">
+                <div class="doc-meta-item"><strong id="school-name"></strong></div>
+                <div class="doc-meta-item" id="doc-date"></div>
+            </div>
+        </header>
+
+        <div class="content-wrapper" id="content-wrapper" style="display: none;">
+
+            <!-- ── RESUMEN ULTRA RÁPIDO ────────────────────────────── -->
+            <section class="doc-section summary-section">
+                <h3 class="heading-3">¿Qué incluye?</h3>
+                <ul class="include-list">
+                    <li>Retratos que hacen sentir orgullosas a las familias</li>
+                    <li>Una experiencia elegante y memorable para los estudiantes</li>
+                    <li>Coordinación moderna y ordenada de principio a fin</li>
+                    <li>Atención personalizada para cada familia</li>
+                    <li>Entrega digital e impresa</li>
+                    <li id="precio-desde">Desde —</li>
+                </ul>
+            </section>
+
+            <!-- ── 1. ¿POR QUÉ MI MEJOR RETRATO? ───────────────────── -->
+            <section class="doc-section">
+                <h2 class="heading-2">1. ¿Por qué <em>Mi Mejor Retrato?</em></h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 class="heading-3">Trato al Estudiante</h4>
+                        <p id="txt-trato"></p>
+                        <!-- HARDCODED: aplica a todas las escuelas -->
+                        <p style="margin-top:10px;font-style:italic;color:var(--color-ink-muted);">Cuando lo veas reír,
+                            sabrás que
+                            era de verdad.</p>
+                    </div>
+                    <div class="card">
+                        <h4 class="heading-3">Organización premium</h4>
+                        <p id="txt-fotos"></p>
+                    </div>
+                    <div class="card full-width">
+                        <!-- HARDCODED: datos del fotógrafo, no varían por escuela -->
+                        <h4 class="heading-3">Nuestra Experiencia</h4>
+                        <div class="credenciales">
+                            <div class="credencial-badge"><span class="cred-icon">📸</span> +250 familias fotografiadas
+                            </div>
+                            <div class="credencial-badge"><span class="cred-icon">🎓</span> Expertos en fotografía
+                                infantil</div>
+                            <div class="credencial-badge"><span class="cred-icon">💒</span> Calidad de bodas premium
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── GALERÍA (Portafolio) ───────────────────────────────── -->
+            <section class="doc-section">
+                <h2 class="heading-2" id="gallery-title">Muestra de <em>Trabajo</em></h2>
+                <div class="gallery-masonry" id="gallery-container">
+                    <!-- Las fotos se cargarán dinámicamente desde el manifest.json del portafolio -->
+                </div>
+            </section>
+
+            <!-- ── 2. PAQUETES Y PRECIOS ─────────────────────────────── -->
+            <section class="doc-section pricing-table-section">
+                <h2 class="heading-2">2. Paquetes y <em>Precios</em></h2>
+                <p class="nota">Escoge el recuerdo que mejor se adapte a tu familia</p>
+
+                <div class="pricing-table-wrapper">
+                    <div class="pt-grid" role="table" aria-label="Comparación de paquetes">
+
+                        <!-- HEADER -->
+                        <div class="pt-cell pt-head pt-label" role="columnheader"></div>
+                        <div class="pt-cell pt-head" role="columnheader">
+                            <span class="pt-name">Esencial</span>
+                            <span class="pt-price" id="precio-esencial">—</span>
+                        </div>
+                        <div class="pt-cell pt-head pt-feat" role="columnheader">
+                            <span class="pt-popular-badge">Popular</span>
+                            <span class="pt-name">Familiar</span>
+                            <span class="pt-price" id="precio-familiar">—</span>
+                        </div>
+                        <div class="pt-cell pt-head" role="columnheader">
+                            <span class="pt-name">Premium</span>
+                            <span class="pt-price" id="precio-premium">—</span>
+                        </div>
+
+                        <!-- Filas de características: construidas dinámicamente por app.js -->
+                        <!-- NOTA: Las celdas se inyectan con insertAdjacentHTML para ser hijas directas del pt-grid -->
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── 3. LOGÍSTICA DE LA SESIÓN ────────────────────────── -->
+            <section class="doc-section">
+                <h2 class="heading-2">3. Logística de la <em>Sesión</em></h2>
+                <div class="list-container">
+                    <div class="list-item">
+                        <strong>📍 Ubicación:</strong>
+                        <span id="txt-ubicaciones"></span>
+                    </div>
+                    <div class="list-item">
+                        <strong>🎓 Capas y Birretes:</strong>
+                        <span id="txt-capas"></span>
+                    </div>
+                    <!-- HARDCODED: proceso universal -->
+                    <!-- HARDCODED: siempre se agenda por WhatsApp -->
+                </div>
+            </section>
+
+            <!-- ── 4. ¿QUÉ PASA DESPUÉS DE LA SESIÓN? ──────────────── -->
+            <!-- HARDCODED: el proceso/timeline es igual para todas las escuelas -->
+            <section class="doc-section">
+                <h2 class="heading-2">4. ¿Qué pasa <em>después de la sesión?</em></h2>
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-left">
+                            <div class="timeline-dot">📷</div>
+                            <div class="timeline-connector"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>Día de la sesión</h5>
+                            <p>Sesión individual, a su ritmo.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-left">
+                            <div class="timeline-dot">🖼️</div>
+                            <div class="timeline-connector"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>7–10 días: Previews en galería</h5>
+                            <p>Galería privada online para elegir favoritas.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-left">
+                            <div class="timeline-dot">⭐</div>
+                            <div class="timeline-connector"></div>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>2 semanas para escoger favoritas</h5>
+                            <p>2 semanas para elegir. Vencido el plazo, el fotógrafo elige para no retrasar al grupo.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-left">
+                            <div class="timeline-dot">📦</div>
+                        </div>
+                        <div class="timeline-content">
+                            <h5>Entrega final en 2 semanas</h5>
+                            <p>Dos semanas después de cerrado el período de selección, se entregan las fotos retocadas y
+                                los impresos
+                                (si aplica).</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── 5. ENTREGA Y CONDICIONES ──────────────────────────── -->
+            <section class="doc-section">
+                <h2 class="heading-2">5. Entrega y <em>Condiciones</em></h2>
+                <div class="grid-2">
+                    <div class="policy-box">
+                        <h4 class="heading-3">Métodos de Entrega</h4>
+                        <ul id="list-entregas"></ul>
+                        <p style="margin-top:10px;"><strong>Tiempo estándar:</strong> <span id="txt-tiempo"></span>
+                            semanas desde
+                            selección.</p>
+                    </div>
+                    <div class="policy-box">
+                        <h4 class="heading-3">Política de Reagendamiento</h4>
+                        <p id="txt-inasistencia"></p>
+                    </div>
+                    <div class="policy-box">
+                        <h4 class="heading-3">Eleccion de Fotos</h4>
+                        <p id="txt-hermanos"></p>
+                    </div>
+                    <!-- HARDCODED: política de pago universal -->
+                    <div class="policy-box">
+                        <h4 class="heading-3">Pagos y Cobros</h4>
+                        <p>Cobro directo vía <strong>Yappy</strong> a cada familia. El delegado no cobra ni gestiona
+                            pagos.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── 6. PARA EL DELEGADO ───────────────────────────────── -->
+            <!-- HARDCODED: el rol del delegado es igual para todas las escuelas -->
+            <section class="doc-section">
+                <h2 class="heading-2">6. Para el <em>Delegado o Coordinador</em></h2>
+                <p style="margin-bottom:16px; font-size:14px; color:var(--color-ink-muted);">Tu trabajo será mínimo:</p>
+                <div class="delegado-grid">
+                    <div class="delegado-no">
+                        Cobrar dinero: <strong>No.</strong>
+                    </div>
+                    <div class="delegado-no">
+                        Organizar horarios: <strong>No.</strong>
+                    </div>
+                    <div class="delegado-no">
+                        Perseguir familias: <strong>No.</strong>
+                    </div>
+                    <div class="delegado-no">
+                        Entregar paquetes: <strong>No.</strong>
+                    </div>
+                </div>
+                <div class="delegado-si">
+                    <h5>✅ Solo necesitas:</h5>
+                    <ul>
+                        <li>Compartir este link al grupo de padres.</li>
+                        <li>Confirmar el interés aproximado del salón.</li>
+                    </ul>
+                    <p style="margin-top:10px; font-size:13px; color:var(--color-ok);">Nosotros coordinamos todo
+                        directamente con
+                        cada familia.</p>
+                </div>
+                <div class="card" style="margin-top:16px;">
+                    <h4 class="heading-3">¿Qué pasa si deciden seguir adelante?</h4>
+                    <p>Los interesados reciben un enlace personalizado para su inscripción y pago directo con el
+                        fotógrafo.</p>
+                </div>
+            </section>
+
+            <!-- ── 7. PREGUNTAS FRECUENTES ───────────────────────────── -->
+            <!-- HARDCODED: preguntas universales -->
+            <section class="doc-section">
+                <h2 class="heading-2">7. Preguntas <em>Frecuentes</em></h2>
+                <dl class="faq-list">
+                    <div class="faq-item">
+                        <dt>¿Qué pasa si mi hijo es tímido o inquieto?</dt>
+                        <dd>Trabajamos con paciencia y sin prisa para que se sientan cómodos en su propio ritmo.</dd>
+                    </div>
+                    <div class="faq-item">
+                        <dt>¿Las fotos de la galería online se pueden descargar?</dt>
+                        <dd>Sí, en alta resolución y sin marca de agua.</dd>
+                    </div>
+                    <div class="faq-item">
+                        <dt>¿Cómo se paga?</dt>
+                        <dd>Vía Yappy, directo con cada familia. El delegado no maneja dinero.</dd>
+                    </div>
+                    <div class="faq-item">
+                        <dt>¿Cuánto es el mínimo de estudiantes que se necesita para poder asegurar el paquete?</dt>
+                        <dd>No hay mínimo. Aseguramos el paquete con los estudiantes que asistan. Se reserva la fecha y
+                            hora para
+                            ese grupo.</dd>
+                    </div>
+                    <div class="faq-item">
+                        <dt>¿Cuáles son las fechas disponibles?</dt>
+                        <dd>Tenemos fechas abiertas durante todo el año.</dd>
+                    </div>
+                </dl>
+            </section>
+
+        </div> <!-- Cierre de content-wrapper -->
+
+        <!-- ── CTA FINAL DUAL ─────────────────────────────────────────── -->
+        <section class="cta-section" id="cta-section" style="display: none;">
+            <h2 class="heading-2" style="font-size:22px;">¿Te gustaría organizar una sesión de fotos?</h2>
+            <p style="font-size:16px; margin-bottom:30px; color:var(--color-ink-muted);">Elige la opción que mejor se
+                adapte a
+                tus necesidades:</p>
+
+            <div class="cta-dual-container">
+                <!-- Opción A: Institucional -->
+                <div class="cta-card">
+                    <h3>🏫 Para la Escuela o Salón</h3>
+                    <p>Llena este formulario y prepararemos una opción personalizada para tu grupo.</p>
+
+                    <form id="form-b2b-cta" class="form-b2b">
+                        <div class="form-group">
+                            <label for="b2b-nombre">Tu nombre</label>
+                            <input type="text" id="b2b-nombre" name="nombre" required placeholder="Ej: María Pérez">
+                        </div>
+                        <div class="form-group">
+                            <label for="b2b-whatsapp">Número de WhatsApp</label>
+                            <input type="tel" id="b2b-whatsapp" name="whatsapp" required placeholder="6000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label for="b2b-email">Correo electrónico</label>
+                            <input type="email" id="b2b-email" name="email" required placeholder="correo@ejemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="b2b-escuela">Nombre del Colegio / Salón</label>
+                            <input type="text" id="b2b-escuela" name="escuela" required
+                                placeholder="Ej: Colegio XYZ, Salón K">
+                        </div>
+                        <button type="submit" id="btn-submit-b2b" class="btn-submit">Solicitar Propuesta</button>
+                    </form>
+                    <div id="b2b-msg-exito" class="b2b-msg-exito" style="display: none;">
+                        ✅ Mensaje enviado con éxito.<br>Mike te responderá en un aproximado de 1 a 2 horas hábiles.
+                    </div>
+                </div>
+
+                <!-- Opción B: Individual -->
+                <div class="cta-card cta-card-secondary">
+                    <h3>👨‍👩‍👧‍👦 Sesión Individual</h3>
+                    <p>Si deseas contratar una sesión únicamente para tu familia, puedes agendar de forma independiente
+                        en
+                        nuestros estudios.</p>
+                    <a href="../onboarding/csca-26" target="_blank" class="btn-whatsapp">Reservar Sesión
+                        Individual</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Scripts: Reusando core + logica especifica -->
+    <script src="../js/core/config.js"></script>
+    <script src="../js/core/api.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+
+</html>
