@@ -47,14 +47,30 @@ const ubicacionModule = (() => {
         </div>
       `;
     } else if (estado === 'colegio') {
+      const brochure = state.get('brochure');
+      const schoolCode = brochure?.code || '';
+
+      // Renderizar la card SIN imagen primero
       contenedor.innerHTML = `
         <div class="ubicaciones-grid">
-          <div class="ubicacion-card">
-            <img src="ubicaciones/escuela.jpg" alt="Instalaciones del colegio" loading="lazy">
+          <div class="ubicacion-card" id="ubicacion-colegio-card">
             <p>Las fotos se harán en la escuela</p>
           </div>
         </div>
       `;
+
+      // Intentar cargar la imagen personalizada de forma silenciosa
+      if (schoolCode) {
+        const img = new Image();
+        img.alt = 'Instalaciones del colegio';
+        img.loading = 'lazy';
+        img.onload = () => {
+          const card = document.getElementById('ubicacion-colegio-card');
+          if (card) card.prepend(img);
+        };
+        // onerror: no hace nada → la card queda solo con el texto
+        img.src = `ubicaciones/${schoolCode}.jpg`;
+      }
     } else if ((estado === 'definido' || estado === 'estudios') && ubicaciones && ubicaciones.length > 0) {
       contenedor.innerHTML = `
         <div class="ubicaciones-grid">

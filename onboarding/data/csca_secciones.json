@@ -56,19 +56,14 @@
     },
     "salones": [
         {
-            "valor": "prekinder",
-            "label": "Prekínder",
-            "corto": "pk"
+            "valor": "kinder_a",
+            "label": "Kínder A",
+            "corto": "ka"
         },
         {
-            "valor": "kinder",
-            "label": "Kínder",
-            "corto": "k"
-        },
-        {
-            "valor": "6to",
-            "label": "6to grado",
-            "corto": "6"
+            "valor": "kinder_b",
+            "label": "Kínder B",
+            "corto": "kb"
         }
     ],
     "metadata": {
