@@ -77,7 +77,27 @@
             "impresiones": "1 grande + 3 pequeñas",
             "foto_enmarcada": null,
             "fotos_familiares": true,
-            "ideal_para": "Familias que desean menos complicación."
+            "ideal_para": "Familias quienes quieren variedad sin complicarse."
+          },
+          "entregables": {
+            "impresos": [],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paq_3_marco",
+          "nombre": "Premium",
+          "precio": 63,
+          "descripcion": "",
+          "tabla_comparativa": {
+            "fotos_digitales": 12,
+            "foto_grupal": true,
+            "impresiones": "2 grande + 7 pequeñas",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": true,
+            "ideal_para": "Familias que van a regalar fotos enmarcadas y listas para colgar a sus abuelitas."
           },
           "entregables": {
             "impresos": [],
@@ -690,6 +710,14 @@
             "digitales": {
               "plataforma": "Galería online"
             }
+          },
+          "tabla_comparativa": {
+            "fotos_digitales": 0,
+            "foto_grupal": false,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": false,
+            "ideal_para": null
           }
         }
       ]
@@ -729,6 +757,14 @@
             "digitales": {
               "plataforma": "Galería online"
             }
+          },
+          "tabla_comparativa": {
+            "fotos_digitales": 0,
+            "foto_grupal": false,
+            "impresiones": null,
+            "foto_enmarcada": null,
+            "fotos_familiares": false,
+            "ideal_para": null
           }
         }
       ]
