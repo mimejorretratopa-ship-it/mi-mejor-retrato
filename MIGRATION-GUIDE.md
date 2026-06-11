@@ -80,6 +80,19 @@ El ecosistema se prepara para manejar grandes volúmenes de fotos de alta resolu
 * **Endpoints Hub (Próximamente)**: Se crearán `getGallery` y `saveSelection` para mantener el estado de las rondas de filtrado directamente en Google Sheets, evitando bases de datos SQL complejas y manteniendo la filosofía *serverless* del proyecto.
 * **Sincronización Local**: Uso avanzado de la *File System Access API* para descargar y organizar fotos localmente (`_seleccionadas`, `_para_retoque`), eliminando descargas manuales ZIP o servicios de terceros.
 
+### 11. Enrutamiento de URLs Limpias para Familias B2C (10 de Junio de 2026)
+Se implementaron URLs limpias del tipo `/familias/:slug` mediante reglas de reescritura en Vercel para mejorar la estética y profesionalidad al compartir enlaces con padres de familia:
+* **Redirección y Rewrite:** En `vercel.json`, se configuró un rewrite para dirigir `/familias/:slug` de forma interna y transparente a `/familias/index.html`. También se forzó la redirección 301 de rutas antiguas con extensión `.html`.
+* **Compartición de Recursos:** El nuevo `/familias/index.html` hereda la lógica de extracción de slugs e inyección de datos de propuesta comercial usando rutas absolutas a `/propuesta/js/app.js` y `/propuesta/css/style.css`, optimizando el mantenimiento.
+* **Compatibilidad de Extracción:** Se modificó `propuesta/js/app.js` para extraer de forma adaptativa el `schoolId` desde la ruta limpia (`/familias/:slug` o `/propuesta/:slug`) o desde los query params clásicos (`?co=` / `?brochure=`).
+
+### 12. Panel Admin Compacto y Editor de Paquetes Dropdown (10 de Junio de 2026)
+Se optimizó radicalmente el Panel de Administración de precios para mejorar su eficiencia operativa:
+* **Diseño Ultra Compacto:** Se eliminaron los espacios y paddings excesivos en la hoja de estilos `admin/css/admin.css` para condensar la UI, reduciendo al mínimo el scroll vertical necesario para gestionar los colegios y sus variables.
+* **Orden Alfabético Automático:** El script de administración en `admin/js/admin.js` ahora ordena la lista de escuelas alfabéticamente por su ID al leer el archivo JSON y al añadir un nuevo colegio, eliminando desorden visual.
+* **Editor de Paquetes Aislado:** Se reemplazó el renderizado masivo vertical de las tarjetas de edición de paquetes por un selector dropdown (`#packageSelect`). El usuario ahora modifica un solo paquete a la vez en la pantalla.
+* **Previsualización Global Dinámica:** Al cambiar cualquier campo en el formulario del paquete activo, se actualiza el objeto `preciosData` en memoria y se dispara `renderPreview()`, renderizando la tabla comparativa global del colegio en tiempo real al final de la página.
+
 ---
 
 ## 1. Google Sheets (Base de Datos)

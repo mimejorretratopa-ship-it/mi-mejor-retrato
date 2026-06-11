@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let preciosData = null;
     let currentSchoolIndex = null;
+    let activePackageIndex = null;
 
     const PRECIOS_URL = '../onboarding/data/precios.json';
 
@@ -9,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const schoolEditor = document.getElementById('schoolEditor');
     const packagesContainer = document.getElementById('packagesContainer');
     const packageTemplate = document.getElementById('packageTemplate');
+    const packageSelect = document.getElementById('packageSelect');
+    const packageSelectorContainer = document.getElementById('packageSelectorContainer');
     
     // Header Info
     const currentSchoolCode = document.getElementById('currentSchoolCode');
@@ -29,6 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(PRECIOS_URL);
             if (!response.ok) throw new Error('No se pudo cargar precios.json');
             preciosData = await response.json();
+            
+            if (preciosData && preciosData.escuelas) {
+                preciosData.escuelas.sort((a, b) => a.code.localeCompare(b.code));
+            }
             
             updateStats();
             renderSchoolsList();
@@ -96,59 +103,131 @@ document.addEventListener('DOMContentLoaded', () => {
         schoolYearsInput.value = (school.years || []).join(', ');
         schoolGaIdInput.value = school.ga_id || '';
 
+        activePackageIndex = (school.paquetes && school.paquetes.length > 0) ? 0 : null;
         renderPackages(school.paquetes || []);
+    }
+
+    function saveActivePackageFromDOM(card) {
+        if (currentSchoolIndex === null || activePackageIndex === null) return;
+        const school = preciosData.escuelas[currentSchoolIndex];
+        const pkg = school.paquetes[activePackageIndex];
+        if (!pkg) return;
+
+        pkg.id = card.querySelector('.pkg-id').value.trim() || `paquete_${activePackageIndex + 1}`;
+        pkg.nombre = card.querySelector('.pkg-name').value.trim();
+        pkg.precio = parseInt(card.querySelector('.pkg-price').value, 10) || 0;
+        pkg.descripcion = card.querySelector('.pkg-desc').value.trim();
+        
+        if (!pkg.tabla_comparativa) pkg.tabla_comparativa = {};
+        pkg.tabla_comparativa.fotos_digitales = parseInt(card.querySelector('.tc-digital').value, 10) || 0;
+        pkg.tabla_comparativa.foto_grupal = card.querySelector('.tc-group').checked;
+        pkg.tabla_comparativa.impresiones = card.querySelector('.tc-prints').value.trim() || null;
+        pkg.tabla_comparativa.foto_enmarcada = card.querySelector('.tc-framed').value.trim() || null;
+        pkg.tabla_comparativa.fotos_familiares = card.querySelector('.tc-family').checked;
+        pkg.tabla_comparativa.ideal_para = card.querySelector('.tc-ideal').value.trim() || null;
     }
 
     function renderPackages(paquetes) {
         packagesContainer.innerHTML = '';
+        packageSelect.innerHTML = '';
+        
+        if (!paquetes || paquetes.length === 0) {
+            packageSelectorContainer.style.display = 'none';
+            packagesContainer.innerHTML = '<p style="padding: 1rem; color: var(--color-ink-light);">No hay paquetes en este colegio. Haz clic en "+ Agregar Paquete" para crear uno.</p>';
+            renderPreview();
+            return;
+        }
+        
+        packageSelectorContainer.style.display = 'flex';
         
         paquetes.forEach((pkg, pkgIndex) => {
-            const clone = packageTemplate.content.cloneNode(true);
-            const card = clone.querySelector('.package-card');
-            
-            // Populate Basic Info
-            card.querySelector('.pkg-id').value = pkg.id || '';
-            card.querySelector('.pkg-name').value = pkg.nombre || '';
-            card.querySelector('.pkg-price').value = pkg.precio || 0;
-            card.querySelector('.pkg-desc').value = pkg.descripcion || '';
-
-            // Populate Tabla Comparativa
-            const tc = pkg.tabla_comparativa || {};
-            card.querySelector('.tc-digital').value = tc.fotos_digitales || 0;
-            card.querySelector('.tc-prints').value = tc.impresiones || '';
-            card.querySelector('.tc-framed').value = tc.foto_enmarcada || '';
-            card.querySelector('.tc-ideal').value = tc.ideal_para || '';
-            
-            card.querySelector('.tc-group').checked = !!tc.foto_grupal;
-            card.querySelector('.tc-family').checked = !!tc.fotos_familiares;
-
-            // Delete button
-            card.querySelector('.delete-package-btn').addEventListener('click', () => {
-                if (confirm('¿Seguro que deseas eliminar este paquete?')) {
-                    const school = preciosData.escuelas[currentSchoolIndex];
-                    school.paquetes.splice(pkgIndex, 1);
-                    renderPackages(school.paquetes);
-                }
-            });
-
-            packagesContainer.appendChild(card);
+            const option = document.createElement('option');
+            option.value = pkgIndex;
+            option.textContent = `${pkg.nombre || '(Sin Nombre)'} [${pkg.id || 'sin_id'}]`;
+            packageSelect.appendChild(option);
         });
         
+        if (activePackageIndex === null || activePackageIndex >= paquetes.length) {
+            activePackageIndex = 0;
+        }
+        packageSelect.value = activePackageIndex;
+        
+        const pkg = paquetes[activePackageIndex];
+        const clone = packageTemplate.content.cloneNode(true);
+        const card = clone.querySelector('.package-card');
+        
+        // Populate Basic Info
+        card.querySelector('.pkg-id').value = pkg.id || '';
+        card.querySelector('.pkg-name').value = pkg.nombre || '';
+        card.querySelector('.pkg-price').value = pkg.precio || 0;
+        card.querySelector('.pkg-desc').value = pkg.descripcion || '';
+
+        // Populate Tabla Comparativa
+        const tc = pkg.tabla_comparativa || {};
+        card.querySelector('.tc-digital').value = tc.fotos_digitales || 0;
+        card.querySelector('.tc-prints').value = tc.impresiones || '';
+        card.querySelector('.tc-framed').value = tc.foto_enmarcada || '';
+        card.querySelector('.tc-ideal').value = tc.ideal_para || '';
+        
+        card.querySelector('.tc-group').checked = !!tc.foto_grupal;
+        card.querySelector('.tc-family').checked = !!tc.fotos_familiares;
+
+        // Reactive events
+        card.addEventListener('input', () => {
+            saveActivePackageFromDOM(card);
+            const option = packageSelect.options[activePackageIndex];
+            if (option) {
+                const nameVal = card.querySelector('.pkg-name').value || 'Nuevo Paquete';
+                const idVal = card.querySelector('.pkg-id').value || '';
+                option.textContent = `${nameVal} [${idVal}]`;
+            }
+            renderPreview();
+        });
+        
+        card.addEventListener('change', () => {
+            saveActivePackageFromDOM(card);
+            renderPreview();
+        });
+
+        // Delete button
+        card.querySelector('.delete-package-btn').addEventListener('click', () => {
+            if (confirm('¿Seguro que deseas eliminar este paquete?')) {
+                const school = preciosData.escuelas[currentSchoolIndex];
+                school.paquetes.splice(activePackageIndex, 1);
+                activePackageIndex = school.paquetes.length > 0 ? 0 : null;
+                renderPackages(school.paquetes);
+            }
+        });
+
+        packagesContainer.appendChild(card);
         renderPreview();
     }
 
+    // Select package from dropdown
+    packageSelect.addEventListener('change', (e) => {
+        const card = packagesContainer.querySelector('.package-card');
+        if (card && activePackageIndex !== null) {
+            saveActivePackageFromDOM(card);
+        }
+        activePackageIndex = parseInt(e.target.value, 10);
+        const school = preciosData.escuelas[currentSchoolIndex];
+        renderPackages(school.paquetes);
+    });
+
     function renderPreview() {
         const tablePreview = document.getElementById('tablePreview');
-        const cards = packagesContainer.querySelectorAll('.package-card');
+        if (currentSchoolIndex === null) return;
+        const school = preciosData.escuelas[currentSchoolIndex];
+        const paquetes = school.paquetes || [];
         
-        if (cards.length === 0) {
+        if (paquetes.length === 0) {
             tablePreview.innerHTML = '<div class="pt-cell">No hay paquetes para comparar.</div>';
             tablePreview.style.gridTemplateColumns = '1fr';
             return;
         }
 
         // Configure Grid Columns: 1 for features + 1 for each package
-        tablePreview.style.gridTemplateColumns = `minmax(200px, 1fr) repeat(${cards.length}, minmax(180px, 1fr))`;
+        tablePreview.style.gridTemplateColumns = `minmax(200px, 1fr) repeat(${paquetes.length}, minmax(180px, 1fr))`;
         
         // Define rows we want to show
         const rows = [
@@ -173,28 +252,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Columns for each package
-            cards.forEach(card => {
+            paquetes.forEach(pkg => {
+                const tc = pkg.tabla_comparativa || {};
                 if (row.key === 'header') {
-                    const name = card.querySelector('.pkg-name').value || 'Paquete';
-                    const price = card.querySelector('.pkg-price').value || '0';
+                    const name = pkg.nombre || 'Paquete';
+                    const price = pkg.precio || '0';
                     html += `<div class="pt-cell header"><h4>${name}</h4><div class="price">$${price}</div></div>`;
                 } else if (row.key === 'digitales') {
-                    const val = card.querySelector('.tc-digital').value || 0;
+                    const val = tc.fotos_digitales || 0;
                     html += `<div class="pt-cell text-center" style="text-align:center;">${val > 0 ? val + ' Fotos' : '-'}</div>`;
                 } else if (row.key === 'impresiones') {
-                    const val = card.querySelector('.tc-prints').value;
+                    const val = tc.impresiones;
                     html += `<div class="pt-cell text-center" style="text-align:center;">${val ? val : '-'}</div>`;
                 } else if (row.key === 'enmarcada') {
-                    const val = card.querySelector('.tc-framed').value;
+                    const val = tc.foto_enmarcada;
                     html += `<div class="pt-cell text-center" style="text-align:center;">${val ? val : '-'}</div>`;
                 } else if (row.key === 'grupal') {
-                    const val = card.querySelector('.tc-group').checked;
+                    const val = tc.foto_grupal;
                     html += `<div class="pt-cell text-center" style="text-align:center; font-size: 1.2rem;">${val ? '✅' : '❌'}</div>`;
                 } else if (row.key === 'familiar') {
-                    const val = card.querySelector('.tc-family').checked;
+                    const val = tc.fotos_familiares;
                     html += `<div class="pt-cell text-center" style="text-align:center; font-size: 1.2rem;">${val ? '✅' : '❌'}</div>`;
                 } else if (row.key === 'ideal') {
-                    const val = card.querySelector('.tc-ideal').value;
+                    const val = tc.ideal_para;
                     html += `<div class="pt-cell ideal-para">${val ? val : ''}</div>`;
                 }
             });
@@ -202,10 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tablePreview.innerHTML = html;
     }
-
-    // Attach event delegation for live preview
-    packagesContainer.addEventListener('input', renderPreview);
-    packagesContainer.addEventListener('change', renderPreview);
 
     // Save current school changes to memory
     function saveCurrentSchoolChanges() {
@@ -219,37 +295,12 @@ document.addEventListener('DOMContentLoaded', () => {
         school.years = schoolYearsInput.value.split(',').map(s => parseInt(s.trim(), 10)).filter(n => !isNaN(n));
         school.ga_id = schoolGaIdInput.value.trim();
 
-        // Rebuild packages array
-        const newPackages = [];
-        const cards = packagesContainer.querySelectorAll('.package-card');
-        
-        cards.forEach((card, index) => {
-            // Keep existing entregables block to not break backward compatibility
-            const existingPkg = school.paquetes[index] || {};
-            const entregables = existingPkg.entregables || {
-                impresos: [],
-                digitales: { plataforma: "Galería online" }
-            };
+        // Save current active package DOM to memory
+        const card = packagesContainer.querySelector('.package-card');
+        if (card && activePackageIndex !== null) {
+            saveActivePackageFromDOM(card);
+        }
 
-            const pkg = {
-                id: card.querySelector('.pkg-id').value || `paquete_${index + 1}`,
-                nombre: card.querySelector('.pkg-name').value,
-                precio: parseInt(card.querySelector('.pkg-price').value) || 0,
-                descripcion: card.querySelector('.pkg-desc').value,
-                tabla_comparativa: {
-                    fotos_digitales: parseInt(card.querySelector('.tc-digital').value) || 0,
-                    foto_grupal: card.querySelector('.tc-group').checked,
-                    impresiones: card.querySelector('.tc-prints').value || null,
-                    foto_enmarcada: card.querySelector('.tc-framed').value || null,
-                    fotos_familiares: card.querySelector('.tc-family').checked,
-                    ideal_para: card.querySelector('.tc-ideal').value || null
-                },
-                entregables: entregables
-            };
-            newPackages.push(pkg);
-        });
-
-        school.paquetes = newPackages;
         updateStats();
         renderSchoolsList();
     }
@@ -265,6 +316,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentSchoolIndex === null) return;
         const school = preciosData.escuelas[currentSchoolIndex];
         if (!school.paquetes) school.paquetes = [];
+        
+        // Save current package before adding
+        const card = packagesContainer.querySelector('.package-card');
+        if (card && activePackageIndex !== null) {
+            saveActivePackageFromDOM(card);
+        }
         
         school.paquetes.push({
             id: `paquete_${school.paquetes.length + 1}`,
@@ -282,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
             entregables: { impresos: [], digitales: { plataforma: "Galería online" } }
         });
         
+        activePackageIndex = school.paquetes.length - 1;
         renderPackages(school.paquetes);
     });
 
@@ -317,13 +375,67 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         preciosData.escuelas.push(newSchool);
+        preciosData.escuelas.sort((a, b) => a.code.localeCompare(b.code));
+        
         updateStats();
         renderSchoolsList();
         
         // Select the newly created school
-        selectSchool(preciosData.escuelas.length - 1);
+        const newIndex = preciosData.escuelas.findIndex(e => e.code === cleanCode);
+        currentSchoolIndex = newIndex;
+        selectSchool(newIndex);
         
         alert(`¡Colegio ${cleanCode} creado con éxito en memoria! Recuerda guardar y descargar el archivo al finalizar.`);
+    });
+
+    // Duplicate existing school
+    document.getElementById('btnDuplicateSchool').addEventListener('click', () => {
+        if (!preciosData || currentSchoolIndex === null) return;
+        
+        // Auto-save changes of current school first to copy current inputs
+        saveCurrentSchoolChanges();
+        
+        const sourceSchool = preciosData.escuelas[currentSchoolIndex];
+        
+        const code = prompt("Ingresa el código único para el nuevo colegio clonado (4 letras minúsculas, ej: sanj):");
+        if (!code) return;
+        
+        const cleanCode = code.trim().toLowerCase();
+        if (cleanCode.length !== 4) {
+            alert("El código debe tener exactamente 4 letras minúsculas.");
+            return;
+        }
+
+        const exists = preciosData.escuelas.some(e => e.code === cleanCode);
+        if (exists) {
+            alert(`El código ${cleanCode} ya está registrado.`);
+            return;
+        }
+
+        const name = prompt("Ingresa el nombre completo para el colegio clonado:", `${sourceSchool.name} (Copia)`);
+        if (!name) return;
+
+        // Deep copy the original school configuration
+        const duplicatedSchool = JSON.parse(JSON.stringify(sourceSchool));
+        duplicatedSchool.code = cleanCode;
+        duplicatedSchool.name = name.trim();
+
+        // Push new school configuration into array
+        preciosData.escuelas.push(duplicatedSchool);
+        
+        // Sort schools alphabetically by code
+        preciosData.escuelas.sort((a, b) => a.code.localeCompare(b.code));
+        
+        // Update dashboard state
+        updateStats();
+        renderSchoolsList();
+        
+        // Select the newly duplicated school
+        const newIndex = preciosData.escuelas.findIndex(e => e.code === cleanCode);
+        currentSchoolIndex = newIndex;
+        selectSchool(newIndex);
+        
+        alert(`¡Colegio ${cleanCode} duplicado con éxito en memoria! Recuerda guardar y descargar el archivo al finalizar.`);
     });
 
     // Download JSON
@@ -352,3 +464,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Init App
     init();
 });
+

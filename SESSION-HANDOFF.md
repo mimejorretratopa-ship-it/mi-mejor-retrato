@@ -1,12 +1,28 @@
 # 🤝 Session Handoff — Mi Mejor Retrato
 
-## 🎯 Estado Actual: TRACKER DE PROPUESTAS ACTIVO + GENERADORES (PDF/PERFILES) + HUB v4.2
+## 🎯 Estado Actual: PANEL ADMIN COMPACTO + URLS LIMPIAS B2C (`/familias/:slug`) + TRACKER DE PROPUESTAS ACTIVO + HUB v4.2
 
-Esta sesión completó la implementación de las herramientas operativas internas: el **Generador de Hojas de Ruta PDF con Códigos QR** (para control de sesión) y el **Generador de Perfiles Discovery** (para imprimir cuestionarios de forma masiva). El Hub fue actualizado a la versión **v4.2**.
+Esta sesión completó la implementación de las **URLs limpias para familias** (`/familias/:slug` mediante Vercel rewrites) y un **rediseño completo de usabilidad del Panel de Administración** (`/admin`) con una UI ultra compacta libre de scroll innecesario, ordenación alfabética automática de escuelas y un editor interactivo de paquetes por dropdown con previsualización en tiempo real.
 
 ---
 
-## ✅ Logros Técnicos de Esta Sesión (Mayo 25, 2026)
+## ✅ Logros Técnicos de Esta Sesión (Junio 10, 2026)
+
+### 1. URLs Limpias para Padres/Familias (`/familias/:slug`)
+* **Ubicación:** `familias/index.html` y configuración en `vercel.json`.
+* **Mecanismo de Enrutamiento:** Se implementó una regla de rewrite en Vercel para redirigir peticiones del tipo `/familias/lasa-26` directamente al archivo físico `/familias/index.html` de manera transparente para el usuario. También se configuró una redirección 301 para limpiar extensiones `.html` (ej: `/familias/lasa-26.html` redirige a `/familias/lasa-26`).
+* **Independencia de Código:** Se aislaron las rutas de recursos en `familias/index.html` utilizando rutas absolutas en la raíz (ej: `/propuesta/js/app.js`, `/css/...`), permitiendo compartir la lógica de propuestas y onboarding B2C sin duplicación.
+* **Extracción de Parámetros:** Se actualizó `propuesta/js/app.js` para extraer de manera inteligente el código de escuela y año (`schoolId`) tanto del pathname de la URL limpia (`/familias/lasa-26` o `/propuesta/lasa-26`) como del query parameter clásico (`?co=lasa-26` o `?brochure=lasa-26`), garantizando compatibilidad total en local y producción.
+
+### 2. Panel de Administración UX/UI Premium Compacto (`/admin`)
+* **Reducción de Scroll:** Se densificó la interfaz reduciendo márgenes, paddings, tamaños de fuente y gaps en todas las tarjetas de configuración, optimizando el uso de pantalla en monitores medianos/grandes.
+* **Orden Alfabético:** Las escuelas en el listado de la izquierda se ordenan automáticamente de forma alfabética por su código de 4 letras al cargar los datos en memoria.
+* **Editor de Paquetes por Dropdown:** Se sustituyó la edición masiva e inline de paquetes (que generaba cards verticales excesivos) por un selector dropdown (`#packageSelect`). Ahora el usuario edita un único paquete de forma aislada e intuitiva.
+* **Previsualización Global en Tiempo Real:** Mientras se edita el paquete seleccionado en el formulario simplificado, los cambios se actualizan en memoria (`preciosData.escuelas`) y recalculan una tabla de previsualización comparativa global idéntica a la que verán los clientes, eliminando errores de sincronización y validación manual de datos.
+
+---
+
+## ✅ Logros Técnicos de Sesiones Anteriores (Mayo 25, 2026)
 
 ### 1. Herramienta: Generador PDF + QR (`herramientas/generador_pdf/index.html`)
 * **Ubicación:** `herramientas/generador_pdf/index.html`. Funciona de manera local y aislada.

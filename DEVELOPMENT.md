@@ -26,9 +26,10 @@ El sistema requiere configurar tanto la experiencia comercial para el colegio (B
 ### Paso 1: Registrar el Colegio (Usando el Dashboard)
 No edites `precios.json` a mano.
 1. Abre `admin/index.html` con Live Server.
-2. Haz clic en el botón **`➕ Agregar Colegio`** en la parte inferior del menú lateral izquierdo.
-3. Ingresa el código único de 4 letras minúsculas (ej: `lasa`) y el nombre completo de la institución.
-4. El colegio se creará y se seleccionará automáticamente en la interfaz.
+2. Nota que la barra lateral de la izquierda ordena automáticamente todos los colegios por su código de 4 letras de forma alfabética.
+3. Haz clic en el botón **`➕ Agregar Colegio`** en la parte inferior del menú lateral izquierdo.
+4. Ingresa el código único de 4 letras minúsculas (ej: `lasa`) y el nombre completo de la institución.
+5. El colegio se creará y se seleccionará automáticamente en la interfaz.
 
 ### Paso 2: Configurar Identidad, Precios y Visibilidad
 1. Selecciona tu colegio en la barra lateral del panel de administración.
@@ -37,9 +38,10 @@ No edites `precios.json` a mano.
    * **Años Activos** (ej: *26*)
    * **ID de Google Analytics 4** (ej: *G-6H4H52RL0T*)
 3. Cambia el Estado a **"🟢 Publicar"**, **"🔴 Ocultar"** o **"🟡 Pendiente"** en la esquina superior derecha.
-4. Añade y configura los paquetes visualmente (asegúrate de encender/apagar la opción de Fotos Familiares y configurar la tabla comparativa según aplique).
-5. **Autoguardado Inteligente:** ¡Ya no tienes que preocuparte por perder datos! El panel guarda de manera automática e invisible lo que edites al cambiar de colegio o al hacer clic en el botón verde inferior.
-6. Haz clic en el botón verde inferior **`Descargar precios.json actualizado`** para bajar tu archivo corregido y guárdalo en `onboarding/data/precios.json` reemplazando el anterior.
+4. **Editor de Paquetes:** Selecciona el paquete que deseas editar usando el menú desplegable (dropdown) **`Seleccionar paquete a editar`**. Esto cargará la tarjeta correspondiente de forma aislada, evitando el scroll vertical excesivo.
+5. **Previsualización Global:** Los cambios en los entregables o precios del paquete seleccionado se inyectan en tiempo real en la tabla de previsualización comparativa al pie de la página, permitiendo verificar de inmediato la consistencia de los datos.
+6. **Autoguardado Inteligente:** ¡Ya no tienes que preocuparte por perder datos! El panel guarda de manera automática e invisible lo que edites al cambiar de colegio, de paquete o al hacer clic en el botón verde inferior.
+7. Haz clic en el botón verde inferior **`Descargar precios.json actualizado`** para bajar tu archivo corregido y guárdalo en `onboarding/data/precios.json` reemplazando el anterior.
 
 ### Paso 3: Crear Configuración B2C (Onboarding)
 Duplica un archivo existente en `onboarding/data/` (ej: `lasa_secciones.json`) y renómbralo a `{code}_secciones.json`.
@@ -50,8 +52,9 @@ Duplica un archivo existente en `propuesta/data/` (ej: `lasa_propuesta.json`) y 
 Ajusta la logística, fechas y el copy específico que leerá la directiva del colegio.
 
 ### Paso 5: Probar Localmente
-* **Brochure:** `http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}`
-* **Onboarding:** `http://127.0.0.1:5500/onboarding/index.html?brochure={code}-{yy}`
+* **Brochure B2B:** `http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}`
+* **Familias B2C (Ruta Limpia):** `http://127.0.0.1:5500/familias/index.html?brochure={code}-{yy}` (se resolverá como `/familias/{code}-{yy}` en producción en Vercel)
+* **Onboarding B2C:** `http://127.0.0.1:5500/onboarding/index.html?brochure={code}-{yy}`
 
 ### Paso 6: Lanzamiento (Outreach con Pulso)
 Usa **Pulso** (`herramientas/wassap-crm/index.html`) para crear campañas masivas de WhatsApp.

@@ -55,7 +55,10 @@
             <!-- Editor de la Escuela Seleccionada -->
             <section class="school-editor" id="schoolEditor" style="display: none;">
                 <div class="editor-header">
-                    <h2>Configurando: <span id="currentSchoolCode" class="badge"></span></h2>
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <h2>Configurando: <span id="currentSchoolCode" class="badge"></span></h2>
+                        <button class="btn btn-secondary" id="btnDuplicateSchool" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" title="Duplicar este colegio con un nuevo código">📋 Duplicar Colegio</button>
+                    </div>
                     
                     <div class="form-group row-group">
                         <label for="schoolVisibility">Estado:</label>
@@ -68,9 +71,9 @@
                 </div>
 
                 <!-- METADATOS DEL COLEGIO -->
-                <div class="metadata-section" style="margin-bottom: 24px; padding: 20px; border-radius: 12px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
-                    <h3 style="margin-top: 0; margin-bottom: 16px; font-size: 1.1rem; color: var(--text-dark);">Identidad del Colegio</h3>
-                    <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                <div class="metadata-section" style="margin-bottom: 12px; padding: 12px; border-radius: 12px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
+                    <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 1.1rem; color: var(--text-dark);">Identidad del Colegio</h3>
+                    <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                         <div class="form-group">
                             <label for="schoolName" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);">Nombre Comercial</label>
                             <input type="text" id="schoolName" placeholder="ej: Colegio La Salle" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem;">
@@ -94,6 +97,13 @@
                             <!-- La tabla se inyectará aquí mediante JS -->
                         </div>
                     </div>
+                </div>
+
+                <div class="package-selector-container" id="packageSelectorContainer" style="margin-bottom: 16px; display: flex; align-items: center; gap: 12px; background: var(--color-paper-warm); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                    <label for="packageSelect" style="font-weight: 600; font-size: 0.9rem; color: var(--color-ink-light);">Paquete a Editar:</label>
+                    <select id="packageSelect" class="visibility-select" style="flex: 1; font-weight: 600;">
+                        <!-- Opciones inyectadas por JS -->
+                    </select>
                 </div>
 
                 <div class="packages-container" id="packagesContainer">

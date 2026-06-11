@@ -41,15 +41,15 @@ body {
 .admin-header {
     background-color: #fff;
     border-bottom: 1px solid var(--color-border);
-    padding: 1.5rem 2rem;
+    padding: 0.8rem 1.5rem;
     box-shadow: var(--shadow-sm);
 }
 
 .header-container h1 {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--color-ink);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0;
 }
 
 .header-container p {
@@ -60,7 +60,7 @@ body {
 /* Main Layout */
 .admin-main {
     flex: 1;
-    padding: 2rem;
+    padding: 1rem;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
@@ -70,13 +70,13 @@ body {
 .stats-bar {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .stat-card {
     background: #fff;
-    padding: 1.5rem;
+    padding: 0.8rem;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     display: flex;
@@ -90,10 +90,10 @@ body {
 .stat-hidden { border-color: var(--color-danger); }
 
 .stat-value {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 600;
     line-height: 1;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
 }
 
 .stat-label {
@@ -107,7 +107,7 @@ body {
 .dashboard-layout {
     display: grid;
     grid-template-columns: 300px 1fr;
-    gap: 2rem;
+    gap: 1rem;
     align-items: start;
 }
 
@@ -120,7 +120,7 @@ body {
 }
 
 .list-header {
-    padding: 1.25rem 1.5rem;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--color-border);
     background-color: var(--color-accent-light);
 }
@@ -136,7 +136,7 @@ body {
 }
 
 .school-item {
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--color-border);
     cursor: pointer;
     transition: background 0.2s ease;
@@ -174,21 +174,21 @@ body {
     background: #fff;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    padding: 2rem;
+    padding: 1.25rem;
 }
 
 .editor-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border);
 }
 
 .editor-header h2 {
     font-family: var(--font-display);
-    font-size: 1.75rem;
+    font-size: 1.5rem;
 }
 
 .badge {
@@ -222,8 +222,8 @@ body {
 .packages-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .package-card {
@@ -235,7 +235,7 @@ body {
 
 .package-header {
     background: #fff;
-    padding: 1rem 1.5rem;
+    padding: 0.6rem 1rem;
     border-bottom: 1px solid var(--color-border);
     display: flex;
     justify-content: space-between;
@@ -243,19 +243,19 @@ body {
 }
 
 .package-body {
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.25rem;
+    gap: 0.75rem;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 .form-group.full-width {
@@ -270,7 +270,7 @@ body {
 
 .form-group input[type="text"],
 .form-group input[type="number"] {
-    padding: 0.6rem 0.8rem;
+    padding: 0.4rem 0.6rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     font-family: var(--font-sans);
@@ -301,26 +301,26 @@ body {
 .divider {
     border: 0;
     border-top: 1px dashed var(--color-border);
-    margin: 1.5rem 0;
+    margin: 0.75rem 0;
 }
 
 h4 {
     font-family: var(--font-display);
     color: var(--color-accent);
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
 }
 
 /* Buttons */
 .editor-actions {
     display: flex;
     justify-content: space-between;
-    padding-top: 1.5rem;
+    padding-top: 0.75rem;
     border-top: 1px solid var(--color-border);
 }
 
 .btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: var(--radius-sm);
     font-family: var(--font-sans);
@@ -364,7 +364,7 @@ h4 {
 .admin-footer {
     background: #fff;
     border-top: 1px solid var(--color-border);
-    padding: 2rem;
+    padding: 1rem;
     text-align: center;
     margin-top: auto;
 }
@@ -381,8 +381,8 @@ h4 {
     background: #fff;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
@@ -390,9 +390,9 @@ h4 {
     font-family: var(--font-display);
     font-size: 1.25rem;
     color: var(--color-ink-light);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border);
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
 }
 
 .pricing-table-wrapper {
@@ -414,7 +414,7 @@ h4 {
 
 .pt-cell {
     background: #fff;
-    padding: 1rem;
+    padding: 0.6rem;
     font-size: 0.9rem;
     display: flex;
     flex-direction: column;

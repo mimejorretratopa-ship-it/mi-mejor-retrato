@@ -47,14 +47,31 @@ El HTML **no necesita edición**. Todo se autoconfigura desde el nombre del arch
 
 - **HTML + CSS + Vanilla JS** — sin frameworks, sin build step
 - **Vercel** — static hosting (deploy automático desde GitHub)
-- **JSONs estáticos** — toda la configuración vive en `/data/`
+- **JSONs estáticos** — toda la configuración vive en `/data/` y `onboarding/data/`
+- **Enrutamiento Limpio** — reglas de redirección y rewrites en `vercel.json` para URLs tipo `/familias/:slug` y `/propuesta/:slug`
 
 ## Estructura de archivos
 
 ```
 /
-├── {code}-{yy}.html          ← brochure por escuela/año (ej: ebrv-26.html)
-├── brochure.css              ← estilos únicos compartidos
+├── familias/                 ← landing pages de familias con URLs limpias
+│   └── index.html            ← manejador de solicitudes /familias/:slug
+│
+├── admin/                    ← panel de control administrativo (CRM de precios)
+│   ├── index.html            ← interfaz compacta de edición
+│   ├── js/admin.js           ← lógica de guardado y previsualización
+│   └── css/admin.css         ← estilos densificados/compactados
+│
+├── onboarding/               ← flujo B2C para registro de fotos
+│   ├── index.html            ← cuestionario dinámico
+│   └── data/
+│       ├── precios.json      ← base de datos central de precios y escuelas
+│       └── [code]_secciones.json
+│
+├── propuesta/                ← propuesta comercial B2B para escuelas
+│   ├── index.html            ← plantilla híbrida de propuesta
+│   ├── js/app.js             ← script de extracción de slugs e inyección de datos
+│   └── css/style.css         ← estilos premium mobile-first
 │
 ├── config/
 │   └── brochure-config.js    ← todas las constantes (URLs, WhatsApp, GA, etc.)
@@ -65,26 +82,12 @@ El HTML **no necesita edición**. Todo se autoconfigura desde el nombre del arch
 │   ├── validators.js         ← validación de formulario
 │   └── utils.js              ← helpers reutilizables
 │
-├── modules/                  ← módulos de dominio (renderizado)
+├── modules/                  ← módulos de dominio (renderizado B2C)
 │   ├── form-renderer.js      ← renderiza el formulario desde formulario.json
 │   ├── paquetes.js           ← renderiza tarjetas de precios
-│   ├── galerias.js           ← galería de fotos por sección
-│   ├── secciones.js          ← muestra/oculta secciones según JSON
-│   ├── ubicacion.js          ← bloque de ubicación de la sesión
-│   └── analytics.js          ← Google Analytics
+│   └── ...
 │
-├── data/                     ← configuración de contenido (editar frecuentemente)
-│   ├── escuelas.json         ← catálogo de colegios (códigos)
-│   ├── precios.json          ← paquetes y precios por escuela
-│   ├── formulario.json       ← definición de campos del formulario
-│   ├── {code}_secciones.json ← secciones activas por escuela
-│   ├── registro.json         ← bitácora de todos los brochures
-│   └── formulario_output_sample.json
-│
-├── ubicaciones/              ← fotos de estudios
-├── portafolio/               ← fotos del portafolio
-└── apps-script/
-    └── MMR_brochures_hub_v3.3.gs  ← Google Apps Script Hub (backup, sin tokens)
+└── vercel.json               ← configuración de rewrites y redirecciones 301
 ```
 
 ## Desarrollo local

@@ -8,11 +8,18 @@ Un solo HTML funciona para cualquier escuela/año en onboarding porque **todo el
 
 ---
 
-## Capas del sistema
+## Capas del sistema y Enrutamiento Limpio
 
-Existen dos modalidades principales en la aplicación:
-1. **Onboarding Pre-Sesión (B2C)**: Completamente montado vía Javascript (Dynamic Layout).
-2. **Propuesta Comercial (B2B)**: Usa un modelo **Híbrido Estático/Dinámico** (HTML fijo inyectando datos).
+El ecosistema expone tres puntos de contacto principales:
+1. **Onboarding Pre-Sesión (B2C)**: Completamente dinámico vía `/onboarding/index.html` (Dynamic Layout).
+2. **Propuesta Comercial (B2B)**: Modelo híbrido estático/dinámico en `/propuesta/index.html`.
+3. **Página de Familias B2C (URLs Limpias)**: `/familias/:slug` (que apunta físicamente a `/familias/index.html` mediante Vercel rewrites). Esta página comparte la lógica y estilos de la propuesta comercial (`/propuesta/js/app.js` y `/propuesta/css/style.css`) mediante rutas absolutas de recursos, pero ofrece un llamado a la acción (CTA) adaptado para coordinar con las familias de un salón.
+
+### Arquitectura de Enrutamiento Limpio (`vercel.json`)
+Para evitar URLs complejas o directorios físicos repetidos por cada colegio, se utiliza un motor de enrutamiento basado en rewrites y redirects en Vercel:
+* **Rewrites:** Las solicitudes a `/familias/:slug` (ej: `/familias/lasa-26`) y `/propuesta/:slug` se reescriben internamente a sus respectivos archivos index (ej: `/familias/index.html` y `/propuesta/index.html`).
+* **Redirects (301):** Para asegurar una sola versión canonical de la URL, las visitas a rutas con extensión `.html` (ej: `/familias/lasa-26.html`) se redirigen permanentemente (301) a su versión limpia `/familias/lasa-26`.
+* **Compatibilidad local:** En el entorno local (`Live Server`), la extracción del ID del colegio (`schoolId`) es compatible tanto con la URL limpia como con el fallback de parámetros query (`?co=lasa-26` o `?brochure=lasa-26`).
 
 ### Arquitectura Onboarding B2C (Dinámica)
 ```
@@ -25,17 +32,15 @@ Existen dos modalidades principales en la aplicación:
 └──────────────────────┬──────────────────────────────┘
 ```
 
-### Arquitectura Propuesta B2B (Híbrida/Dinámica)
+### Arquitectura Propuesta B2B & Familias B2C (Híbrida/Dinámica)
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   HTML (View)                        │
-│                   propuesta/index.html               │
-│  — Mantiene copy, FAQ y logística                    │
-│  — Inyecta precios, escuela, año y tabla de precios │
-│    vía app.js (cero contenido hardcodeado)           │
-│  — Diseño Mobile-First con variables CSS en :root    │
-│  — Enfocada en SEO, LLMs y carga veloz               │
-└─────────────────────────────────────────────────────┘
+│              HTML (propuesta/familias)               │
+│        propuesta/index.html & familias/index.html   │
+│  — Mantienen estructura base, FAQs y CDN de estilos  │
+│  — Inyectan precios, escuelas y galerías dinámicas  │
+│  — `/familias` tiene CTA dual (B2B/B2C onboarding)   │
+└──────────────────────┬──────────────────────────────┘
 ```
                        │ llama a
 ┌──────────────────────▼──────────────────────────────┐
@@ -218,6 +223,19 @@ Ubicado en `herramientas/generador_perfiles/index.html`, permite imprimir las re
 * **Consumo Dinámico Paralelo**: El Hub v4.2 incluye un endpoint `getCuestionarios` que filtra la hoja de Google Sheets y retorna todas las respuestas de un salón específico. La UI combina esto con la configuración base de preguntas (`cuestionario_config.json`).
 * **Diseño de Impresión Continua**: Usa la tipografía editorial Garamond a 14pt, con lógica `@media print` para asegurar que cada perfil se imprima en su propia página limpia, sin cortar respuestas a la mitad.
 * **Seguridad en Integración**: El Hub maneja `getStudent` mediante POST de forma inteligente (buscando primero en Leads y luego en la hoja Cuestionarios) para evitar bloqueos por CORS y prevenir la creación de "filas fantasma" al cargar el formulario.
+
+---
+
+## 🛠️ Panel de Control y Edición de Precios (`/admin`)
+
+Ubicado en `admin/index.html`, es una aplicación de una sola página (SPA) que permite crear y modificar las escuelas y paquetes del archivo `precios.json` de manera visual e interactiva.
+
+### Arquitectura de Estado Unificado
+* **Fuente de Verdad Única en Runtime:** El panel funciona bajo un modelo **memory-first**. Los datos del JSON se cargan en la variable global `preciosData`. Cualquier interacción del usuario actualiza directamente este objeto en memoria.
+* **Separación de Flujo de Edición:** En lugar de renderizar y escuchar múltiples tarjetas de paquetes simultáneamente, el sistema aísla la edición al paquete seleccionado a través del dropdown interactivo (`#packageSelect`). Al cambiar de paquete o editar campos, la información se inyecta directamente al índice correspondiente del objeto `preciosData.escuelas[x].paquetes[activePackageIndex]`.
+* **Tabla de Previsualización en Tiempo Real (`renderPreview`):** Cada pulsación de tecla o cambio en los inputs del formulario activa `renderPreview()`, que regenera la tabla comparativa a partir de la versión en memoria de `preciosData`. Esto permite al administrador ver exactamente cómo se mostrará la tabla de precios comparativa a los padres/directivas en el sitio final, sin necesidad de guardar el archivo o recargar.
+* **Ordenamiento Automático:** Al cargar el listado de escuelas a la izquierda o añadir una nueva escuela, el array de escuelas de `preciosData` se ordena automáticamente de forma alfabética basándose en su propiedad `id` (código de 4 letras), facilitando la rápida localización de colegios.
+* **Persistencia por Descarga:** El botón verde inferior de exportación genera un archivo JSON al serializar el objeto `preciosData` en memoria, asegurando que los datos descargados estén 100% validados y formateados listos para reemplazar `onboarding/data/precios.json`.
 
 ---
 
