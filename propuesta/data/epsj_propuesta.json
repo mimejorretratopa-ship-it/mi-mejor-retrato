@@ -1,0 +1,64 @@
+{
+    "version": "1.0",
+    "metadata": {
+        "escuela_code": "chor",
+        "audiencia": "institucional",
+        "titulo_principal": "Propuesta Fotográfica Escolar",
+        "fecha_actualizacion": "10 de Junio, 2026"
+    },
+    "diferenciadores": {
+        "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real.",
+        "fotos_autenticas": "El cuestionario previo — Nuestro truco secreto. Nos cuentan los gustos, comida favorita, música y nosotros nos preparamos antes.",
+        "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas."
+    },
+    "galeria": {
+        "portafolio_id": "lasa"
+    },
+    "logistica": {
+        "ubicacion": {
+            "titulo": "Ubicación de la Sesión",
+            "opciones_activas": [
+                {
+                    "tipo": "estudio_chorrera",
+                    "texto_display": "Estudio La Chorrera",
+                    "descripcion": "Estudio fotográfico profesional y cómodo ubicado en La Chorrera."
+                }
+            ]
+        },
+        "capas_birretes": {
+            "incluido": true,
+            "texto": "Proveemos capas y birretes del color que requieran si la sesión es para graduación."
+        },
+        "solicitudes_especiales": {
+            "mascotas": true,
+            "familiares": "Sin límite de personas del núcleo familiar en el estudio.",
+            "cambios_vestuario": "Permitidos dentro del tiempo de la sesión."
+        }
+    },
+    "entrega_y_pagos": {
+        "metodo_entrega": [
+            {
+                "tipo": "delivery",
+                "texto": "Delivery directo a casa o trabajo ($2.50) o retiro en estudio."
+            }
+        ],
+        "tiempo_entrega_semanas": 2,
+        "recoleccion_dinero": {
+            "metodo_principal": "Pago directo",
+            "explicacion": "Pago directo vía Yappy o transferencia al fotógrafo."
+        }
+    },
+    "politicas": {
+        "inasistencia": {
+            "titulo": "Política de Reagendamiento",
+            "opcion_multiples_salones": "Se programará 1 fecha extra global sin costo.",
+            "opcion_un_salon": "Recargo de $15 por asignar una nueva fecha individual."
+        },
+        "descuento_hermanos": {
+            "aplica": true,
+            "porcentaje": 25,
+            "texto": "El padre de familia podrá ver todas las fotos capturadas y escoger las que más le gustaron.  Hay un tiempo límite de dos semanas para escoger las fotos."
+        },
+        "extras": "Posibilidad de adquirir archivos digitales extra o impresiones."
+    }
+}
