@@ -57,7 +57,7 @@
     "descuento_hermanos": {
       "aplica": true,
       "porcentaje": 25,
-      "texto": "25% de descuento por cada hijo."
+      "texto": "El padre de familia podrá ver todas las fotos capturadas y escoger las que más le gustaron.  Hay un tiempo límite de dos semanas para escoger las fotos."
     },
     "extras": "Posibilidad de adquirir archivos digitales extra o impresiones."
   }
