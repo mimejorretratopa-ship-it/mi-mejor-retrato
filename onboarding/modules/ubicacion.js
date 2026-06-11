@@ -37,13 +37,13 @@ const ubicacionModule = (() => {
     if (estado === 'pendiente') {
       contenedor.innerHTML = `
         <div class="ubicacion-pendiente">
-          <p>La ubicación se confirmará próximamente.</p>
+          <p>Aún por definir.  Todavía debemos ponernos de acuerdo con La Adminsitración si puede ser en el Colegio o si debemos hacerlas aparte en estudio fotográfico.</p>
         </div>
       `;
     } else if (estado === 'texto') {
       contenedor.innerHTML = `
         <div class="ubicacion-pendiente">
-          <p>${mensaje || 'La ubicación se confirmará próximamente.'}</p>
+          <p>${mensaje || 'Aún por definir.  Todavía debemos ponernos de acuerdo con La Adminsitración si puede ser en el Colegio o si debemod hacerlas aparte en estudio fotográfico.'}</p>
         </div>
       `;
     } else if (estado === 'colegio') {
@@ -54,7 +54,7 @@ const ubicacionModule = (() => {
       contenedor.innerHTML = `
         <div class="ubicaciones-grid">
           <div class="ubicacion-card" id="ubicacion-colegio-card">
-            <p>Las fotos se harán en la escuela</p>
+            <p>Las fotos se harán en la escuela.</p>
           </div>
         </div>
       `;

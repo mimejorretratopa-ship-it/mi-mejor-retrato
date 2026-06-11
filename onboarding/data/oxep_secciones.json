@@ -11,7 +11,7 @@
         },
         "ubicacion": {
             "activo": true,
-            "estado": "colegio",
+            "estado": "ubicacion-pendiente",
             "mensaje": "",
             "ubicaciones": [
                 "condado",
@@ -42,24 +42,24 @@
     },
     "salones": [
         {
-            "valor": "k",
-            "label": "Kínder",
-            "corto": "k"
+            "valor": "k_a",
+            "label": "Kínder A",
+            "corto": "ka"
         },
         {
-            "valor": "6",
-            "label": "6to grado",
-            "corto": "6"
+            "valor": "k_b",
+            "label": "Kínder B",
+            "corto": "kb"
         },
         {
-            "valor": "9",
-            "label": "9no grado",
-            "corto": "9"
+            "valor": "k_c",
+            "label": "Kínder C",
+            "corto": "kc"
         },
         {
-            "valor": "12",
-            "label": "12vo grado",
-            "corto": "12"
+            "valor": "k_d",
+            "label": "Kínder D",
+            "corto": "kd"
         }
     ],
     "metadata": {

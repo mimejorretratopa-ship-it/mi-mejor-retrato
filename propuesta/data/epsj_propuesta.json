@@ -19,9 +19,9 @@
             "titulo": "Ubicación de la Sesión",
             "opciones_activas": [
                 {
-                    "tipo": "estudio_chorrera",
-                    "texto_display": "Estudio La Chorrera",
-                    "descripcion": "Estudio fotográfico profesional y cómodo ubicado en La Chorrera."
+                    "tipo": "pendiente",
+                    "texto_display": "Aún por definir.  Todavía debemos ponernos de acuerdo con La Adminsitración si puede ser en el Colegio o si debemos hacerlas aparte en estudio fotográfico.",
+                    "descripcion": "Todavía debemos ponernos de acuerdo con La Adminsitración si puede ser en el Colegio o si debemos hacerlas aparte en estudio fotográfico."
                 }
             ]
         },
