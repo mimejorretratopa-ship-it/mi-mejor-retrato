@@ -18,12 +18,12 @@
     {
       "id": "viaargentina",
       "nombre": "Estudio Vía Argentina",
-      "imagen": "ubicaciones/viaargentina.jpg"
+      "imagen": "ubicaciones/viaargentina.png"
     },
     {
       "id": "lachorrera",
       "nombre": "Estudio La Chorrera",
-      "imagen": "ubicaciones/lachorrera.jpg"
+      "imagen": "ubicaciones/lachorrera.png"
     }
   ],
   "escuelas": [
