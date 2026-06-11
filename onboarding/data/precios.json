@@ -804,8 +804,69 @@
         26
       ],
       "ga_id": "G-6H4H52RL0T",
-      "visibilidad": "pendiente",
-      "paquetes": []
+      "visibilidad": "publicar",
+      "paquetes": [
+        {
+          "id": "paq_1_dig",
+          "nombre": "Fotos online",
+          "precio": 15,
+          "descripcion": "Únicamente opción de descargar",
+          "tabla_comparativa": {
+            "fotos_digitales": 4,
+            "foto_grupal": true,
+            "impresiones": "0",
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Familias que imprimirán por cuenta propia"
+          },
+          "entregables": {
+            "impresos": [],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paq_2_prt",
+          "nombre": "Fotos impresas + galería online",
+          "precio": 34,
+          "descripcion": "",
+          "tabla_comparativa": {
+            "fotos_digitales": 7,
+            "foto_grupal": true,
+            "impresiones": "1 grande + 3 pequeñas",
+            "foto_enmarcada": null,
+            "fotos_familiares": true,
+            "ideal_para": "Familias quienes quieren variedad sin complicarse."
+          },
+          "entregables": {
+            "impresos": [],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        },
+        {
+          "id": "paq_3_marco",
+          "nombre": "Premium",
+          "precio": 63,
+          "descripcion": "",
+          "tabla_comparativa": {
+            "fotos_digitales": 15,
+            "foto_grupal": true,
+            "impresiones": "2 grande + 8 pequeñas",
+            "foto_enmarcada": "Las 2 grandes",
+            "fotos_familiares": true,
+            "ideal_para": "Familias que van a regalar fotos enmarcadas y listas para colgar a sus abuelitas."
+          },
+          "entregables": {
+            "impresos": [],
+            "digitales": {
+              "plataforma": "Galería online"
+            }
+          }
+        }
+      ]
     },
     {
       "code": "port",
