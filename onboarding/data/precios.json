@@ -74,7 +74,7 @@
           "tabla_comparativa": {
             "fotos_digitales": 7,
             "foto_grupal": true,
-            "impresiones": "2 grande + 5 pequeñas",
+            "impresiones": "2 grande 8x12 + 5 pequeñas 4x6",
             "foto_enmarcada": null,
             "fotos_familiares": false,
             "ideal_para": "Familias quienes quieren variedad sin complicarse."
@@ -94,7 +94,7 @@
           "tabla_comparativa": {
             "fotos_digitales": 12,
             "foto_grupal": true,
-            "impresiones": "2 grande + 10 pequeñas",
+            "impresiones": "2 grande 8x12 + 10 pequeñas 4x6",
             "foto_enmarcada": "Las 2 grandes",
             "fotos_familiares": false,
             "ideal_para": "Familias que van a regalar fotos enmarcadas y listas para colgar a sus abuelitas."
