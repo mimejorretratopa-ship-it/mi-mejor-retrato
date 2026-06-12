@@ -51,6 +51,8 @@ Ajusta los horarios, las fechas límites y los salones disponibles.
 Duplica un archivo existente en `propuesta/data/` (ej: `lasa_propuesta.json`) y renómbralo a `{code}_propuesta.json`.
 Ajusta la logística, fechas y el copy específico que leerá la directiva del colegio.
 
+> **`capas_birretes`**: Si el colegio **no** usará capas y birretes, configura `"incluido": false` en el JSON. Esto oculta automáticamente la fila en la sección de Logística tanto en la propuesta como en el brochure familiar. Si `incluido` es `true` o está ausente, asegúrate de que `"texto"` tenga el copy descriptivo.
+
 ### Paso 5: Probar Localmente
 * **Brochure B2B:** `http://127.0.0.1:5500/propuesta/index.html?brochure={code}-{yy}`
 * **Familias B2C (Ruta Limpia):** `http://127.0.0.1:5500/familias/index.html?brochure={code}-{yy}` (se resolverá como `/familias/{code}-{yy}` en producción en Vercel)
@@ -85,11 +87,24 @@ Para conocer mejor a los niños antes de la sesión basándose en las respuestas
 3. La aplicación descargará las respuestas y las combinará con las preguntas base.
 4. Presiona **Imprimir PDF** para generar un documento limpio donde cada perfil ocupa su propia página, ideal para revisión rápida en el set.
 
+### Paso 10: Exportar Propuesta a HTML Plano (Para Email)
+Para enviar la propuesta como archivo HTML adjunto a un email o compartirla sin necesidad de servidor:
+1. Abre `http://127.0.0.1:5500/herramientas/exporter.html` con Live Server.
+2. Selecciona el tipo de documento: **Propuesta Institucional** o **Brochure Familiar**.
+3. Selecciona el colegio del dropdown (se carga automáticamente desde `precios.json`).
+4. Selecciona el año y activa o desactiva la galería de fotos según necesidad.
+5. Presiona **⚡ Generar HTML Plano** — el motor descarga los JSONs, renderiza el DOM, inyecta el CSS y elimina todos los scripts.
+6. Revisa la vista previa en el panel derecho.
+7. Usa **📋 Copiar** para pegar el HTML en tu gestor de email, o **⬇ Descargar** para obtener un archivo `chin-propuesta-2026.html` listo para adjuntar.
+
+> ⚠️ Esta herramienta solo funciona desde Live Server (necesita `fetch()` para leer los JSONs locales). El archivo descargado sí funciona sin servidor.
+
 ### Reglas de Diseño de la Propuesta (Estilo Editorial Premium)
 * **CSS de Marca**: Todos los estilos se heredan del archivo unificado [propuesta/css/style.css](file:///d:/mmr_studio/01_core_apps/website/propuesta/css/style.css). Cualquier ajuste estético debe usar los tokens declarados en `:root`.
 * **Formulario Eliminado**: Se eliminó el formulario de contacto largo en favor de un botón directo de WhatsApp. El copy final `"Los niños cambian muy rápido..."` se inyecta directamente antes del botón de WhatsApp.
 * **Tabla de Precios Comparativa Dinámica**: La tabla utiliza una implementación moderna en **CSS Grid** (`.pt-grid`) con scroll horizontal suave en móviles (`.pricing-table-wrapper`). No hay código HTML hardcodeado para los entregables ni precios de los paquetes; todo se inyecta dinámicamente desde `precios.json`.
 * **Consistencia Visual con Onboarding**: La sección de paquetes de la pantalla de onboarding (`onboarding/index.html`) utiliza exactamente el mismo componente de tabla comparativa, logrando coherencia de diseño a lo largo del embudo del cliente (B2B -> B2C).
+* **Capas y Birretes condicionales**: Si `logistica.capas_birretes.incluido === false` en el JSON de la propuesta, el elemento `#item-capas` se oculta automáticamente via `display: none` en `renderContent()` de `app.js`. Esta lógica aplica tanto a `/propuesta/` como a `/familias/`. El Exportador HTML replica esta misma lógica.
 
 ---
 

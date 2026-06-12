@@ -6,7 +6,44 @@ Esta sesión completó la implementación de las **URLs limpias para familias** 
 
 ---
 
-## ✅ Logros Técnicos de Esta Sesión (Junio 10, 2026)
+## ✅ Logros Técnicos de Esta Sesión (Junio 12, 2026)
+
+### 1. Corrección: Lógica de ocultar Capas y Birretes por propuesta
+
+* **Problema:** El campo `capas_birretes.incluido: false` en los JSONs de propuesta no estaba siendo respetado. El elemento `#item-capas` siempre era visible.
+* **Solución:** Se añadió `id="item-capas"` al elemento correspondiente en **`propuesta/index.html`** y **`familias/index.html`**. Se corrigió la lógica en **`propuesta/js/app.js`** (`renderContent`) para detectar `capas_birretes.incluido === false` (o campo ausente) y ocultar el elemento con `display: none`. Cuando está activo, solo inyecta el texto si `capas.texto` existe.
+* **Impacto:** Colegios como `chin` (Centro Cultural Chino Panameño) que tienen `capas_birretes.incluido: false` ahora ocultan correctamente esa línea de logística en ambas vistas (propuesta y brochure familiar).
+
+### 2. Nueva Herramienta: Exportador de Propuestas a HTML Plano (`herramientas/exporter.html`)
+
+* **Ubicación:** `herramientas/exporter.html`. Solo para uso local — no está linkeada desde ninguna página pública.
+* **Propósito:** Convierte cualquier propuesta institucional o brochure familiar en un archivo HTML autocontenido, listo para embeberse en un email o enviarse manualmente. Resuelve la limitación de que las propuestas actuales son páginas web dinámicas (requieren JS + fetch) que no funcionan en clientes de email.
+* **Cómo usarla:**
+  1. Abre `http://127.0.0.1:5500/herramientas/exporter.html` con Live Server.
+  2. Selecciona tipo de documento (Propuesta Institucional o Brochure Familiar).
+  3. Selecciona el colegio del dropdown (se llena automáticamente desde `precios.json`).
+  4. Selecciona el año y si incluir galería (checkmark).
+  5. Presiona **⚡ Generar HTML Plano**.
+  6. Vista previa se muestra en el panel derecho dentro de un iframe.
+  7. Botones **📋 Copiar** o **⬇ Descargar** (`chin-propuesta-2026.html`).
+* **Motor de Generación (técnico):**
+  * Hace `fetch` del template HTML real (`/propuesta/index.html` o `/familias/index.html`) y lo parsea con `DOMParser`.
+  * Carga el JSON específico del colegio (`/propuesta/data/{code}_propuesta.json`) y `precios.json`.
+  * Inyecta todos los datos en el DOM parseado (textos, tabla de precios, logística, políticas).
+  * Construye la tabla de precios CSS Grid con el mismo algoritmo exacto de `app.js`.
+  * Si la galería está activada, descarga el `manifest.json` del portafolio y renderiza imágenes con URLs absolutas a `https://www.mimejorretrato.com/...`.
+  * Descarga el CSS completo (`/propuesta/css/style.css`) y lo embebe como `<style>` inline.
+  * Elimina todos los `<script>` (analytics, `core/api.js`, `app.js`).
+  * Reemplaza el formulario B2B del CTA con un botón de WhatsApp directo pre-llenado con el nombre del colegio.
+  * Serializa el documento como `<!DOCTYPE html>\n` + `outerHTML` y genera un `Blob` descargable.
+
+### 3. Diagnóstico y Confirmación: `propuesta/index-cta-form.html` puede eliminarse
+
+* Verificado que el archivo `propuesta/index-cta-form.html` es un artefacto histórico del desarrollo. No está referenciado en `vercel.json`, ningún HTML, ni ningún JS activo. **Es seguro borrarlo** cuando se desee hacer limpieza.
+
+---
+
+## ✅ Logros Técnicos de Sesión Anterior (Junio 10, 2026)
 
 ### 1. URLs Limpias para Padres/Familias (`/familias/:slug`)
 * **Ubicación:** `familias/index.html` y configuración en `vercel.json`.
@@ -35,7 +72,7 @@ Esta sesión completó la implementación de las **URLs limpias para familias** 
 * **Consumo Dual:** Lee el JSON base localmente y obtiene las respuestas a través del nuevo endpoint `getCuestionarios` (v4.2).
 
 ### 3. Hub v4.2 — Secuencia Automática, Cuestionarios y Bugfixes
-* **Actualización a v4.2 (Hoy)**: Se modificaron los hooks de `getAgenda` y `saveAgenda` en `MMR_brochures_hub_v4.0.gs`. Ahora el sistema calcula automáticamente el orden cronológico de cada estudiante cuando el coordinador guarda la agenda, y lo inyecta como `Secuencia_Dia` en Airtable.
+* **Actualización a v4.2**: Se modificaron los hooks de `getAgenda` y `saveAgenda` en `MMR_brochures_hub_v4.0.gs`. Ahora el sistema calcula automáticamente el orden cronológico de cada estudiante cuando el coordinador guarda la agenda, y lo inyecta como `Secuencia_Dia` en Airtable.
 * **Bugfix Crítico (Filas Fantasma)**: Se blindó el endpoint `getStudent` en POST y se añadió un *guard* al bloque de `saveLead` para evitar la creación de filas vacías en la hoja cuando la app interactúa con el backend de forma temprana.
 
 ---

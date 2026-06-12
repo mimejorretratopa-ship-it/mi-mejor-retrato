@@ -226,6 +226,19 @@ Ubicado en `herramientas/generador_perfiles/index.html`, permite imprimir las re
 
 ---
 
+## 📤 Herramientas Locales: Exportador de Propuestas a HTML Plano
+
+Ubicado en `herramientas/exporter.html`, convierte cualquier propuesta institucional o brochure familiar en un archivo HTML autocontenido listo para embeberse en emails o compartirse sin servidor. **Solo para uso local de Mike — no está linkeada desde ninguna página pública.**
+
+* **Motor de renderizado:** Descarga el template real (`/propuesta/index.html` o `/familias/index.html`) y lo parsea con `DOMParser`. Inyecta todos los datos JSON en los elementos por `id` y construye la tabla de precios CSS Grid con el mismo algoritmo de `propuesta/js/app.js`.
+* **CSS Inline:** Descarga `/propuesta/css/style.css` y lo embebe como `<style>` en el `<head>` del output. La fuente de Google Fonts se mantiene como link externo.
+* **Limpieza de runtime:** Elimina todos los `<script>` (analytics, Discord, `core/api.js`, `app.js`). Convierte el formulario B2B del CTA en un botón de WhatsApp directo con mensaje pre-llenado con el nombre del colegio.
+* **Galería opcional:** Si activada, descarga el `manifest.json` del portafolio y renderiza imágenes con URLs absolutas a `https://www.mimejorretrato.com/propuesta/portafolios/...`.
+* **Output:** Archivo `{code}-{tipo}-20{yy}.html` completamente offline una vez descargado. La vista previa se muestra en un `<iframe srcdoc>` en el panel derecho del exportador.
+* **Convención importante:** Los nombres de paquetes en el header de la tabla se inyectan usando `.pt-head:not(.pt-label) .pt-name` spans — el template **no** tiene IDs `pt-nombre-X`. La lógica de `capas_birretes` es idéntica a la de `app.js`.
+
+---
+
 ## 🛠️ Panel de Control y Edición de Precios (`/admin`)
 
 Ubicado en `admin/index.html`, es una aplicación de una sola página (SPA) que permite crear y modificar las escuelas y paquetes del archivo `precios.json` de manera visual e interactiva.
