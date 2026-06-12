@@ -1,0 +1,63 @@
+{
+    "version": "1.0",
+    "metadata": {
+        "escuela_code": "pana",
+        "titulo_principal": "Propuesta Fotográfica Escolar",
+        "fecha_actualizacion": "18 de Mayo, 2026"
+    },
+    "diferenciadores": {
+        "trato_nino": "Nuestra prioridad es que el niño disfrute su sesión. No forzamos poses ni sonrisas. Trabajamos con paciencia y juego para capturar su personalidad real.",
+        "fotos_autenticas": "El cuestionario previo — Nuestro truco secreto. Nos cuentan los gustos, comida favorita, música y nosotros nos preparamos antes.",
+        "entregables": "Cada familia recibe su galería privada por WhatsApp con todas las fotos de preview para escoger sus favoritas."
+    },
+    "galeria": {
+        "portafolio_id": "lasa"
+    },
+    "logistica": {
+        "ubicacion": {
+            "titulo": "Ubicación de la Sesión",
+            "opciones_activas": [
+                {
+                    "tipo": "estudios",
+                    "texto_display": "Pueden escoger hacerla en la Escuela si nos ponemos de acuerdo con la Administración. O en Estudio fotográfico en Vía Argentina o Condado del Rey",
+                    "descripcion": "Estudios equipados en áreas de fácil acceso."
+                }
+            ]
+        },
+        "capas_birretes": {
+            "incluido": false,
+            "texto": "Proveemos capas y birretes del color que requieran."
+        },
+        "solicitudes_especiales": {
+            "mascotas": true,
+            "familiares": "Sin límite de personas del núcleo familiar en el estudio.",
+            "cambios_vestuario": "Permitidos dentro del tiempo de la sesión."
+        }
+    },
+    "entrega_y_pagos": {
+        "metodo_entrega": [
+            {
+                "tipo": "delivery",
+                "texto": "Delivery directo a casa o trabajo ($2.50) o retiro en estudio."
+            }
+        ],
+        "tiempo_entrega_semanas": 2,
+        "recoleccion_dinero": {
+            "metodo_principal": "Pago directo",
+            "explicacion": "Pago directo vía Yappy o transferencia al fotógrafo."
+        }
+    },
+    "politicas": {
+        "inasistencia": {
+            "titulo": "Política de Reagendamiento",
+            "opcion_multiples_salones": "Se programará 1 fecha extra global sin costo.",
+            "opcion_un_salon": "Recargo de $15 por asignar una nueva fecha individual."
+        },
+        "descuento_hermanos": {
+            "aplica": true,
+            "porcentaje": 25,
+            "texto": "25% de descuento por cada hijo."
+        },
+        "extras": "Posibilidad de adquirir archivos digitales extra o impresiones."
+    }
+}

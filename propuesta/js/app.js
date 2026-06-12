@@ -179,7 +179,14 @@ function renderContent(prop, precios) {
   // B. Logística
   const ubs = prop.logistica.ubicacion.opciones_activas.map(u => u.texto_display).join(" / ");
   setSafeText('txt-ubicaciones', ubs);
-  setSafeText('txt-capas', prop.logistica.capas_birretes.texto);
+
+  const itemCapas = document.getElementById('item-capas');
+  if (prop.logistica.capas_birretes && prop.logistica.capas_birretes.incluido === false) {
+    if (itemCapas) itemCapas.style.display = 'none';
+  } else {
+    if (itemCapas) itemCapas.style.display = '';
+    setSafeText('txt-capas', prop.logistica.capas_birretes.texto);
+  }
   
   const mascEl = document.getElementById('txt-mascotas');
   if (mascEl) {
