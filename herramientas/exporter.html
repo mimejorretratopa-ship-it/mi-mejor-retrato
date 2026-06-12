@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MMR · Exportador de Propuestas</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg:      #0a0a0a;
+      --surface: #121212;
+      --card:    #181818;
+      --border:  #242424;
+      --border2: #2e2e2e;
+      --text:    #f0f0f0;
+      --muted:   #888;
+      --accent:  #f07030;
+      --green:   #3ecf8e;
+      --yellow:  #f5c842;
+      --red:     #e05252;
+      --blue:    #60a5fa;
+      --mono:    'IBM Plex Mono', monospace;
+      --sans:    'IBM Plex Sans', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: var(--accent);
+    }
+    .logo span {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .app-container {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* --- SIDEBAR CONFIG --- */
+    .sidebar {
+      width: 380px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    select, input[type="text"], input[type="number"] {
+      font-family: var(--sans);
+      font-size: 13px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      width: 100%;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(240, 112, 48, 0.15);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      padding: 4px 0;
+    }
+    .checkbox-group input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      padding: 12px 20px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background-color .15s, opacity .15s, transform .1s;
+      text-transform: uppercase;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+    .btn-accent {
+      background: var(--accent);
+      color: white;
+    }
+    .btn-accent:hover {
+      background: #f18149;
+    }
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border2);
+    }
+    .btn-secondary:hover {
+      background: #202020;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .log-panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .log-entry {
+      margin-bottom: 4px;
+    }
+    .log-entry.success { color: var(--green); }
+    .log-entry.error { color: var(--red); }
+    .log-entry.info { color: var(--blue); }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* --- PREVIEW PANEL --- */
+    .preview-container {
+      flex: 1;
+      background: #1e1e1e;
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      gap: 16px;
+      position: relative;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .iframe-wrapper {
+      flex: 1;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    .empty-preview {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      color: var(--muted);
+      height: 100%;
+      font-family: var(--mono);
+    }
+    .empty-icon {
+      font-size: 48px;
+      opacity: 0.5;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 12px 20px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #toast.success { border-color: var(--green); color: var(--green); }
+    #toast.error { border-color: var(--red); color: var(--red); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">MMR <span>· Exportador de Propuestas</span></div>
+    <div style="font-family: var(--mono); font-size: 11px; color: var(--muted);">Uso local únicamente</div>
+  </header>
+
+  <div class="app-container">
+    <!-- Configuration Sidebar -->
+    <div class="sidebar">
+      <div>
+        <div class="section-title">Configuración</div>
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 12px;">
+          <div class="form-group">
+            <label for="doc-type">Tipo de Documento</label>
+            <select id="doc-type">
+              <option value="propuesta">Propuesta Institucional (propuesta/)</option>
+              <option value="familias">Brochure Familiar (familias/)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="school-select">Colegio</label>
+            <select id="school-select" disabled>
+              <option value="">Cargando catálogo...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="year-select">Año de la Propuesta</label>
+            <select id="year-select">
+              <option value="26" selected>2026 (26)</option>
+              <option value="25">2025 (25)</option>
+            </select>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="include-gallery" checked>
+            <label for="include-gallery">Incluir Galería de Fotos (con URLs absolutas)</label>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Acciones</div>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+          <button class="btn btn-accent" id="btn-generate" disabled>
+            <span>⚡ Generar HTML Plano</span>
+          </button>
+          
+          <div class="action-row">
+            <button class="btn btn-secondary" id="btn-copy" disabled>
+              <span>📋 Copiar</span>
+            </button>
+            <button class="btn btn-secondary" id="btn-download" disabled>
+              <span>⬇ Descargar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">Registro de Proceso</div>
+        <div class="log-panel" id="log-panel" style="margin-top: 12px;"></div>
+      </div>
+    </div>
+
+    <!-- Live Preview Panel -->
+    <div class="preview-container">
+      <div class="preview-header">
+        <div>Vista Previa del HTML Estático</div>
+        <div id="preview-status">Sin generar</div>
+      </div>
+
+      <div class="iframe-wrapper">
+        <div class="empty-preview" id="empty-preview">
+          <div class="empty-icon">📄</div>
+          <div>Configura los campos y presiona "Generar HTML" para previsualizar.</div>
+        </div>
+        <iframe id="preview-iframe" style="display: none;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // --- STATE ---
+    let preciosData = null;
+    let generatedHtml = '';
+    let selectedSchoolCode = '';
+
+    // --- DOM ELEMENTS ---
+    const docTypeSelect = document.getElementById('doc-type');
+    const schoolSelect = document.getElementById('school-select');
+    const yearSelect = document.getElementById('year-select');
+    const includeGalleryCheckbox = document.getElementById('include-gallery');
+    const btnGenerate = document.getElementById('btn-generate');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnDownload = document.getElementById('btn-download');
+    const logPanel = document.getElementById('log-panel');
+    const previewIframe = document.getElementById('preview-iframe');
+    const emptyPreview = document.getElementById('empty-preview');
+    const previewStatus = document.getElementById('preview-status');
+    const toastEl = document.getElementById('toast');
+
+    // --- UTILITIES ---
+    function log(message, type = '') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logPanel.appendChild(entry);
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+
+    function showToast(message, type = 'success') {
+      toastEl.textContent = message;
+      toastEl.className = `show ${type}`;
+      setTimeout(() => {
+        toastEl.className = '';
+      }, 3000);
+    }
+
+    // --- INITIALIZATION ---
+    async function init() {
+      log("Iniciando exportador...");
+      try {
+        log("Cargando precios.json...");
+        const res = await fetch('/onboarding/data/precios.json');
+        if (!res.ok) throw new Error("No se pudo cargar precios.json");
+        preciosData = await res.json();
+        log("precios.json cargado correctamente.", "success");
+
+        // Populate school select
+        schoolSelect.innerHTML = '<option value="">-- Selecciona una escuela --</option>';
+        
+        // Sort schools alphabetically
+        const schools = [...preciosData.escuelas].sort((a, b) => a.name.localeCompare(b.name));
+        
+        schools.forEach(school => {
+          // Skip 'b2b' dummy school if preferred, but keep it in case Mike needs it
+          const opt = document.createElement('option');
+          opt.value = school.code;
+          opt.textContent = `${school.name} (${school.code.toUpperCase()})`;
+          schoolSelect.appendChild(opt);
+        });
+
+        schoolSelect.disabled = false;
+        btnGenerate.disabled = false;
+        log("Exportador listo.", "success");
+
+      } catch (err) {
+        log(`Error al iniciar: ${err.message}`, "error");
+        schoolSelect.innerHTML = '<option value="">Error al cargar catálogo</option>';
+      }
+    }
+
+    // --- RENDERING CORE ENGINE (ADAPTED FOR EXPORTER) ---
+    async function generateStaticHtml() {
+      const docType = docTypeSelect.value;
+      const schoolCode = schoolSelect.value;
+      const year = yearSelect.value;
+      const includeGallery = includeGalleryCheckbox.checked;
+
+      if (!schoolCode) {
+        log("Error: Debes seleccionar un colegio.", "error");
+        showToast("Selecciona un colegio primero", "error");
+        return;
+      }
+
+      const slug = `${schoolCode}-${year}`;
+      log(`Generando HTML para ${slug} (${docType})...`, "info");
+      btnGenerate.disabled = true;
+
+      try {
+        // 1. Fetch template HTML
+        const templateUrl = docType === 'propuesta' ? '/propuesta/index.html' : '/familias/index.html';
+        log(`Descargando template: ${templateUrl}...`);
+        const templateRes = await fetch(templateUrl);
+        if (!templateRes.ok) throw new Error(`No se pudo obtener el template: ${templateUrl}`);
+        const templateText = await templateRes.text();
+
+        // 2. Fetch school proposal data
+        const propUrl = `/propuesta/data/${schoolCode}_propuesta.json`;
+        log(`Descargando datos de propuesta: ${propUrl}...`);
+        const propRes = await fetch(propUrl);
+        if (!propRes.ok) throw new Error(`Aún no hay una propuesta configurada para esta institución (${schoolCode}_propuesta.json).`);
+        const propuesta = await propRes.json();
+
+        // Find school details in catalog
+        const schoolData = preciosData.escuelas.find(s => s.code === schoolCode);
+        if (!schoolData) throw new Error(`No se encontró el colegio en precios.json`);
+
+        // 3. Fetch style.css
+        log(`Descargando estilos CSS...`);
+        const cssRes = await fetch('/propuesta/css/style.css');
+        if (!cssRes.ok) throw new Error("No se pudo cargar /propuesta/css/style.css");
+        const cssText = await cssRes.text();
+
+        // 4. Parse template HTML using DOMParser
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(templateText, 'text/html');
+
+        // 5. Inyectar datos en el DOM de la plantilla
+        log("Renderizando textos y metadatos...");
+        
+        // Helper to set text inside doc
+        const setSafeText = (id, text) => {
+          const el = doc.getElementById(id);
+          if (el) el.textContent = text;
+        };
+
+        doc.title = `${docType === 'propuesta' ? 'Propuesta' : 'Brochure'} — ${schoolData.name}`;
+        
+        setSafeText('school-name', `Propuesta preparada para: ${schoolData.name}`);
+        
+        const mainTitle = propuesta.metadata && propuesta.metadata.titulo_principal 
+          ? propuesta.metadata.titulo_principal 
+          : (docType === 'propuesta' ? "Propuesta Fotográfica" : "Brochure de Fotos Familiares");
+        setSafeText('propuesta-title', mainTitle);
+
+        if (propuesta.metadata && propuesta.metadata.fecha_actualizacion) {
+          setSafeText('doc-date', `Última actualización: ${propuesta.metadata.fecha_actualizacion}`);
+        }
+
+        // Differentiators
+        setSafeText('txt-trato', propuesta.diferenciadores.trato_nino);
+        setSafeText('txt-fotos', propuesta.diferenciadores.fotos_autenticas);
+        setSafeText('txt-entregables', propuesta.diferenciadores.entregables);
+
+        // Logistics
+        const ubs = propuesta.logistica.ubicacion.opciones_activas.map(u => u.texto_display).join(" / ");
+        setSafeText('txt-ubicaciones', ubs);
+
+        const itemCapas = doc.getElementById('item-capas');
+        const capas = propuesta.logistica.capas_birretes;
+        if (!capas || capas.incluido === false) {
+          if (itemCapas) itemCapas.style.display = 'none';
+        } else {
+          if (itemCapas) itemCapas.style.display = '';
+          if (capas.texto) setSafeText('txt-capas', capas.texto);
+        }
+
+        const mascEl = doc.getElementById('txt-mascotas');
+        if (mascEl) {
+          mascEl.textContent = propuesta.logistica.solicitudes_especiales.mascotas ? 'Sí' : 'No';
+        }
+        setSafeText('txt-familiares', propuesta.logistica.solicitudes_especiales.familiares);
+
+        // Deliveries and Policies
+        const ul = doc.getElementById('list-entregas');
+        if (ul) {
+          ul.innerHTML = '';
+          propuesta.entrega_y_pagos.metodo_entrega.forEach(m => {
+            const li = doc.createElement('li');
+            li.textContent = m.texto;
+            ul.appendChild(li);
+          });
+        }
+        setSafeText('txt-tiempo', propuesta.entrega_y_pagos.tiempo_entrega_semanas);
+        setSafeText('txt-inasistencia', propuesta.politicas.inasistencia.opcion_multiples_salones);
+        setSafeText('txt-hermanos', propuesta.politicas.descuento_hermanos.texto);
+
+        const dineroEl = doc.getElementById('txt-dinero');
+        if (dineroEl) {
+          dineroEl.textContent = propuesta.entrega_y_pagos.recoleccion_dinero.explicacion;
+        }
+
+        // Render pricing table
+        log("Construyendo tabla de precios comparativa...");
+        const precios = schoolData;
+        const ptGrid = doc.querySelector('.pt-grid');
+
+        if (ptGrid) {
+          // Clear any dynamic rows that might be left in the template (usually none in raw file)
+          // The template only has the header cells, we must keep them.
+          // Wait, let's make sure we keep only the header cells.
+          // Let's identify the headers by class .pt-head
+          const headers = doc.querySelectorAll('.pt-grid .pt-head');
+          ptGrid.innerHTML = '';
+          headers.forEach(h => ptGrid.appendChild(h));
+
+          if (precios && precios.visibilidad === 'publicar' && precios.paquetes && precios.paquetes.length > 0) {
+            const paquetes = precios.paquetes;
+            const minPrecio = Math.min(...paquetes.map(p => p.precio));
+            setSafeText('precio-desde', `Desde $${minPrecio}`);
+
+            // Precios en header
+            paquetes.forEach((pkg, i) => {
+              const ids = ['precio-esencial', 'precio-familiar', 'precio-premium'];
+              if (ids[i]) setSafeText(ids[i], `$${pkg.precio}`);
+            });
+
+            // Nombres en header — template uses .pt-name spans, NOT pt-nombre-X IDs
+            const ptNameSpans = Array.from(doc.querySelectorAll('.pt-head:not(.pt-label) .pt-name'));
+            paquetes.forEach((pkg, i) => {
+              if (ptNameSpans[i]) ptNameSpans[i].textContent = pkg.nombre;
+            });
+
+            // Column adjustment
+            if (paquetes.length < 3) {
+              ptGrid.style.gridTemplateColumns = `36% ${Array(paquetes.length).fill('1fr').join(' ')}`;
+              for (let i = paquetes.length; i < 3; i++) {
+                const ids = ['precio-esencial', 'precio-familiar', 'precio-premium'];
+                const priceEl = doc.getElementById(ids[i]);
+                if (priceEl && priceEl.parentElement) {
+                  priceEl.parentElement.style.display = 'none';
+                }
+              }
+            }
+
+            const tc = paquetes.map(p => p.tabla_comparativa);
+            const featClass = i => i === 1 ? ' pt-feat' : '';
+            const lastClass = ' pt-last';
+
+            const cell = (content, extra = '') => `<div class="pt-cell${extra}" role="cell">${content}</div>`;
+            const labelCell = (text, extra = '') => `<div class="pt-cell pt-label${extra}" role="rowheader">${text}</div>`;
+            const boolCell = (val, inverted = false) => {
+              if (val === null || val === false) {
+                const cls = inverted ? 'pt-no-inv' : 'pt-no';
+                return `<span class="${cls}">—</span>`;
+              }
+              const cls = inverted ? 'pt-ok-inv' : 'pt-ok';
+              return `<span class="${cls}">✓</span>`;
+            };
+            const textOrNull = (val, inverted = false) => {
+              if (!val) return boolCell(null, inverted);
+              return val;
+            };
+
+            const hasValidValue = (key) => tc.some(t => t[key] !== null && t[key] !== false && t[key] !== 0 && t[key] !== "0" && t[key] !== "");
+
+            const rows = [];
+            
+            // Fotos digitales
+            rows.push(labelCell('Fotos digitales') + tc.map((t, i) => cell(t.fotos_digitales, featClass(i))).join(''));
+
+            // Foto grupal
+            if (hasValidValue('foto_grupal')) {
+              rows.push(labelCell('Foto grupal') + tc.map((t, i) => cell(boolCell(t.foto_grupal, i === 1), featClass(i))).join(''));
+            }
+
+            // Impresiones
+            if (hasValidValue('impresiones')) {
+              rows.push(labelCell('Impresiones') + tc.map((t, i) => cell(textOrNull(t.impresiones, i === 1), featClass(i) + (t.impresiones ? ' pt-sm' : ''))).join(''));
+            }
+
+            // Foto enmarcada
+            if (hasValidValue('foto_enmarcada')) {
+              rows.push(labelCell('Foto enmarcada') + tc.map((t, i) => cell(textOrNull(t.foto_enmarcada, i === 1), featClass(i) + (t.foto_enmarcada ? ' pt-sm' : ''))).join(''));
+            }
+
+            // Fotos familiares
+            if (hasValidValue('fotos_familiares')) {
+              rows.push(labelCell('Fotos familiares') + tc.map((t, i) => {
+                const txt = t.fotos_familiares ? (i === 1 ? '<span class="pt-opt-inv">Incluidas</span>' : '<span class="pt-opt">Incluidas</span>') : boolCell(null, i === 1);
+                return cell(txt, featClass(i));
+              }).join(''));
+            }
+
+            // Ideal para
+            rows.push(labelCell('Ideal para', lastClass) + tc.map((t, i) => cell(t.ideal_para, featClass(i) + lastClass + ' pt-sm')).join(''));
+
+            ptGrid.insertAdjacentHTML('beforeend', rows.join(''));
+          } else {
+            setSafeText('precio-desde', 'Precio pendiente');
+            setSafeText('precio-esencial', 'Pendiente');
+            setSafeText('precio-familiar', 'Pendiente');
+            setSafeText('precio-premium', 'Pendiente');
+          }
+        }
+
+        // Render Kinder gift section (only institucional)
+        const audiencia = propuesta.metadata && propuesta.metadata.audiencia;
+        const kinderSection = doc.getElementById('kinder-gift-section');
+        if (kinderSection) {
+          kinderSection.style.display = (audiencia === 'institucional') ? 'block' : 'none';
+        }
+
+        // Show contents
+        const wrapper = doc.getElementById('content-wrapper');
+        if (wrapper) wrapper.style.display = 'block';
+        const ctaSec = doc.querySelector('.cta-section');
+        if (ctaSec) ctaSec.style.display = 'block';
+
+        // 6. Render Gallery (Optional)
+        const galleryTitle = doc.getElementById('gallery-title');
+        const galleryContainer = doc.getElementById('gallery-container');
+
+        if (includeGallery && propuesta.galeria && propuesta.galeria.portafolio_id) {
+          const portafolioId = propuesta.galeria.portafolio_id;
+          log(`Cargando portafolio de galería: ${portafolioId}...`);
+          try {
+            const galRes = await fetch(`/propuesta/portafolios/${portafolioId}/manifest.json`);
+            if (galRes.ok) {
+              const manifest = await galRes.json();
+              if (galleryTitle && manifest.titulo) {
+                galleryTitle.textContent = manifest.titulo;
+                galleryTitle.style.display = '';
+              }
+              if (galleryContainer) {
+                galleryContainer.innerHTML = '';
+                galleryContainer.style.display = '';
+                
+                manifest.fotos.forEach(foto => {
+                  const item = doc.createElement('div');
+                  const orientacionClass = foto.orientacion === 'horizontal' ? 'horizontal' : 'vertical';
+                  item.className = `gallery-item ${orientacionClass}`;
+
+                  // Absolute URL to web server
+                  const imgPath = `https://www.mimejorretrato.com/propuesta/portafolios/${portafolioId}/${foto.archivo}`;
+
+                  item.innerHTML = `
+                    <img src="${imgPath}" alt="${foto.alt || 'Fotografía escolar'}">
+                    ${foto.caption ? `<p class="gallery-caption">${foto.caption}</p>` : ''}
+                  `;
+                  galleryContainer.appendChild(item);
+                });
+                log("Galería renderizada con fotos absolutas.", "success");
+              }
+            } else {
+              throw new Error("No se pudo descargar el manifiesto del portafolio.");
+            }
+          } catch (galErr) {
+            log(`Advertencia: No se pudo renderizar la galería (${galErr.message}). Se ocultará.`, "error");
+            if (galleryTitle) galleryTitle.style.display = 'none';
+            if (galleryContainer) galleryContainer.style.display = 'none';
+          }
+        } else {
+          log("Galería deshabilitada u omitida.");
+          if (galleryTitle) galleryTitle.style.display = 'none';
+          if (galleryContainer) galleryContainer.style.display = 'none';
+        }
+
+        // 7. Simplify CTA section (remove forms / make absolute links)
+        log("Simplificando sección de llamados a la acción (CTA)...");
+        
+        // Convert onboarding links to absolute URLs
+        doc.querySelectorAll('[data-onboarding-link]').forEach(el => {
+          el.href = `https://www.mimejorretrato.com/onboarding/${slug}`;
+        });
+
+        // If family brochure, replace the delegate form with a clean WA contact button
+        const formB2b = doc.getElementById('form-b2b-cta');
+        if (formB2b) {
+          log("Reemplazando formulario interactivo por botón de WhatsApp directo...");
+          const ctaCard = formB2b.closest('.cta-card');
+          if (ctaCard) {
+            // Update card texts
+            const cardTitle = ctaCard.querySelector('h3');
+            if (cardTitle) cardTitle.textContent = '🏫 Coordinar sesión para mi salón';
+            const cardDesc = ctaCard.querySelector('p');
+            if (cardDesc) {
+              cardDesc.textContent = 'Si eres delegado/a y deseas organizar una sesión de fotos para tu salón de clases, presiona el botón de abajo para coordinar los detalles directamente con Mike por WhatsApp.';
+            }
+
+            // Create WhatsApp Button
+            const waMsg = `¡Hola Mike! 👋 Vimos la propuesta de fotos familiares de ${schoolData.name} y nos gustaría coordinar la sesión para el salón.`;
+            const waUrl = `https://wa.me/50767438951?text=${encodeURIComponent(waMsg)}`;
+            
+            const waBtn = doc.createElement('a');
+            waBtn.href = waUrl;
+            waBtn.target = '_blank';
+            waBtn.className = 'btn-whatsapp';
+            waBtn.textContent = 'Coordinar con Mike por WhatsApp →';
+            
+            // Inline style to match high fidelity button design
+            waBtn.setAttribute('style', `
+              display: inline-block;
+              width: 100%;
+              text-align: center;
+              padding: 14px 20px;
+              background-color: var(--color-accent, #f07030);
+              color: white;
+              font-family: inherit;
+              font-size: 14px;
+              font-weight: 500;
+              text-decoration: none;
+              border-radius: var(--radius-md, 6px);
+              transition: opacity 0.15s;
+              margin-top: 16px;
+            `);
+
+            // Replace form with button
+            formB2b.parentNode.replaceChild(waBtn, formB2b);
+
+            // Hide success message placeholder since there's no form submission
+            const successMsg = doc.getElementById('b2b-msg-exito');
+            if (successMsg) successMsg.remove();
+          }
+        }
+
+        // In case of institutional proposals, update Option A to link to WhatsApp too
+        if (docType === 'propuesta') {
+          const ctaCards = doc.querySelectorAll('.cta-section .cta-card');
+          if (ctaCards.length > 0) {
+            const institutionalCard = ctaCards[0];
+            const waMsg = `¡Hola Mike! 👋 Acabamos de revisar la propuesta institucional para ${schoolData.name}. Conversemos para programar la llamada y afinar detalles.`;
+            const waUrl = `https://wa.me/50767438951?text=${encodeURIComponent(waMsg)}`;
+
+            // Check if there is already a link or button, otherwise append one
+            let existingLink = institutionalCard.querySelector('a');
+            if (!existingLink) {
+              const waLink = doc.createElement('a');
+              waLink.href = waUrl;
+              waLink.target = '_blank';
+              waLink.className = 'btn-whatsapp';
+              waLink.textContent = 'Agendar llamada por WhatsApp →';
+              waLink.setAttribute('style', `
+                display: inline-block;
+                width: 100%;
+                text-align: center;
+                padding: 14px 20px;
+                background-color: var(--color-accent, #f07030);
+                color: white;
+                font-family: inherit;
+                font-size: 14px;
+                font-weight: 500;
+                text-decoration: none;
+                border-radius: var(--radius-md, 6px);
+                transition: opacity 0.15s;
+                margin-top: 16px;
+              `);
+              institutionalCard.appendChild(waLink);
+            } else {
+              existingLink.href = waUrl;
+            }
+          }
+        }
+
+        // 8. Inlining Styles and cleaning scripts
+        log("Removiendo scripts locales y Google Analytics...");
+        doc.querySelectorAll('script').forEach(s => s.remove());
+
+        log("Limpiando y vinculando CSS de forma interna...");
+        // Remove style.css links but preserve fonts stylesheets
+        doc.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+          const href = link.getAttribute('href');
+          if (href && href.includes('style.css')) {
+            link.remove();
+          }
+        });
+
+        // Append inline CSS style tag
+        const styleTag = doc.createElement('style');
+        styleTag.textContent = cssText;
+        doc.head.appendChild(styleTag);
+
+        // 9. Serialize document back to string
+        generatedHtml = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+
+        // 10. Load into preview iframe
+        emptyPreview.style.display = 'none';
+        previewIframe.style.display = 'block';
+        
+        // To support setting HTML directly to iframe, we use srcdoc
+        previewIframe.srcdoc = generatedHtml;
+
+        // Enable action buttons
+        btnCopy.disabled = false;
+        btnDownload.disabled = false;
+        previewStatus.textContent = `Lista: ${slug}.html`;
+
+        log("¡HTML Plano Generado con Éxito!", "success");
+        showToast("HTML generado con éxito", "success");
+
+      } catch (err) {
+        log(`Error al generar: ${err.message}`, "error");
+        showToast("Error al generar HTML", "error");
+        
+        // Reset preview
+        emptyPreview.style.display = 'flex';
+        previewIframe.style.display = 'none';
+        previewIframe.srcdoc = '';
+        btnCopy.disabled = true;
+        btnDownload.disabled = true;
+        previewStatus.textContent = 'Error';
+      } finally {
+        btnGenerate.disabled = false;
+      }
+    }
+
+    // --- ACTIONS ---
+    function copyToClipboard() {
+      if (!generatedHtml) return;
+      navigator.clipboard.writeText(generatedHtml)
+        .then(() => {
+          log("HTML copiado al portapapeles.", "success");
+          showToast("Copiado al portapapeles", "success");
+        })
+        .catch(err => {
+          log(`Error al copiar: ${err.message}`, "error");
+          showToast("Error al copiar", "error");
+        });
+    }
+
+    function downloadHtmlFile() {
+      if (!generatedHtml) return;
+      const schoolCode = schoolSelect.value;
+      const year = yearSelect.value;
+      const docType = docTypeSelect.value;
+      
+      const fileName = `${schoolCode}-${docType}-20${year}.html`;
+      
+      const blob = new Blob([generatedHtml], { type: 'text/html;charset=utf-8;' });
+      const link = document.createElement("a");
+      
+      if (navigator.msSaveBlob) { // IE 10+
+        navigator.msSaveBlob(blob, fileName);
+      } else {
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+      log(`Archivo descargado: ${fileName}`, "success");
+      showToast("Descarga completada", "success");
+    }
+
+    // --- EVENT LISTENERS ---
+    btnGenerate.addEventListener('click', generateStaticHtml);
+    btnCopy.addEventListener('click', copyToClipboard);
+    btnDownload.addEventListener('click', downloadHtmlFile);
+    
+    // Automatically trigger preview updates when options change to remain interactive
+    docTypeSelect.addEventListener('change', () => {
+      log(`Tipo de documento cambiado a: ${docTypeSelect.value}`);
+    });
+    schoolSelect.addEventListener('change', () => {
+      selectedSchoolCode = schoolSelect.value;
+      log(`Colegio seleccionado: ${selectedSchoolCode.toUpperCase()}`);
+    });
+
+    // Run
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
