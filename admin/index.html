@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Precios | Mi Mejor Retrato</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
 </head>
+
 <body>
 
     <header class="admin-header">
@@ -47,8 +51,10 @@
                 <div class="list-content" id="schoolsContainer" style="flex: 1; overflow-y: auto;">
                     <p class="loading-text">Cargando datos...</p>
                 </div>
-                <div class="list-actions" style="padding: 16px; border-top: 1px solid var(--border); background: var(--bg-card);">
-                    <button class="btn btn-secondary" id="btnCreateSchool" style="width: 100%;">➕ Agregar Colegio</button>
+                <div class="list-actions"
+                    style="padding: 16px; border-top: 1px solid var(--border); background: var(--bg-card);">
+                    <button class="btn btn-secondary" id="btnCreateSchool" style="width: 100%;">➕ Agregar
+                        Colegio</button>
                 </div>
             </aside>
 
@@ -57,9 +63,11 @@
                 <div class="editor-header">
                     <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                         <h2>Configurando: <span id="currentSchoolCode" class="badge"></span></h2>
-                        <button class="btn btn-secondary" id="btnDuplicateSchool" style="padding: 0.25rem 0.75rem; font-size: 0.85rem;" title="Duplicar este colegio con un nuevo código">📋 Duplicar Colegio</button>
+                        <button class="btn btn-secondary" id="btnDuplicateSchool"
+                            style="padding: 0.25rem 0.75rem; font-size: 0.85rem;"
+                            title="Duplicar este colegio con un nuevo código">📋 Duplicar Colegio</button>
                     </div>
-                    
+
                     <div class="form-group row-group">
                         <label for="schoolVisibility">Estado:</label>
                         <select id="schoolVisibility" class="visibility-select">
@@ -71,20 +79,32 @@
                 </div>
 
                 <!-- METADATOS DEL COLEGIO -->
-                <div class="metadata-section" style="margin-bottom: 12px; padding: 12px; border-radius: 12px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
-                    <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 1.1rem; color: var(--text-dark);">Identidad del Colegio</h3>
-                    <div class="form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                <div class="metadata-section"
+                    style="margin-bottom: 12px; padding: 12px; border-radius: 12px; background: var(--bg-card); box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
+                    <h3 style="margin-top: 0; margin-bottom: 12px; font-size: 1.1rem; color: var(--text-dark);">
+                        Identidad del Colegio</h3>
+                    <div class="form-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                         <div class="form-group">
-                            <label for="schoolName" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);">Nombre Comercial</label>
-                            <input type="text" id="schoolName" placeholder="ej: Colegio La Salle" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem;">
+                            <label for="schoolName"
+                                style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);">Nombre
+                                Comercial</label>
+                            <input type="text" id="schoolName" placeholder="ej: Colegio La Salle"
+                                style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem;">
                         </div>
                         <div class="form-group">
-                            <label for="schoolYears" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);">Años Activos (separados por coma)</label>
-                            <input type="text" id="schoolYears" placeholder="ej: 26" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem;">
+                            <label for="schoolYears"
+                                style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);">Años
+                                Activos (separados por coma)</label>
+                            <input type="text" id="schoolYears" placeholder="ej: 26"
+                                style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem;">
                         </div>
                         <div class="form-group">
-                            <label for="schoolGaId" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);">ID de Google Analytics 4</label>
-                            <input type="text" id="schoolGaId" placeholder="ej: G-6H4H52RL0T" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem;">
+                            <label for="schoolGaId"
+                                style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.85rem; color: var(--text-muted);">ID
+                                de Google Analytics 4</label>
+                            <input type="text" id="schoolGaId" placeholder="ej: G-6H4H52RL0T"
+                                style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.95rem;">
                         </div>
                     </div>
                 </div>
@@ -99,8 +119,11 @@
                     </div>
                 </div>
 
-                <div class="package-selector-container" id="packageSelectorContainer" style="margin-bottom: 16px; display: flex; align-items: center; gap: 12px; background: var(--color-paper-warm); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-                    <label for="packageSelect" style="font-weight: 600; font-size: 0.9rem; color: var(--color-ink-light);">Paquete a Editar:</label>
+                <div class="package-selector-container" id="packageSelectorContainer"
+                    style="margin-bottom: 16px; display: flex; align-items: center; gap: 12px; background: var(--color-paper-warm); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+                    <label for="packageSelect"
+                        style="font-weight: 600; font-size: 0.9rem; color: var(--color-ink-light);">Paquete a
+                        Editar:</label>
                     <select id="packageSelect" class="visibility-select" style="flex: 1; font-weight: 600;">
                         <!-- Opciones inyectadas por JS -->
                     </select>
@@ -120,8 +143,11 @@
 
     <footer class="admin-footer">
         <div class="footer-actions">
-            <p><strong>Paso final:</strong> Una vez hechos todos tus cambios, descarga el archivo y guárdalo en <code>onboarding/data/precios.json</code> reemplazando el anterior.</p>
-            <button class="btn btn-success btn-large" id="btnDownloadJson">⬇️ Descargar precios.json actualizado</button>
+            <p><strong>Paso final:</strong> Una vez hechos todos tus cambios, descarga el archivo y guárdalo en
+                <code>onboarding/data/precios.json</code> reemplazando el anterior.
+            </p>
+            <button class="btn btn-success btn-large" id="btnDownloadJson">⬇️ Descargar precios.json
+                actualizado</button>
         </div>
     </footer>
 
@@ -147,14 +173,14 @@
                         <input type="number" class="pkg-price" min="0">
                     </div>
                     <div class="form-group full-width">
-                        <label>Descripción corta</label>
+                        <label>Descripción corta para el formulario de reserva.</label>
                         <input type="text" class="pkg-desc" placeholder="ej: 4 Fotos únicamente en galería online">
                     </div>
                 </div>
 
                 <hr class="divider">
                 <h4>Tabla Comparativa (Checklist)</h4>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Fotos Digitales (Cantidad)</label>
@@ -162,7 +188,8 @@
                     </div>
                     <div class="form-group">
                         <label>Impresiones (Texto)</label>
-                        <input type="text" class="tc-prints" placeholder="ej: 1 gr. + 4 peq. (dejar vacío si no aplica)">
+                        <input type="text" class="tc-prints"
+                            placeholder="ej: 1 gr. + 4 peq. (dejar vacío si no aplica)">
                     </div>
                     <div class="form-group">
                         <label>Foto Enmarcada (Texto)</label>
@@ -172,16 +199,16 @@
                         <label>Ideal para (Texto destacado)</label>
                         <input type="text" class="tc-ideal" placeholder="ej: Un recuerdo digital sencillo">
                     </div>
-                    
+
                     <div class="form-group checkbox-group">
                         <label class="toggle-label">
-                            <input type="checkbox" class="tc-group"> 
+                            <input type="checkbox" class="tc-group">
                             Incluye Foto Grupal del Salón
                         </label>
                     </div>
                     <div class="form-group checkbox-group">
                         <label class="toggle-label">
-                            <input type="checkbox" class="tc-family"> 
+                            <input type="checkbox" class="tc-family">
                             Incluye Fotos Familiares
                         </label>
                     </div>
@@ -192,4 +219,5 @@
 
     <script src="js/admin.js"></script>
 </body>
+
 </html>
